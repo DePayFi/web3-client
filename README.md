@@ -1,65 +1,33 @@
+Stop relying on connected wallets when fetching data for dApps.
+
+This JavaScript library abstracts calls to blockchains by either:
+
+- using the connected wallet RPC (if the wallet is actually connected)
+- fallback to an official RPC in case no wallet is connected
+
+This allows you e.g. to fetch and display blockchain data in your Apps without any connected wallet
+and potentially hand off actual transactions to another device (e.g. mobile) and postpone the requirement to actually
+connect a wallet until it's necessary (e.g. to sign transactions).
+
 ## Quickstart
 
 ```
-yarn add depay-crypto-wallets
+yarn add depay-blockchain-call
 ```
 
 or 
 
 ```
-npm install --save depay-crypto-wallets
+npm install --save depay-blockchain-call
 ```
 
 ```javascript
-import { wallet } from 'depay-crypto-wallets'
-  
+import { call } from 'depay-blockchain-call'
+
+
 ```
 
-## Support
 
-This libraries supports the following blockchains:
-
-- [Ethereum](https://ethereum.org/)
-
-This libraries supports the following wallets:
-
-- [MetaMask](https://metamask.io/)
-
-## Functionalities
-
-### Get wallet type
-
-`type():string`: Gets the type of the wallet before even connecting it.
-
-```javascript
-wallet.type() // 'MetaMask'
-```
-
-Returns `'unknown'` if there is a wallet but type is `'unkown'`. Returns `undefined` if no wallet was found at all.
-
-### Connect to the wallet
-
-`async connect():string`: Connets wallet. Potentially opens wallet connect screen. Provides connected wallet addresses in async return.
-
-```javascript
-await wallet.connect() // '0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B'
-```
-
-### Receive wallet events
-
-`on(string, function):undefined`: Register a callback function for given events.
-
-```javascript
-wallet.on('account', (newAccount)=>{
-  doSomething(newAccount)
-})
-```
-
-#### Events
-
-`on('account', (newAccount)=>{})`: Fires when user changes the connected/active wallet account.
-
-`on('network', (newNetwork)=>{})`: Fires when user changes network of the connected wallet.
 
 ## Development
 
