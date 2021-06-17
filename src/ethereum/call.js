@@ -1,5 +1,5 @@
 import provider from './provider'
-import { ethers } from 'ethers'
+import ethers from 'ethers'
 
 export default async function({ blockchain, address, abi, method, params }){
 

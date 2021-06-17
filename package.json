@@ -15,7 +15,7 @@
     "lint:fix": "eslint \"src/**/*.{js,jsx,ts,tsx}\" --fix",
     "format": "prettier src --write",
     "prepublishOnly": "yarn build",
-    "start": "rollup -c rollup.serve.config.js -w",
+    "start": "rollup -c rollup.demo.config.js -w",
     "test:units": "yarn build && npx jest --no-cache",
     "test": "yarn test:units"
   },

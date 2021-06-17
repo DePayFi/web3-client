@@ -1,4 +1,4 @@
-import { ethers } from 'ethers';
+import ethers from 'ethers';
 
 let account, provider;
 
@@ -12,7 +12,7 @@ export default async function(){
     }
   }
 
-  if(provider && account === account) { return provider }
+  if(provider && newAccount === account) { return provider }
   account = newAccount;
 
   if(account) {

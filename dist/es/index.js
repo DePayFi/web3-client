@@ -1,4 +1,4 @@
-import { ethers } from 'ethers';
+import ethers from 'ethers';
 
 function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 let account, provider;
@@ -13,7 +13,7 @@ async function ethereumProvider(){
     }
   }
 
-  if(provider && account === account) { return provider }
+  if(provider && newAccount === account) { return provider }
   account = newAccount;
 
   if(account) {
@@ -52,12 +52,11 @@ function call({ blockchain, address, abi, method, params }){
   })
 }
 
-function provider$1(blockchain){
+async function provider$1(blockchain){
   switch(blockchain) {
 
     case 'ethereum':
-      ethereumProvider();
-    break
+      return await ethereumProvider()
 
     default:
       throw("Unknown blockchain: "+blockchain)

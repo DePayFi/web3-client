@@ -1,10 +1,10 @@
 import ethereumProvider from './ethereum/provider'
 
-export default function(blockchain){
+export default async function(blockchain){
   switch(blockchain) {
 
     case 'ethereum':
-      ethereumProvider()
+      return await ethereumProvider()
     break
 
     default:
