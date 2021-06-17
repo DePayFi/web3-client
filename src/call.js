@@ -1,6 +1,6 @@
 import callEthereum from './ethereum/call'
 
-let call = function({ blockchain, address, abi, method, params }){
+export default function({ blockchain, address, abi, method, params }){
   return new Promise((resolve, reject) => {
 
     switch(blockchain) {
@@ -15,5 +15,3 @@ let call = function({ blockchain, address, abi, method, params }){
     }
   })
 }
-
-export default call
