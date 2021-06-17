@@ -1,5 +1,3 @@
-import Wallet from './Wallet'
+import call from './call'
 
-const wallet = new Wallet()
-
-export { wallet }
+export { call }
