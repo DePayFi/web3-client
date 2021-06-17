@@ -36,7 +36,7 @@ async function callEthereum({ blockchain, address, abi, method, params }){
   return await contract[method](...args);
 }
 
-function call({ blockchain, address, abi, method, params }){
+let call = function({ blockchain, address, abi, method, params }){
   return new Promise((resolve, reject) => {
 
     switch(blockchain) {
@@ -50,6 +50,16 @@ function call({ blockchain, address, abi, method, params }){
         reject("Unknown blockchain: "+blockchain);
     }
   })
+};
+
+function call$1(args){
+  if (!Array.isArray(args)) {
+    // single request
+    return call(args)
+  } else {
+    // parallel requests
+    return Promise.all(args.map((arg)=>call(arg)))
+  }
 }
 
 async function provider$1(blockchain){
@@ -63,4 +73,4 @@ async function provider$1(blockchain){
   }
 }
 
-export { call, provider$1 as provider };
+export { call$1 as call, provider$1 as provider };

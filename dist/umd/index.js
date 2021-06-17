@@ -44,7 +44,7 @@
     return await contract[method](...args);
   }
 
-  function call({ blockchain, address, abi, method, params }){
+  let call = function({ blockchain, address, abi, method, params }){
     return new Promise((resolve, reject) => {
 
       switch(blockchain) {
@@ -58,6 +58,16 @@
           reject("Unknown blockchain: "+blockchain);
       }
     })
+  };
+
+  function call$1(args){
+    if (!Array.isArray(args)) {
+      // single request
+      return call(args)
+    } else {
+      // parallel requests
+      return Promise.all(args.map((arg)=>call(arg)))
+    }
   }
 
   async function provider$1(blockchain){
@@ -71,7 +81,7 @@
     }
   }
 
-  exports.call = call;
+  exports.call = call$1;
   exports.provider = provider$1;
 
   Object.defineProperty(exports, '__esModule', { value: true });
