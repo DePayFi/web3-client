@@ -1,8 +1,8 @@
 import provider from './provider'
 import ethers from 'ethers'
 
-export default async function ({ blockchain, address, abi, method, params }) {
-  let contract = new ethers.Contract(address, abi, await provider())
+export default async function ({ blockchain, address, api, method, params }) {
+  let contract = new ethers.Contract(address, api, await provider())
   let fragment = contract.interface.fragments.find((fragment) => {
     return fragment.name == method
   })

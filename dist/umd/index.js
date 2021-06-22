@@ -37,8 +37,8 @@
     return provider
   }
 
-  async function callEthereum ({ blockchain, address, abi, method, params }) {
-    let contract = new ethers__default['default'].Contract(address, abi, await ethereumProvider());
+  async function callEthereum ({ blockchain, address, api, method, params }) {
+    let contract = new ethers__default['default'].Contract(address, api, await ethereumProvider());
     let fragment = contract.interface.fragments.find((fragment) => {
       return fragment.name == method
     });
@@ -49,11 +49,11 @@
     return await contract[method](...args)
   }
 
-  let call = function ({ blockchain, address, abi, method, params }) {
+  let call = function ({ blockchain, address, api, method, params }) {
     return new Promise((resolve, reject) => {
       switch (blockchain) {
         case 'ethereum':
-          callEthereum({ blockchain, address, abi, method, params }).then((value) => resolve(value));
+          callEthereum({ blockchain, address, api, method, params }).then((value) => resolve(value));
           break
 
         default:

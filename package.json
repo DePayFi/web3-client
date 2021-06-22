@@ -1,7 +1,7 @@
 {
   "name": "depay-blockchain-call",
   "moduleName": "BlockchainCall",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "description": "",
   "main": "dist/cjs/index.js",
   "module": "dist/es/index.js",

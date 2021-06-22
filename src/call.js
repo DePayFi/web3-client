@@ -1,10 +1,10 @@
 import callEthereum from './ethereum/call'
 
-let call = function ({ blockchain, address, abi, method, params }) {
+let call = function ({ blockchain, address, api, method, params }) {
   return new Promise((resolve, reject) => {
     switch (blockchain) {
       case 'ethereum':
-        callEthereum({ blockchain, address, abi, method, params }).then((value) => resolve(value))
+        callEthereum({ blockchain, address, api, method, params }).then((value) => resolve(value))
         break
 
       default:

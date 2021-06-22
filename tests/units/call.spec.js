@@ -29,7 +29,7 @@ describe('call', () => {
     let value = await call({
       blockchain: 'ethereum',
       address: '0x7a250d5630b4cf539739df2c5dacb4c659f2488d',
-      abi: abi,
+      api: abi,
       method: 'getAmountsOut',
       params: {
         amountIn: '1000000000000000000',
@@ -68,7 +68,7 @@ describe('call', () => {
     let value = await call({
       blockchain: 'ethereum',
       address: '0x7a250d5630b4cf539739df2c5dacb4c659f2488d',
-      abi: abi,
+      api: abi,
       method: 'getAmountsOut',
       params: {
         amountIn: '1000000000000000000',
@@ -107,12 +107,12 @@ describe('call', () => {
       {
         blockchain: 'ethereum',
         address: '0xef8cd6cb5c841a4f02986e8a8ab3cc545d1b8b6d',
-        abi: abi,
+        api: abi,
         method: 'token0'
       },{
         blockchain: 'ethereum',
         address: '0xef8cd6cb5c841a4f02986e8a8ab3cc545d1b8b6d',
-        abi: abi,
+        api: abi,
         method: 'token1'
       }
     ])
