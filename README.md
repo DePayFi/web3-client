@@ -86,6 +86,31 @@ call([
 ]).then((values)=>console.log(values))
 ```
 
+### cache
+
+The `cache` attribute of any call allows you to cache calls:
+
+```javascript
+let getAmountsOut = ()=>call({
+  cache: 1000, // 1000ms = 1s
+  blockchain: 'ethereum',
+  address: '0x7a250d5630b4cf539739df2c5dacb4c659f2488d',
+  api: abi,
+  method: 'getAmountsOut',
+  params: {
+    amountIn: '1000000000000000000',
+    path: ['0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2','0xa0bed124a09ac2bd941b10349d8d224fe3c955eb']
+  }
+})
+
+getAmountsOut() // makes the call to RPC
+getAmountsOut() // returns cached result
+```
+
+The number passed to `cache` is the amount of ms the cache should stay valid (it's invalidated after Date.now + cache).
+
+If nothing or `0` is passed to `cache`, the call is not cached at all
+
 ## Development
 
 ### Get started

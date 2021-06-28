@@ -1,8 +1,11 @@
-import { provider } from 'dist/cjs/index.js'
 import { ethers } from 'ethers'
-import { Web3Mock } from 'depay-web3mock'
+import { mock, resetMocks } from 'depay-web3mock'
+import { provider } from 'dist/cjs/index.js'
 
 describe('provider', () => {
+
+  beforeEach(resetMocks)
+  afterEach(resetMocks)
   
   it('provides an RPC provider per default', async ()=> {
     let selectedProvider = await provider('ethereum');
@@ -12,7 +15,7 @@ describe('provider', () => {
   });
 
   it('provides a web3 wallet provider if wallet is connected', async ()=> {
-    Web3Mock({ mocks: 'ethereum' });
+    mock('ethereum');
     let selectedProvider = await provider('ethereum');
     expect(
       !!Object.getPrototypeOf(selectedProvider).constructor.toString().match('Web3Provider')
@@ -29,7 +32,7 @@ describe('provider', () => {
       !!Object.getPrototypeOf(selectedProvider).constructor.toString().match('JsonRpcProvider')
     ).toEqual(true)
 
-    Web3Mock({ mocks: 'ethereum' });
+    mock('ethereum');
     selectedProvider = await provider('ethereum');
 
     expect(

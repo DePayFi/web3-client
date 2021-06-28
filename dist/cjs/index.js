@@ -8,13 +8,52 @@ function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'defau
 
 var ethers__default = /*#__PURE__*/_interopDefaultLegacy(ethers);
 
-function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
+function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }let cacheStore = {};
+
+let set = function ({ key, value, expires }) {
+  cacheStore[key] = {
+    expiresAt: Date.now() + expires,
+    value,
+  };
+};
+
+let get = function ({ key, expires }) {
+  let cachedEntry = cacheStore[key];
+  if (_optionalChain([cachedEntry, 'optionalAccess', _ => _.expiresAt]) > Date.now()) {
+    return cachedEntry.value
+  }
+};
+
+let cache = async function ({ call, key, expires = 0 }) {
+  if (expires === 0) {
+    return call()
+  }
+
+  let value;
+  key = JSON.stringify(key);
+
+  // get cached value
+  value = get({ key, expires });
+  if (value) {
+    return value
+  }
+
+  // set new cache value
+  value = await call();
+  if (value) {
+    set({ key, value, expires });
+  }
+
+  return value
+};
+
+function _optionalChain$1(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 let account, provider;
 
 async function ethereumProvider () {
   let newAccount;
 
-  if (_optionalChain([window, 'optionalAccess', _ => _.ethereum])) {
+  if (_optionalChain$1([window, 'optionalAccess', _ => _.ethereum])) {
     let accounts = await window.ethereum.request({ method: 'eth_accounts' });
     if (accounts instanceof Array) {
       newAccount = accounts[0];
@@ -49,16 +88,19 @@ async function callEthereum ({ blockchain, address, api, method, params }) {
   return await contract[method](...args)
 }
 
-let call = function ({ blockchain, address, api, method, params }) {
-  return new Promise((resolve, reject) => {
-    switch (blockchain) {
-      case 'ethereum':
-        callEthereum({ blockchain, address, api, method, params }).then((value) => resolve(value));
-        break
+let call = async function ({ blockchain, address, api, method, params, cache: cache$1 = 0 }) {
+  return await cache({
+    expires: cache$1,
+    key: [blockchain, address, method, params],
+    call: () => {
+      switch (blockchain) {
+        case 'ethereum':
+          return callEthereum({ blockchain, address, api, method, params })
 
-      default:
-        reject('Unknown blockchain: ' + blockchain);
-    }
+        default:
+          throw 'Unknown blockchain: ' + blockchain
+      }
+    },
   })
 };
 
