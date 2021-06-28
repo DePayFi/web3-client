@@ -1,14 +1,19 @@
+import { cache as cacheCall } from './cache'
 import callEthereum from './ethereum/call'
 
-let call = function ({ blockchain, address, api, method, params }) {
-  return new Promise((resolve, reject) => {
-    switch (blockchain) {
-      case 'ethereum':
-        callEthereum({ blockchain, address, api, method, params }).then((value) => resolve(value))
-        break
+let call = async function ({ blockchain, address, api, method, params, cache = 0 }) {
+  return await cacheCall({
+    expires: cache,
+    key: [blockchain, address, method, params],
+    call: ()=>{
+      switch (blockchain) {
+        case 'ethereum':
+          return callEthereum({ blockchain, address, api, method, params })
+          break
 
-      default:
-        reject('Unknown blockchain: ' + blockchain)
+        default:
+          throw('Unknown blockchain: ' + blockchain)
+      }
     }
   })
 }
