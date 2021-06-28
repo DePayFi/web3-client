@@ -10,35 +10,41 @@
 
   function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }let cacheStore = {};
 
-  let set = function({ key, value, expires }){
+  let set = function ({ key, value, expires }) {
     cacheStore[key] = {
-      expiresAt: Date.now()+expires,
-      value
+      expiresAt: Date.now() + expires,
+      value,
     };
   };
 
-  let get = function({ key, expires }) {
+  let get = function ({ key, expires }) {
     let cachedEntry = cacheStore[key];
-    if(_optionalChain([cachedEntry, 'optionalAccess', _ => _.expiresAt]) > Date.now()) {
+    if (_optionalChain([cachedEntry, 'optionalAccess', _ => _.expiresAt]) > Date.now()) {
       return cachedEntry.value
     }
   };
 
-  let cache = async function({ call, key, expires = 0 }){
-    if(expires === 0) { return call() }
-    
+  let cache = async function ({ call, key, expires = 0 }) {
+    if (expires === 0) {
+      return call()
+    }
+
     let value;
     key = JSON.stringify(key);
 
     // get cached value
     value = get({ key, expires });
-    if(value) { return value }
+    if (value) {
+      return value
+    }
 
     // set new cache value
     value = await call();
-    if(value) { set({ key, value, expires }); }
+    if (value) {
+      set({ key, value, expires });
+    }
 
-    return value;
+    return value
   };
 
   function _optionalChain$1(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
@@ -86,15 +92,15 @@
     return await cache({
       expires: cache$1,
       key: [blockchain, address, method, params],
-      call: ()=>{
+      call: () => {
         switch (blockchain) {
           case 'ethereum':
             return callEthereum({ blockchain, address, api, method, params })
 
           default:
-            throw('Unknown blockchain: ' + blockchain)
+            throw 'Unknown blockchain: ' + blockchain
         }
-      }
+      },
     })
   };
 
