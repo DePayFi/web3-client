@@ -1,7 +1,7 @@
 {
   "name": "depay-blockchain-call",
   "moduleName": "BlockchainCall",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "",
   "main": "dist/cjs/index.js",
   "module": "dist/es/index.js",
@@ -50,7 +50,7 @@
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
     "cypress": "^6.2.1",
-    "depay-web3mock": "^1.0.2",
+    "depay-web3mock": "^2.0.1",
     "eslint": "^7.15.0",
     "eslint-config-prettier": "^7.0.0",
     "eslint-loader": "^4.0.2",

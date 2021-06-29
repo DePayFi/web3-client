@@ -81,8 +81,12 @@
     let fragment = contract.interface.fragments.find((fragment) => {
       return fragment.name == method
     });
-    let args = fragment.inputs.map((input) => {
-      return params[input.name]
+    let args = fragment.inputs.map((input, index) => {
+      if(Array.isArray(params)) {
+        return params[index]
+      } else {
+        return params[input.name]
+      }
     });
 
     return await contract[method](...args)
