@@ -10,6 +10,10 @@ var ethers__default = /*#__PURE__*/_interopDefaultLegacy(ethers);
 
 function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }let cacheStore = {};
 
+let resetCache = () => {
+  cacheStore = {};
+};
+
 let set = function ({ key, value, expires }) {
   cacheStore[key] = {
     expiresAt: Date.now() + expires,
@@ -82,7 +86,7 @@ async function callEthereum ({ blockchain, address, api, method, params }) {
     return fragment.name == method
   });
   let args = fragment.inputs.map((input, index) => {
-    if(Array.isArray(params)) {
+    if (Array.isArray(params)) {
       return params[index]
     } else {
       return params[input.name]
@@ -130,3 +134,4 @@ async function provider$1 (blockchain) {
 
 exports.call = call$1;
 exports.provider = provider$1;
+exports.resetCache = resetCache;

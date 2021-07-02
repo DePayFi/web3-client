@@ -1,5 +1,9 @@
 let cacheStore = {}
 
+let resetCache = () => {
+  cacheStore = {}
+}
+
 let set = function ({ key, value, expires }) {
   cacheStore[key] = {
     expiresAt: Date.now() + expires,
@@ -37,4 +41,4 @@ let cache = async function ({ call, key, expires = 0 }) {
   return value
 }
 
-export { cache }
+export { cache, resetCache }

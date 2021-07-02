@@ -7,7 +7,7 @@ export default async function ({ blockchain, address, api, method, params }) {
     return fragment.name == method
   })
   let args = fragment.inputs.map((input, index) => {
-    if(Array.isArray(params)) {
+    if (Array.isArray(params)) {
       return params[index]
     } else {
       return params[input.name]

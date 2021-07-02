@@ -120,6 +120,22 @@ The number passed to `cache` is the amount of ms the cache should stay valid (it
 
 If nothing or `0` is passed to `cache`, the call is not cached at all
 
+### resetCache
+
+Make sure you reset cache between your tests to prevent cached states affect others tests:
+
+```javascript
+import { call, resetCache } from 'depay-blockchain-call'
+
+describe('resetCache', ()=>{
+
+  beforeEach(resetCache)
+
+  //...
+
+})
+```
+
 ## Development
 
 ### Get started
