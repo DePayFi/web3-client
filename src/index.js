@@ -1,5 +1,5 @@
-import call from './call'
+import request from './request'
 import provider from './provider'
 import { resetCache } from './cache'
 
-export { call, provider, resetCache }
+export { request, provider, resetCache }

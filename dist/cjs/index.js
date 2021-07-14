@@ -70,9 +70,9 @@ async function ethereumProvider () {
   account = newAccount;
 
   if (account) {
-    provider = new ethers__default['default'].providers.Web3Provider(window.ethereum);
+    provider = await new ethers__default['default'].providers.Web3Provider(window.ethereum);
   } else {
-    provider = new ethers__default['default'].providers.JsonRpcProvider(
+    provider = await new ethers__default['default'].providers.JsonRpcProvider(
       ['https://mainnet.infu', 'ra.io/v3/9aa3d95b3bc440fa8', '8ea12eaa4456161'].join(''),
     );
   }
@@ -80,8 +80,8 @@ async function ethereumProvider () {
   return provider
 }
 
-async function callEthereum ({ blockchain, address, api, method, params }) {
-  let contract = new ethers__default['default'].Contract(address, api, await ethereumProvider());
+let contractCall = ({ address, api, method, params, provider }) => {
+  let contract = new ethers__default['default'].Contract(address, api, provider);
   let fragment = contract.interface.fragments.find((fragment) => {
     return fragment.name == method
   });
@@ -92,18 +92,38 @@ async function callEthereum ({ blockchain, address, api, method, params }) {
       return params[input.name]
     }
   });
+  return contract[method](...args)
+};
 
-  return await contract[method](...args)
-}
+let balance = ({ address, provider }) => {
+  return provider.getBalance(address)
+};
 
-let call = async function ({ blockchain, address, api, method, params, cache: cache$1 = 0 }) {
+var requestEthereum = async ({ address, api, method, params }) => {
+  let provider = await ethereumProvider();
+
+  if (api) {
+    return contractCall({ address, api, method, params, provider })
+  } else if (method === 'balance') {
+    return balance({ address, provider })
+  }
+};
+
+let parseUrl = (url) => {
+  let deconstructed = url.match(/(?<blockchain>\w+):\/\/(?<address>[\w\d]+)\/(?<method>[\w\d]+)/);
+  return deconstructed.groups
+};
+
+let request = async function (url, options) {
+  let { blockchain, address, method } = parseUrl(url);
+  let { api, params, cache: cache$1 } = options || {};
   return await cache({
-    expires: cache$1,
+    expires: cache$1 || 0,
     key: [blockchain, address, method, params],
     call: () => {
       switch (blockchain) {
         case 'ethereum':
-          return callEthereum({ blockchain, address, api, method, params })
+          return requestEthereum({ address, api, method, params })
 
         default:
           throw 'Unknown blockchain: ' + blockchain
@@ -112,26 +132,15 @@ let call = async function ({ blockchain, address, api, method, params, cache: ca
   })
 };
 
-function call$1 (args) {
-  if (!Array.isArray(args)) {
-    // single request
-    return call(args)
-  } else {
-    // parallel requests
-    return Promise.all(args.map((arg) => call(arg)))
-  }
-}
-
 async function provider$1 (blockchain) {
   switch (blockchain) {
     case 'ethereum':
       return await ethereumProvider()
-
     default:
       throw 'Unknown blockchain: ' + blockchain
   }
 }
 
-exports.call = call$1;
 exports.provider = provider$1;
+exports.request = request;
 exports.resetCache = resetCache;

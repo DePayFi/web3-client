@@ -1,34 +1,29 @@
-import commonjs from '@rollup/plugin-commonjs';
+import commonjs from '@rollup/plugin-commonjs'
 import del from 'rollup-plugin-delete'
-import pkg from './package.json';
-import replace from '@rollup/plugin-replace';
-import resolve from '@rollup/plugin-node-resolve';
-import sucrase from '@rollup/plugin-sucrase';
-import { nodeResolve } from '@rollup/plugin-node-resolve';
+import globals from './rollup.globals.js'
+import pkg from './package.json'
+import replace from '@rollup/plugin-replace'
+import resolve from '@rollup/plugin-node-resolve'
+import sucrase from '@rollup/plugin-sucrase'
+import { nodeResolve } from '@rollup/plugin-node-resolve'
 
 export default {
   input: 'src/index.js',
   output: [
     {
       format: 'cjs',
-      globals: {
-        'ethers': 'ethers'
-      },
+      globals: globals,
       file: 'dist/cjs/index.js'
     },
     {
       format: 'es',
-      globals: {
-        'ethers': 'ethers'
-      },
+      globals: globals,
       file: 'dist/es/index.js'
     },
     {
       format: 'umd',
-      globals: {
-        'ethers': 'ethers'
-      },
       name: pkg.moduleName,
+      globals: globals,
       file: 'dist/umd/index.js'
     },
   ],

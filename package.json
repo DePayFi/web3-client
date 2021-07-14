@@ -1,8 +1,8 @@
 {
-  "name": "depay-blockchain-call",
-  "moduleName": "BlockchainCall",
-  "version": "1.3.0",
-  "description": "",
+  "name": "depay-blockchain-client",
+  "moduleName": "BlockchainClient",
+  "version": "2.0.0",
+  "description": "A client to fetch blockchain data by either using the connected wallet or falling back to e.g. RPC.",
   "main": "dist/cjs/index.js",
   "module": "dist/es/index.js",
   "source": "src/index.js",
@@ -10,16 +10,16 @@
     "dist"
   ],
   "scripts": {
-    "build": "rm -rf dist && rollup -c",
+    "build": "rm -rf dist && rollup -c rollup.module.config.js",
     "lint": "eslint \"src/**/*.{js,jsx,ts,tsx}\"",
     "lint:fix": "eslint \"src/**/*.{js,jsx,ts,tsx}\" --fix",
     "format": "prettier src --write",
     "prepublishOnly": "yarn build",
-    "start": "rollup -c rollup.demo.config.js -w",
+    "dev": "rollup -c rollup.dev.config.js -w",
     "test:units": "yarn build && npx jest --no-cache",
     "test": "yarn test:units"
   },
-  "repository": "git@github.com:DePayFi/depay-blockchain-call.git",
+  "repository": "git@github.com:DePayFi/depay-blockchain-client.git",
   "keywords": [
     "react",
     "dialog"
@@ -27,9 +27,9 @@
   "author": "depay.fi",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/DePayFi/depay-blockchain-call/issues"
+    "url": "https://github.com/DePayFi/depay-blockchain-client/issues"
   },
-  "homepage": "https://github.com/DePayFi/depay-blockchain-call#readme",
+  "homepage": "https://github.com/DePayFi/depay-blockchain-client#readme",
   "private": false,
   "dependencies": {
     "ethers": "^5.3.1"
@@ -50,7 +50,7 @@
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
     "cypress": "^6.2.1",
-    "depay-web3mock": "^2.0.1",
+    "depay-web3mock": "^4.3.0",
     "eslint": "^7.15.0",
     "eslint-config-prettier": "^7.0.0",
     "eslint-loader": "^4.0.2",

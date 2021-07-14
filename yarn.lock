@@ -2963,10 +2963,10 @@ delayed-stream@~1.0.0:
   resolved "https://registry.yarnpkg.com/delayed-stream/-/delayed-stream-1.0.0.tgz#df3ae199acadfb7d440aaae0b29e2272b24ec619"
   integrity sha1-3zrhmayt+31ECqrgsp4icrJOxhk=
 
-depay-web3mock@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/depay-web3mock/-/depay-web3mock-2.0.1.tgz#d41a4af513108adfa496d9fddbdbd2f38123a4a9"
-  integrity sha512-6oO37vfsn6Y/+TalGSyT7vi+D7cAs2CZ70aWIfmXL2d9sSTE6pWJ4ME3yQrr+ld9ki5YT+6QdNmiFiB1p1FhAw==
+depay-web3mock@^4.3.0:
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/depay-web3mock/-/depay-web3mock-4.3.0.tgz#52fa18ae8489831846243ec0c24c2c2d1f48f705"
+  integrity sha512-0RbmlXh8IcZt6Qp9ZXxjPbFaQS6s2aNE4+CYMXYbHQ4txZcoAgt8B/KBxcrnh2H103tpx/Jv7mUebcag3AHyCQ==
   dependencies:
     ethers "^5.4.0"
 

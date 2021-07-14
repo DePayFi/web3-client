@@ -18,9 +18,9 @@ export default async function () {
   account = newAccount
 
   if (account) {
-    provider = new ethers.providers.Web3Provider(window.ethereum)
+    provider = await new ethers.providers.Web3Provider(window.ethereum)
   } else {
-    provider = new ethers.providers.JsonRpcProvider(
+    provider = await new ethers.providers.JsonRpcProvider(
       ['https://mainnet.infu', 'ra.io/v3/9aa3d95b3bc440fa8', '8ea12eaa4456161'].join(''),
     )
   }
