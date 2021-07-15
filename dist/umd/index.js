@@ -8,21 +8,31 @@
 
   var ethers__default = /*#__PURE__*/_interopDefaultLegacy(ethers);
 
-  function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }let cacheStore = {};
+  function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }let getWindow = () => {
+    if (typeof global == 'object') return global
+    return window
+  };
+
+  let getCacheStore = () => {
+    if (getWindow()._cacheStore == undefined) {
+      resetCache();
+    }
+    return getWindow()._cacheStore
+  };
 
   let resetCache = () => {
-    cacheStore = {};
+    getWindow()._cacheStore = {};
   };
 
   let set = function ({ key, value, expires }) {
-    cacheStore[key] = {
+    getCacheStore()[key] = {
       expiresAt: Date.now() + expires,
       value,
     };
   };
 
   let get = function ({ key, expires }) {
-    let cachedEntry = cacheStore[key];
+    let cachedEntry = getCacheStore()[key];
     if (_optionalChain([cachedEntry, 'optionalAccess', _ => _.expiresAt]) > Date.now()) {
       return cachedEntry.value
     }
