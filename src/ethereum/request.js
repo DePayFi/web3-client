@@ -1,5 +1,5 @@
 import ethereumProvider from './provider'
-import ethers from 'ethers'
+import { ethers } from 'ethers'
 import { paramsToContractArgs } from './contract'
 
 let contractCall = ({ address, api, method, params, provider }) => {

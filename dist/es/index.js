@@ -1,4 +1,4 @@
-import ethers, { ethers as ethers$1 } from 'ethers';
+import { ethers } from 'ethers';
 import { getWallet } from 'depay-crypto-wallets';
 
 function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }let getWindow = () => {
@@ -146,10 +146,10 @@ let estimate = async ({ address, method, api, params, value }) => {
     throw 'No wallet connected!'
   }
 
-  let provider = new ethers$1.providers.Web3Provider(window.ethereum);
+  let provider = new ethers.providers.Web3Provider(window.ethereum);
   let signer = provider.getSigner();
 
-  let contract = new ethers$1.Contract(address, api, provider);
+  let contract = new ethers.Contract(address, api, provider);
   let args = paramsToContractArgs({ contract, method, params });
   return contract.connect(signer).estimateGas[method](...args)
 };

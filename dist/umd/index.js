@@ -4,10 +4,6 @@
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.BlockchainClient = {}, global.ethers, global.CryptoWallets));
 }(this, (function (exports, ethers, depayCryptoWallets) { 'use strict';
 
-  function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
-
-  var ethers__default = /*#__PURE__*/_interopDefaultLegacy(ethers);
-
   function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }let getWindow = () => {
     if (typeof global == 'object') return global
     return window
@@ -77,9 +73,9 @@
     account = newAccount;
 
     if (account) {
-      provider = await new ethers__default['default'].providers.Web3Provider(window.ethereum);
+      provider = await new ethers.ethers.providers.Web3Provider(window.ethereum);
     } else {
-      provider = await new ethers__default['default'].providers.JsonRpcProvider(
+      provider = await new ethers.ethers.providers.JsonRpcProvider(
         ['https://mainnet.infu', 'ra.io/v3/9aa3d95b3bc440fa8', '8ea12eaa4456161'].join(''),
       );
     }
@@ -102,7 +98,7 @@
   };
 
   let contractCall = ({ address, api, method, params, provider }) => {
-    let contract = new ethers__default['default'].Contract(address, api, provider);
+    let contract = new ethers.ethers.Contract(address, api, provider);
     let args = paramsToContractArgs({ contract, method, params });
     return contract[method](...args)
   };

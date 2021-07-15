@@ -1,4 +1,4 @@
-import ethers from 'ethers'
+import { ethers } from 'ethers'
 import { getWallet } from 'depay-crypto-wallets'
 
 let account, provider
