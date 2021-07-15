@@ -143,6 +143,20 @@ let cost = await estimate('ethereum://0xae60aC8e69414C2Dc362D0e6a03af643d1D85b92
 
 Instead of a BigNumber estimating the cost of the transaction, `estimate` rejects the promise in case the transaction is not possible to be executed.
 
+## URL
+
+You can either use a URL like `<blockchain>://<address>/<method>` that gets deconstructed internally or you pass a deconstructed object directly:
+
+```javascript
+request('ethereum://0x7a250d5630b4cf539739df2c5dacb4c659f2488d/getAmountsOut', options)
+```
+
+or
+
+```javascript
+request({ blockchain: 'ethereum', address: '0x7a250d5630b4cf539739df2c5dacb4c659f2488d', method: 'getAmountsOut'}, options)
+```
+
 ## Development
 
 ### Get started
