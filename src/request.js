@@ -1,10 +1,6 @@
 import { cache as cacheRequest } from './cache'
 import requestEthereum from './ethereum/request'
-
-let parseUrl = (url) => {
-  let deconstructed = url.match(/(?<blockchain>\w+):\/\/(?<address>[\w\d]+)\/(?<method>[\w\d]+)/)
-  return deconstructed.groups
-}
+import parseUrl from './parseUrl'
 
 let request = async function (url, options) {
   let { blockchain, address, method } = parseUrl(url)

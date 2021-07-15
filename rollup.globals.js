@@ -1,3 +1,4 @@
 export default {
-  'ethers': 'ethers'
+  'ethers': 'ethers',
+  'depay-crypto-wallets': 'CryptoWallets',
 }

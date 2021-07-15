@@ -1,8 +1,8 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('ethers')) :
-  typeof define === 'function' && define.amd ? define(['exports', 'ethers'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.BlockchainClient = {}, global.ethers));
-}(this, (function (exports, ethers) { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('ethers'), require('depay-crypto-wallets')) :
+  typeof define === 'function' && define.amd ? define(['exports', 'ethers', 'depay-crypto-wallets'], factory) :
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.BlockchainClient = {}, global.ethers, global.CryptoWallets));
+}(this, (function (exports, ethers, depayCryptoWallets) { 'use strict';
 
   function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -58,10 +58,7 @@
     let newAccount;
 
     if (_optionalChain$1([window, 'optionalAccess', _ => _.ethereum])) {
-      let accounts = await window.ethereum.request({ method: 'eth_accounts' });
-      if (accounts instanceof Array) {
-        newAccount = accounts[0];
-      }
+      newAccount = await depayCryptoWallets.getWallet().account();
     }
 
     if (provider && newAccount === account) {
@@ -80,18 +77,23 @@
     return provider
   }
 
-  let contractCall = ({ address, api, method, params, provider }) => {
-    let contract = new ethers__default['default'].Contract(address, api, provider);
+  let paramsToContractArgs = ({ contract, method, params }) => {
     let fragment = contract.interface.fragments.find((fragment) => {
       return fragment.name == method
     });
-    let args = fragment.inputs.map((input, index) => {
+
+    return fragment.inputs.map((input, index) => {
       if (Array.isArray(params)) {
         return params[index]
       } else {
         return params[input.name]
       }
-    });
+    })
+  };
+
+  let contractCall = ({ address, api, method, params, provider }) => {
+    let contract = new ethers__default['default'].Contract(address, api, provider);
+    let args = paramsToContractArgs({ contract, method, params });
     return contract[method](...args)
   };
 
@@ -109,7 +111,7 @@
     }
   };
 
-  let parseUrl = (url) => {
+  var parseUrl = (url) => {
     let deconstructed = url.match(/(?<blockchain>\w+):\/\/(?<address>[\w\d]+)\/(?<method>[\w\d]+)/);
     return deconstructed.groups
   };
@@ -132,6 +134,32 @@
     })
   };
 
+  let estimate = async ({ address, method, api, params, value }) => {
+    let account = await depayCryptoWallets.getWallet().account();
+    if (!account) {
+      throw 'No wallet connected!'
+    }
+
+    let provider = new ethers.ethers.providers.Web3Provider(window.ethereum);
+    let signer = provider.getSigner();
+
+    let contract = new ethers.ethers.Contract(address, api, provider);
+    let args = paramsToContractArgs({ contract, method, params });
+    return contract.connect(signer).estimateGas[method](...args)
+  };
+
+  let request$1 = async function (url, options) {
+    let { blockchain, address, method } = parseUrl(url);
+    let { api, params, value } = options || {};
+    switch (blockchain) {
+      case 'ethereum':
+        return estimate({ address, method, api, params, value })
+
+      default:
+        throw 'Unknown blockchain: ' + blockchain
+    }
+  };
+
   async function provider$1 (blockchain) {
     switch (blockchain) {
       case 'ethereum':
@@ -141,6 +169,7 @@
     }
   }
 
+  exports.estimate = request$1;
   exports.provider = provider$1;
   exports.request = request;
   exports.resetCache = resetCache;

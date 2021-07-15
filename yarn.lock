@@ -2963,10 +2963,22 @@ delayed-stream@~1.0.0:
   resolved "https://registry.yarnpkg.com/delayed-stream/-/delayed-stream-1.0.0.tgz#df3ae199acadfb7d440aaae0b29e2272b24ec619"
   integrity sha1-3zrhmayt+31ECqrgsp4icrJOxhk=
 
-depay-web3mock@^4.3.0:
-  version "4.3.0"
-  resolved "https://registry.yarnpkg.com/depay-web3mock/-/depay-web3mock-4.3.0.tgz#52fa18ae8489831846243ec0c24c2c2d1f48f705"
-  integrity sha512-0RbmlXh8IcZt6Qp9ZXxjPbFaQS6s2aNE4+CYMXYbHQ4txZcoAgt8B/KBxcrnh2H103tpx/Jv7mUebcag3AHyCQ==
+depay-blockchains@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/depay-blockchains/-/depay-blockchains-1.0.1.tgz#2a53bdf7f9852a7ee2d87528d944d0d83eb72399"
+  integrity sha512-70H27HcsU9kbSKqdS+spzap6mpTZ+CUrj6w24BF66cKNFlqvxhR+CMQ+ijNyO39843a+2Thy0wDonfCNa/tpjQ==
+
+depay-crypto-wallets@^2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/depay-crypto-wallets/-/depay-crypto-wallets-2.4.0.tgz#56a33e5640dc941946489264161f775649c18696"
+  integrity sha512-c6b6EvlK41Atrf2fjgh0uuiBBSoWZTObfxWwoCu884x75ai/mZgua4z2HcW1jp+DJpavHcCce0zC0xZ0bA6WVQ==
+  dependencies:
+    depay-blockchains "^1.0.1"
+
+depay-web3mock@^4.4.0:
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/depay-web3mock/-/depay-web3mock-4.4.0.tgz#80fa77307e3d3be4d5eabaa8325847e2f5335af8"
+  integrity sha512-ExFMpgtSI/w1n+wJxzBqRE8yp/tDRQyMhjwn06K6y3tuuBLTMJCQt+4IOKTCh81AHeIe0+blQg78pT55Wkr2kQ==
   dependencies:
     ethers "^5.4.0"
 

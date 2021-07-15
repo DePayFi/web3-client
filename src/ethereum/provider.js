@@ -1,4 +1,5 @@
 import ethers from 'ethers'
+import { getWallet } from 'depay-crypto-wallets'
 
 let account, provider
 
@@ -6,10 +7,7 @@ export default async function () {
   let newAccount
 
   if (window?.ethereum) {
-    let accounts = await window.ethereum.request({ method: 'eth_accounts' })
-    if (accounts instanceof Array) {
-      newAccount = accounts[0]
-    }
+    newAccount = await getWallet().account()
   }
 
   if (provider && newAccount === account) {

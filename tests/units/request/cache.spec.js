@@ -2,7 +2,7 @@ import { request, resetCache } from 'dist/cjs/index.js'
 import { ethers } from 'ethers'
 import { mock, resetMocks } from 'depay-web3mock'
 
-describe('cache', () => {
+describe('request cache', () => {
 
   beforeEach(resetMocks)
   afterEach(resetMocks)

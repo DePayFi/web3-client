@@ -1,18 +1,10 @@
 import ethereumProvider from './provider'
 import ethers from 'ethers'
+import { paramsToContractArgs } from './contract'
 
 let contractCall = ({ address, api, method, params, provider }) => {
   let contract = new ethers.Contract(address, api, provider)
-  let fragment = contract.interface.fragments.find((fragment) => {
-    return fragment.name == method
-  })
-  let args = fragment.inputs.map((input, index) => {
-    if (Array.isArray(params)) {
-      return params[index]
-    } else {
-      return params[input.name]
-    }
-  })
+  let args = paramsToContractArgs({ contract, method, params })
   return contract[method](...args)
 }
 

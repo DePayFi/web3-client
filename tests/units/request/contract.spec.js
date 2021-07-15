@@ -1,4 +1,3 @@
-import https from 'https'
 import { request, provider } from 'dist/cjs/index.js'
 import { ethers } from 'ethers'
 import { mock, resetMocks } from 'depay-web3mock'

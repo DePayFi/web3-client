@@ -2,7 +2,7 @@ import { ethers } from 'ethers'
 import { mock, resetMocks } from 'depay-web3mock'
 import { provider } from 'dist/cjs/index.js'
 
-describe('provider', () => {
+describe('request provider', () => {
 
   beforeEach(resetMocks)
   afterEach(resetMocks)
