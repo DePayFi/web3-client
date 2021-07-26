@@ -1,5 +1,5 @@
 import { ethers } from 'ethers'
-import { getWallet } from 'depay-crypto-wallets'
+import { getWallet } from 'depay-web3-wallets'
 
 let account, provider
 

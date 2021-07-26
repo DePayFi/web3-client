@@ -1,10 +1,8 @@
-
-(function(l, r) { if (l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (window.location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(window.document);
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('ethers'), require('depay-crypto-wallets')) :
-  typeof define === 'function' && define.amd ? define(['exports', 'ethers', 'depay-crypto-wallets'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.BlockchainClient = {}, global.ethers, global.CryptoWallets));
-}(this, (function (exports, ethers, depayCryptoWallets) { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('ethers'), require('depay-web3-wallets')) :
+  typeof define === 'function' && define.amd ? define(['exports', 'ethers', 'depay-web3-wallets'], factory) :
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.Web3Client = {}, global.ethers, global.Web3Wallets));
+}(this, (function (exports, ethers, depayWeb3Wallets) { 'use strict';
 
   function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }let getWindow = () => {
     if (typeof global == 'object') return global
@@ -66,7 +64,7 @@
     let newAccount;
 
     if (_optionalChain$1([window, 'optionalAccess', _ => _.ethereum])) {
-      newAccount = await depayCryptoWallets.getWallet().account();
+      newAccount = await depayWeb3Wallets.getWallet().account();
     }
 
     if (provider && newAccount === account) {
@@ -109,14 +107,62 @@
     return provider.getBalance(address)
   };
 
-  var requestEthereum = async ({ address, api, method, params }) => {
-    let provider = await ethereumProvider();
-
+  var request = async ({ provider, address, api, method, params }) => {
     if (api) {
       return contractCall({ address, api, method, params, provider })
     } else if (method === 'balance') {
       return balance({ address, provider })
     }
+  };
+
+  var requestEthereum = async ({ address, api, method, params }) => {
+    let provider = await ethereumProvider();
+
+    return request({
+      provider,
+      address,
+      api,
+      method,
+      params
+    })
+  };
+
+  function _optionalChain$2(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
+  let account$1, provider$1;
+
+  async function bscProvider () {
+    let newAccount;
+
+    if (_optionalChain$2([window, 'optionalAccess', _ => _.ethereum])) {
+      newAccount = await depayWeb3Wallets.getWallet().account();
+    }
+
+    if (provider$1 && newAccount === account$1) {
+      return provider$1
+    }
+    account$1 = newAccount;
+
+    if (account$1) {
+      provider$1 = await new ethers.ethers.providers.Web3Provider(window.ethereum);
+    } else {
+      provider$1 = await new ethers.ethers.providers.JsonRpcProvider(
+        'https://bsc-dataseed.binance.org'
+      );
+    }
+
+    return provider$1
+  }
+
+  var requestBsc = async ({ address, api, method, params }) => {
+    let provider = await bscProvider();
+
+    return request({
+      provider,
+      address,
+      api,
+      method,
+      params
+    })
   };
 
   var parseUrl = (url) => {
@@ -127,7 +173,7 @@
     return deconstructed.groups
   };
 
-  let request = async function (url, options) {
+  let request$1 = async function (url, options) {
     let { blockchain, address, method } = parseUrl(url);
     let { api, params, cache: cache$1 } = options || {};
     return await cache({
@@ -135,8 +181,12 @@
       key: [blockchain, address, method, params],
       call: () => {
         switch (blockchain) {
+
           case 'ethereum':
             return requestEthereum({ address, api, method, params })
+
+          case 'bsc':
+            return requestBsc({ address, api, method, params })
 
           default:
             throw 'Unknown blockchain: ' + blockchain
@@ -145,13 +195,13 @@
     })
   };
 
-  let estimate = async ({ address, method, api, params, value }) => {
-    let account = await depayCryptoWallets.getWallet().account();
+  let estimate = async ({ externalProvider, address, method, api, params, value }) => {
+    let account = await depayWeb3Wallets.getWallet().account();
     if (!account) {
       throw 'No wallet connected!'
     }
 
-    let provider = new ethers.ethers.providers.Web3Provider(window.ethereum);
+    let provider = new ethers.ethers.providers.Web3Provider(externalProvider);
     let signer = provider.getSigner();
 
     let contract = new ethers.ethers.Contract(address, api, provider);
@@ -159,30 +209,61 @@
     return contract.connect(signer).estimateGas[method](...args)
   };
 
-  let request$1 = async function (url, options) {
+  var estimateEthereum = async ({ address, method, api, params, value }) => {
+    return estimate({
+      externalProvider: window.ethereum,
+      address,
+      method,
+      api,
+      params,
+      value
+    })
+  };
+
+  var estimateBsc = async ({ address, method, api, params, value }) => {
+    return estimate({
+      externalProvider: window.ethereum,
+      address,
+      method,
+      api,
+      params,
+      value
+    })
+  };
+
+  let request$2 = async function (url, options) {
     let { blockchain, address, method } = parseUrl(url);
     let { api, params, value } = options || {};
     switch (blockchain) {
+      
       case 'ethereum':
-        return estimate({ address, method, api, params, value })
+        return estimateEthereum({ address, method, api, params, value })
+
+      case 'bsc':
+        return estimateBsc({ address, method, api, params, value })
 
       default:
         throw 'Unknown blockchain: ' + blockchain
     }
   };
 
-  async function provider$1 (blockchain) {
+  async function provider$2 (blockchain) {
     switch (blockchain) {
+      
       case 'ethereum':
         return await ethereumProvider()
+
+      case 'bsc':
+        return await bscProvider()
+      
       default:
         throw 'Unknown blockchain: ' + blockchain
     }
   }
 
-  exports.estimate = request$1;
-  exports.provider = provider$1;
-  exports.request = request;
+  exports.estimate = request$2;
+  exports.provider = provider$2;
+  exports.request = request$1;
   exports.resetCache = resetCache;
 
   Object.defineProperty(exports, '__esModule', { value: true });

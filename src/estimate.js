@@ -1,12 +1,18 @@
-import estimateEthereum from './ethereum/estimate'
+import estimateEthereum from './blockchains/ethereum/estimate'
+import estimateBsc from './blockchains/bsc/estimate'
 import parseUrl from './parseUrl'
 
 let request = async function (url, options) {
   let { blockchain, address, method } = parseUrl(url)
   let { api, params, value } = options || {}
   switch (blockchain) {
+    
     case 'ethereum':
       return estimateEthereum({ address, method, api, params, value })
+      break
+
+    case 'bsc':
+      return estimateBsc({ address, method, api, params, value })
       break
 
     default:

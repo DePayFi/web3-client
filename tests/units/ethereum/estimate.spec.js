@@ -1,14 +1,14 @@
-import { mock, resetMocks } from 'depay-web3mock'
-import { estimate } from 'dist/cjs/index.js'
+import { mock, resetMocks } from 'depay-web3-mock'
+import { estimate } from 'src/'
 
-describe('estimate transactions', () => {
+describe('estimate transactions on ethereum', () => {
 
   beforeEach(resetMocks)
   afterEach(resetMocks)
   
   let api = [{"inputs":[{"internalType":"address","name":"_configuration","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[],"name":"ETH","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"configuration","outputs":[{"internalType":"contract DePayRouterV1Configuration","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"pluginAddress","type":"address"}],"name":"isApproved","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"uint256[]","name":"amounts","type":"uint256[]"},{"internalType":"address[]","name":"addresses","type":"address[]"},{"internalType":"address[]","name":"plugins","type":"address[]"},{"internalType":"string[]","name":"data","type":"string[]"}],"name":"route","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"address","name":"token","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"withdraw","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"stateMutability":"payable","type":"receive"}]
   
-  it('allows you to estimate transactions', async ()=> {
+  it('allows you to estimate transactions on ethereum', async ()=> {
 
     let estimationMock = mock({
       blockchain: 'ethereum',
@@ -42,7 +42,7 @@ describe('estimate transactions', () => {
     expect(cost.toString()).toEqual('123333')
   });
 
-  it('rejects the promise in case the transaction is not possible with a reason', async ()=> {
+  it('rejects the promise in case the transaction is not possible with a reason on ethereum', async ()=> {
 
     mock({
       blockchain: 'ethereum',
@@ -76,7 +76,7 @@ describe('estimate transactions', () => {
     ).rejects.toEqual(new Error('Transaction not possible!'))
   })
 
-  it('rejects the promise in case no wallet is connected', async ()=> {
+  it('rejects the promise in case no wallet is connected on ethereum', async ()=> {
     await expect(
       estimate('ethereum://0xae60aC8e69414C2Dc362D0e6a03af643d1D85b92/route', {
         api,
@@ -92,7 +92,7 @@ describe('estimate transactions', () => {
     ).rejects.toEqual('No wallet connected!')
   })
 
-  it('allows you to estimate transactions also with deconstructed URL', async ()=> {
+  it('allows you to estimate transactions also with deconstructed URL on ethereum', async ()=> {
 
     let estimationMock = mock({
       blockchain: 'ethereum',

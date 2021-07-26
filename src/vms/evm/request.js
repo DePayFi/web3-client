@@ -1,4 +1,3 @@
-import ethereumProvider from './provider'
 import { ethers } from 'ethers'
 import { paramsToContractArgs } from './contract'
 
@@ -12,9 +11,7 @@ let balance = ({ address, provider }) => {
   return provider.getBalance(address)
 }
 
-export default async ({ address, api, method, params }) => {
-  let provider = await ethereumProvider()
-
+export default async ({ provider, address, api, method, params }) => {
   if (api) {
     return contractCall({ address, api, method, params, provider })
   } else if (method === 'balance') {

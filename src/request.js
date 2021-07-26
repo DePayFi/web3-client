@@ -1,5 +1,6 @@
 import { cache as cacheRequest } from './cache'
-import requestEthereum from './ethereum/request'
+import requestEthereum from './blockchains/ethereum/request'
+import requestBsc from './blockchains/bsc/request'
 import parseUrl from './parseUrl'
 
 let request = async function (url, options) {
@@ -10,8 +11,13 @@ let request = async function (url, options) {
     key: [blockchain, address, method, params],
     call: () => {
       switch (blockchain) {
+
         case 'ethereum':
           return requestEthereum({ address, api, method, params })
+          break
+
+        case 'bsc':
+          return requestBsc({ address, api, method, params })
           break
 
         default:

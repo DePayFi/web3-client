@@ -1,14 +1,14 @@
 import { ethers } from 'ethers'
-import { getWallet } from 'depay-crypto-wallets'
+import { getWallet } from 'depay-web3-wallets'
 import { paramsToContractArgs } from './contract'
 
-let estimate = async ({ address, method, api, params, value }) => {
+let estimate = async ({ externalProvider, address, method, api, params, value }) => {
   let account = await getWallet().account()
   if (!account) {
     throw 'No wallet connected!'
   }
 
-  let provider = new ethers.providers.Web3Provider(window.ethereum)
+  let provider = new ethers.providers.Web3Provider(externalProvider)
   let signer = provider.getSigner()
 
   let contract = new ethers.Contract(address, api, provider)
