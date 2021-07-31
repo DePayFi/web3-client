@@ -1,8 +1,8 @@
 {
   "name": "depay-web3-client",
   "moduleName": "Web3Client",
-  "version": "3.0.1",
-  "description": "A web3 client to fetch blockchain data by either using the connected wallet or falling back to RPC.",
+  "version": "3.0.2",
+  "description": "A web3 client to fetch blockchain data just like we are used to with http clients.",
   "main": "dist/cjs/index.js",
   "module": "dist/es/index.js",
   "source": "src/index.js",
