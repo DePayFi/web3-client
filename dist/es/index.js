@@ -55,10 +55,10 @@ let cache = async function ({ call, key, expires = 0 }) {
 };
 
 async function ethereumProvider () {
-  
-  let account = await getWallet().account();
+  let wallet = getWallet();
+  let account = await wallet.account();
 
-  if (account) {
+  if (account && await wallet.connectedTo('ethereum')) {
     return await new ethers.providers.Web3Provider(window.ethereum)
   } else {
     return await new ethers.providers.JsonRpcProvider(
@@ -112,10 +112,10 @@ var requestEthereum = async ({ address, api, method, params }) => {
 };
 
 async function bscProvider () {
-  
-  let account = await getWallet().account();
+  let wallet = getWallet();
+  let account = await wallet.account();
 
-  if (account) {
+  if (account && await wallet.connectedTo('bsc')) {
     return await new ethers.providers.Web3Provider(window.ethereum)
   } else {
     return await new ethers.providers.JsonRpcProvider(

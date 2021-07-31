@@ -58,10 +58,10 @@
   };
 
   async function ethereumProvider () {
-    
-    let account = await depayWeb3Wallets.getWallet().account();
+    let wallet = depayWeb3Wallets.getWallet();
+    let account = await wallet.account();
 
-    if (account) {
+    if (account && await wallet.connectedTo('ethereum')) {
       return await new ethers.ethers.providers.Web3Provider(window.ethereum)
     } else {
       return await new ethers.ethers.providers.JsonRpcProvider(
@@ -115,10 +115,10 @@
   };
 
   async function bscProvider () {
-    
-    let account = await depayWeb3Wallets.getWallet().account();
+    let wallet = depayWeb3Wallets.getWallet();
+    let account = await wallet.account();
 
-    if (account) {
+    if (account && await wallet.connectedTo('bsc')) {
       return await new ethers.ethers.providers.Web3Provider(window.ethereum)
     } else {
       return await new ethers.ethers.providers.JsonRpcProvider(
