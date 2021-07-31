@@ -54,30 +54,17 @@ let cache = async function ({ call, key, expires = 0 }) {
   return value
 };
 
-function _optionalChain$1(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
-let account, provider;
-
 async function ethereumProvider () {
-  let newAccount;
-
-  if (_optionalChain$1([window, 'optionalAccess', _ => _.ethereum])) {
-    newAccount = await getWallet().account();
-  }
-
-  if (provider && newAccount === account) {
-    return provider
-  }
-  account = newAccount;
+  
+  let account = await getWallet().account();
 
   if (account) {
-    provider = await new ethers.providers.Web3Provider(window.ethereum);
+    return await new ethers.providers.Web3Provider(window.ethereum)
   } else {
-    provider = await new ethers.providers.JsonRpcProvider(
+    return await new ethers.providers.JsonRpcProvider(
       ['https://mainnet.infu', 'ra.io/v3/9aa3d95b3bc440fa8', '8ea12eaa4456161'].join(''),
-    );
+    )
   }
-
-  return provider
 }
 
 let paramsToContractArgs = ({ contract, method, params }) => {
@@ -124,30 +111,17 @@ var requestEthereum = async ({ address, api, method, params }) => {
   })
 };
 
-function _optionalChain$2(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
-let account$1, provider$1;
-
 async function bscProvider () {
-  let newAccount;
+  
+  let account = await getWallet().account();
 
-  if (_optionalChain$2([window, 'optionalAccess', _ => _.ethereum])) {
-    newAccount = await getWallet().account();
-  }
-
-  if (provider$1 && newAccount === account$1) {
-    return provider$1
-  }
-  account$1 = newAccount;
-
-  if (account$1) {
-    provider$1 = await new ethers.providers.Web3Provider(window.ethereum);
+  if (account) {
+    return await new ethers.providers.Web3Provider(window.ethereum)
   } else {
-    provider$1 = await new ethers.providers.JsonRpcProvider(
+    return await new ethers.providers.JsonRpcProvider(
       'https://bsc-dataseed.binance.org'
-    );
+    )
   }
-
-  return provider$1
 }
 
 var requestBsc = async ({ address, api, method, params }) => {
@@ -244,7 +218,7 @@ let request$2 = async function (url, options) {
   }
 };
 
-async function provider$2 (blockchain) {
+async function provider (blockchain) {
   switch (blockchain) {
     
     case 'ethereum':
@@ -258,4 +232,4 @@ async function provider$2 (blockchain) {
   }
 }
 
-export { request$2 as estimate, provider$2 as provider, request$1 as request, resetCache };
+export { request$2 as estimate, provider, request$1 as request, resetCache };
