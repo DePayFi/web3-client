@@ -1,14 +1,3 @@
-Stop relying on a connected wallet when fetching data for dApps.
-
-This JavaScript library abstracts requests made to blockchains by either:
-
-- using the connected wallet RPC (if the wallet is actually connected)
-- fallback to an official RPC in case no wallet is connected
-
-This allows you e.g. to fetch and display blockchain data in your Apps without any connected wallet
-and potentially hand off actual transactions to another device (e.g. mobile) and postpone the requirement to actually
-connect a wallet until it's necessary (e.g. to sign a transaction).
-
 ## Quickstart
 
 ```
