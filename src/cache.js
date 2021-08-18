@@ -62,13 +62,23 @@ let cache = function ({ call, key, expires = 0 }) {
 
     setPromise({ key, promise: new Promise((resolveQueue, rejectQueue)=>{
       if (expires === 0) {
-        return resolveQueue(resolve(call()))
+        return call()
+          .then((value)=>{
+            resolve(value)
+            resolveQueue(value)
+          })
+          .catch((error)=>{
+            reject(error)
+            rejectQueue(error)
+          })
       }
       
       // get cached value
       value = get({ key, expires })
       if (value) {
-        return resolveQueue(resolve(value))
+        resolve(value)
+        resolveQueue(value)
+        return value
       }
 
       // set new cache value
@@ -77,10 +87,12 @@ let cache = function ({ call, key, expires = 0 }) {
           if (value) {
             set({ key, value, expires })
           }
-          resolveQueue(resolve(value))
+          resolve(value)
+          resolveQueue(value)
         })
         .catch((error)=>{
-          rejectQueue(reject(error))
+          reject(error)
+          rejectQueue(error)
         })
       })
     }).then(()=>{

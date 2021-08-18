@@ -1,6 +1,7 @@
 import { request, resetCache } from 'src/'
 import { ethers } from 'ethers'
 import { mock, resetMocks } from 'depay-web3-mock'
+import { Token } from 'depay-web3-tokens'
 
 describe('request cache on bsc', () => {
 
@@ -53,6 +54,33 @@ describe('request cache on bsc', () => {
     await new Promise((r) => setTimeout(r, 1000))
     await doRequestWithCache()    
     expect(callMock).toHaveBeenCalledTimes(2)
+  })
+
+  it('serves responses made in parallel for various requests correctly on bsc', async ()=> {
+
+    let decimalMock1 = mock({ blockchain: 'bsc', call: { to: '0x6b175474e89094c44da98b954eedeac495271d0f', api: Token['bsc'].DEFAULT, method: 'decimals', return: '18' } })
+    let decimalMock2 = mock({ blockchain: 'bsc', call: { to: '0xdac17f958d2ee523a2206206994597c13d831ec7', api: Token['bsc'].DEFAULT, method: 'decimals', return: '6' } })
+    let decimalMock3 = mock({ blockchain: 'bsc', call: { to: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb', api: Token['bsc'].DEFAULT, method: 'decimals', return: '18' } })
+    let decimalMock4 = mock({ blockchain: 'bsc', call: { to: '0x3ab100442484dc2414aa75b2952a0a6f03f8abfd', api: Token['bsc'].DEFAULT, method: 'decimals', return: '8' } })
+
+    let decimals = await Promise.all([
+      request({ blockchain: 'bsc', address: '0x6b175474e89094c44da98b954eedeac495271d0f', method: 'decimals' },{ api: Token['bsc'].DEFAULT, cache: 86400000 }),
+      request({ blockchain: 'bsc', address: '0xdac17f958d2ee523a2206206994597c13d831ec7', method: 'decimals' },{ api: Token['bsc'].DEFAULT, cache: 86400000 }),
+      request({ blockchain: 'bsc', address: '0x6b175474e89094c44da98b954eedeac495271d0f', method: 'decimals' },{ api: Token['bsc'].DEFAULT, cache: 86400000 }),
+      request({ blockchain: 'bsc', address: '0xdac17f958d2ee523a2206206994597c13d831ec7', method: 'decimals' },{ api: Token['bsc'].DEFAULT, cache: 86400000 }),
+      request({ blockchain: 'bsc', address: '0x6b175474e89094c44da98b954eedeac495271d0f', method: 'decimals' },{ api: Token['bsc'].DEFAULT, cache: 86400000 }),
+      request({ blockchain: 'bsc', address: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb', method: 'decimals' },{ api: Token['bsc'].DEFAULT, cache: 86400000 }),
+      request({ blockchain: 'bsc', address: '0x3ab100442484dc2414aa75b2952a0a6f03f8abfd', method: 'decimals' },{ api: Token['bsc'].DEFAULT, cache: 86400000 }),
+      request({ blockchain: 'bsc', address: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb', method: 'decimals' },{ api: Token['bsc'].DEFAULT, cache: 86400000 }),
+      request({ blockchain: 'bsc', address: '0x3ab100442484dc2414aa75b2952a0a6f03f8abfd', method: 'decimals' },{ api: Token['bsc'].DEFAULT, cache: 86400000 }),
+    ])
+
+    expect(decimals).toEqual([18, 6, 18, 6, 18, 18, 8, 18, 8])
+
+    expect(decimalMock1).toHaveBeenCalledTimes(1)
+    expect(decimalMock2).toHaveBeenCalledTimes(1)
+    expect(decimalMock3).toHaveBeenCalledTimes(1)
+    expect(decimalMock4).toHaveBeenCalledTimes(1)
   })
   
   it('it caches results until they expire on bsc', async ()=> {

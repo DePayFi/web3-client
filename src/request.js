@@ -6,6 +6,7 @@ import parseUrl from './parseUrl'
 let request = async function (url, options) {
   let { blockchain, address, method } = parseUrl(url)
   let { api, params, cache } = options || {}
+  if(!['ethereum', 'bsc'].includes(blockchain)) { throw 'Unknown blockchain: ' + blockchain }
   let result = await cacheRequest({
     expires: cache || 0,
     key: [blockchain, address, method, params],
@@ -19,9 +20,7 @@ let request = async function (url, options) {
         case 'bsc':
           return requestBsc({ address, api, method, params })
           break
-
-        default:
-          throw 'Unknown blockchain: ' + blockchain
+          
       }
     },
   })

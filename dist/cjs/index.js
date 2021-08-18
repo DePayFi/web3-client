@@ -69,13 +69,23 @@ let cache = function ({ call, key, expires = 0 }) {
 
     setPromise({ key, promise: new Promise((resolveQueue, rejectQueue)=>{
       if (expires === 0) {
-        return resolveQueue(resolve(call()))
+        return call()
+          .then((value)=>{
+            resolve(value);
+            resolveQueue(value);
+          })
+          .catch((error)=>{
+            reject(error);
+            rejectQueue(error);
+          })
       }
       
       // get cached value
       value = get({ key, expires });
       if (value) {
-        return resolveQueue(resolve(value))
+        resolve(value);
+        resolveQueue(value);
+        return value
       }
 
       // set new cache value
@@ -84,10 +94,12 @@ let cache = function ({ call, key, expires = 0 }) {
           if (value) {
             set({ key, value, expires });
           }
-          resolveQueue(resolve(value));
+          resolve(value);
+          resolveQueue(value);
         })
         .catch((error)=>{
-          rejectQueue(reject(error));
+          reject(error);
+          rejectQueue(error);
         });
       })
     }).then(()=>{
@@ -191,6 +203,7 @@ var parseUrl = (url) => {
 let request$1 = async function (url, options) {
   let { blockchain, address, method } = parseUrl(url);
   let { api, params, cache: cache$1 } = options || {};
+  if(!['ethereum', 'bsc'].includes(blockchain)) { throw 'Unknown blockchain: ' + blockchain }
   let result = await cache({
     expires: cache$1 || 0,
     key: [blockchain, address, method, params],
@@ -202,9 +215,7 @@ let request$1 = async function (url, options) {
 
         case 'bsc':
           return requestBsc({ address, api, method, params })
-
-        default:
-          throw 'Unknown blockchain: ' + blockchain
+          
       }
     },
   });
