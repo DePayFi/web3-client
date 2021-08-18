@@ -6,7 +6,7 @@ import parseUrl from './parseUrl'
 let request = async function (url, options) {
   let { blockchain, address, method } = parseUrl(url)
   let { api, params, cache } = options || {}
-  return await cacheRequest({
+  let result = await cacheRequest({
     expires: cache || 0,
     key: [blockchain, address, method, params],
     call: () => {
@@ -25,6 +25,7 @@ let request = async function (url, options) {
       }
     },
   })
+  return result
 }
 
 export default request

@@ -80,7 +80,9 @@ request('ethereum://0x5Af489c8786A018EC4814194dC8048be1007e390/balance').then((b
 
 #### cache
 
-The `cache` attribute of any request allows you to cache requests:
+`depay-web3-client` caches indentical, pending requests/responses and serves them from the same response via queued promises.
+
+The `cache` attribute of any request allows you to configure caching for those requests:
 
 ```javascript
 let getAmountsOut = ()=>request('ethereum://0x7a250d5630b4cf539739df2c5dacb4c659f2488d/getAmountsOut', {

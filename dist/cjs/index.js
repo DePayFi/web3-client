@@ -17,8 +17,16 @@ let getCacheStore = () => {
   return getWindow()._cacheStore
 };
 
+let getPromiseStore = () => {
+  if (getWindow()._promiseStore == undefined) {
+    resetCache();
+  }
+  return getWindow()._promiseStore
+};
+
 let resetCache = () => {
   getWindow()._cacheStore = {};
+  getWindow()._promiseStore = {};
 };
 
 let set = function ({ key, value, expires }) {
@@ -35,27 +43,57 @@ let get = function ({ key, expires }) {
   }
 };
 
-let cache = async function ({ call, key, expires = 0 }) {
-  if (expires === 0) {
-    return call()
-  }
+let getPromise = function({ key }) {
+  return getPromiseStore()[key]
+};
 
-  let value;
-  key = JSON.stringify(key);
+let setPromise = function({ key, promise }) {
+  getPromiseStore()[key] = promise;
+  return promise
+};
 
-  // get cached value
-  value = get({ key, expires });
-  if (value) {
-    return value
-  }
+let deletePromise = function({ key }) {
+  getPromiseStore()[key] = undefined; 
+};
 
-  // set new cache value
-  value = await call();
-  if (value) {
-    set({ key, value, expires });
-  }
+let cache = function ({ call, key, expires = 0 }) {
+  return new Promise((resolve, reject)=>{
+    let value;
+    key = JSON.stringify(key);
+    
+    // get existing promise (of a previous pending request asking for the exact same thing)
+    let existingPromise = getPromise({ key });
+    if(existingPromise) { return existingPromise.then((value)=>{
+      return resolve(value)
+    }) }
 
-  return value
+    setPromise({ key, promise: new Promise((resolveQueue, rejectQueue)=>{
+      if (expires === 0) {
+        return resolveQueue(resolve(call()))
+      }
+      
+      // get cached value
+      value = get({ key, expires });
+      if (value) {
+        return resolveQueue(resolve(value))
+      }
+
+      // set new cache value
+      call()
+        .then((value)=>{
+          if (value) {
+            set({ key, value, expires });
+          }
+          resolveQueue(resolve(value));
+        })
+        .catch((error)=>{
+          rejectQueue(reject(error));
+        });
+      })
+    }).then(()=>{
+      deletePromise({ key });
+    });
+  })
 };
 
 async function ethereumProvider () {
@@ -151,7 +189,7 @@ var parseUrl = (url) => {
 let request$1 = async function (url, options) {
   let { blockchain, address, method } = parseUrl(url);
   let { api, params, cache: cache$1 } = options || {};
-  return await cache({
+  let result = await cache({
     expires: cache$1 || 0,
     key: [blockchain, address, method, params],
     call: () => {
@@ -167,7 +205,8 @@ let request$1 = async function (url, options) {
           throw 'Unknown blockchain: ' + blockchain
       }
     },
-  })
+  });
+  return result
 };
 
 let estimate = async ({ externalProvider, address, method, api, params, value }) => {
