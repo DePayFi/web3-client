@@ -9,7 +9,7 @@ let request = async function (url, options) {
   let result = await cacheRequest({
     expires: cache || 0,
     key: [blockchain, address, method, params],
-    call: () => {
+    call: async () => {
       switch (blockchain) {
 
         case 'ethereum':

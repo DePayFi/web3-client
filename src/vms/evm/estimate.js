@@ -3,7 +3,7 @@ import { getWallet } from 'depay-web3-wallets'
 import { paramsToContractArgs } from './contract'
 
 let estimate = async ({ externalProvider, address, method, api, params, value }) => {
-  let account = await getWallet().account()
+  let account = await getWallet()?.account()
   if (!account) {
     throw 'No wallet connected!'
   }

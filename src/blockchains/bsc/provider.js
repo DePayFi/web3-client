@@ -3,7 +3,7 @@ import { getWallet } from 'depay-web3-wallets'
 
 export default async function () {
   let wallet = getWallet()
-  let account = await wallet.account()
+  let account = wallet?.account()
 
   if (account && await wallet.connectedTo('bsc')) {
     return await new ethers.providers.Web3Provider(window.ethereum)

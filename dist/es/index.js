@@ -92,9 +92,10 @@ let cache = function ({ call, key, expires = 0 }) {
   })
 };
 
+function _optionalChain$1(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 async function ethereumProvider () {
   let wallet = getWallet();
-  let account = await wallet.account();
+  let account = _optionalChain$1([wallet, 'optionalAccess', _ => _.account, 'call', _2 => _2()]);
 
   if (account && await wallet.connectedTo('ethereum')) {
     return await new ethers.providers.Web3Provider(window.ethereum)
@@ -149,9 +150,10 @@ var requestEthereum = async ({ address, api, method, params }) => {
   })
 };
 
+function _optionalChain$2(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 async function bscProvider () {
   let wallet = getWallet();
-  let account = await wallet.account();
+  let account = _optionalChain$2([wallet, 'optionalAccess', _ => _.account, 'call', _2 => _2()]);
 
   if (account && await wallet.connectedTo('bsc')) {
     return await new ethers.providers.Web3Provider(window.ethereum)
@@ -188,7 +190,7 @@ let request$1 = async function (url, options) {
   let result = await cache({
     expires: cache$1 || 0,
     key: [blockchain, address, method, params],
-    call: () => {
+    call: async () => {
       switch (blockchain) {
 
         case 'ethereum':
@@ -205,8 +207,9 @@ let request$1 = async function (url, options) {
   return result
 };
 
+function _optionalChain$3(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 let estimate = async ({ externalProvider, address, method, api, params, value }) => {
-  let account = await getWallet().account();
+  let account = await _optionalChain$3([getWallet, 'call', _ => _(), 'optionalAccess', _2 => _2.account, 'call', _3 => _3()]);
   if (!account) {
     throw 'No wallet connected!'
   }
