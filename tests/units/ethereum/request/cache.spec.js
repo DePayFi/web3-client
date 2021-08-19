@@ -82,6 +82,17 @@ describe('request cache on ethereum', () => {
     expect(decimalMock3).toHaveBeenCalledTimes(1)
     expect(decimalMock4).toHaveBeenCalledTimes(1)
   })
+
+  it('serves responses correctly even if some of them fail', async ()=>{
+
+    let decimalMock1 = mock({ blockchain: 'ethereum', call: { to: '0x6b175474e89094c44da98b954eedeac495271d0f', api: Token['ethereum'].DEFAULT, method: 'decimals', return: Error('something went wrong') } })
+    let decimalMock2 = mock({ blockchain: 'ethereum', call: { to: '0xdac17f958d2ee523a2206206994597c13d831ec7', api: Token['ethereum'].DEFAULT, method: 'decimals', return: '6' } })
+
+    request({ blockchain: 'ethereum', address: '0x6b175474e89094c44da98b954eedeac495271d0f', method: 'decimals' },{ api: Token['ethereum'].DEFAULT, cache: 86400000 })
+      .then(()=>{})
+      .catch(()=>{})
+    await request({ blockchain: 'ethereum', address: '0xdac17f958d2ee523a2206206994597c13d831ec7', method: 'decimals' },{ api: Token['ethereum'].DEFAULT, cache: 86400000 })
+  })
   
   it('it caches results until they expire on ethereum', async ()=> {
 

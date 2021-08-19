@@ -62,9 +62,11 @@
       
       // get existing promise (of a previous pending request asking for the exact same thing)
       let existingPromise = getPromise({ key });
-      if(existingPromise) { return existingPromise.then((value)=>{
-        return resolve(value)
-      }) }
+      if(existingPromise) { 
+        return existingPromise
+          .then(resolve)
+          .catch(reject)
+      }
 
       setPromise({ key, promise: new Promise((resolveQueue, rejectQueue)=>{
         if (expires === 0) {
@@ -102,6 +104,8 @@
           });
         })
       }).then(()=>{
+        deletePromise({ key });
+      }).catch(()=>{
         deletePromise({ key });
       });
     })
