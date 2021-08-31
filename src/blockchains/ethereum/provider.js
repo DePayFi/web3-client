@@ -5,7 +5,7 @@ export default async function () {
   let wallet = getWallet()
   let account = wallet?.account()
 
-  if (account && await wallet.connectedTo('ethereum')) {
+  if (await account && await wallet.connectedTo('ethereum')) {
     return await new ethers.providers.Web3Provider(window.ethereum)
   } else {
     return await new ethers.providers.JsonRpcProvider(

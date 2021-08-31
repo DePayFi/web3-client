@@ -117,7 +117,7 @@ async function ethereumProvider () {
   let wallet = depayWeb3Wallets.getWallet();
   let account = _optionalChain$2([wallet, 'optionalAccess', _ => _.account, 'call', _2 => _2()]);
 
-  if (account && await wallet.connectedTo('ethereum')) {
+  if (await account && await wallet.connectedTo('ethereum')) {
     return await new ethers.ethers.providers.Web3Provider(window.ethereum)
   } else {
     return await new ethers.ethers.providers.JsonRpcProvider(
@@ -175,7 +175,7 @@ async function bscProvider () {
   let wallet = depayWeb3Wallets.getWallet();
   let account = _optionalChain$1([wallet, 'optionalAccess', _ => _.account, 'call', _2 => _2()]);
 
-  if (account && await wallet.connectedTo('bsc')) {
+  if (await account && await wallet.connectedTo('bsc')) {
     return await new ethers.ethers.providers.Web3Provider(window.ethereum)
   } else {
     return await new ethers.ethers.providers.JsonRpcProvider(
