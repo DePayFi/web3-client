@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import { getWallet } from 'depay-web3-wallets';
 
-function _optionalChain$3(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }let getWindow = () => {
+function _optionalChain$1(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }let getWindow = () => {
   if (typeof global == 'object') return global
   return window
 };
@@ -34,7 +34,7 @@ let set = function ({ key, value, expires }) {
 
 let get = function ({ key, expires }) {
   let cachedEntry = getCacheStore()[key];
-  if (_optionalChain$3([cachedEntry, 'optionalAccess', _ => _.expiresAt]) > Date.now()) {
+  if (_optionalChain$1([cachedEntry, 'optionalAccess', _ => _.expiresAt]) > Date.now()) {
     return cachedEntry.value
   }
 };
@@ -108,18 +108,17 @@ let cache = function ({ call, key, expires = 0 }) {
   })
 };
 
-function _optionalChain$2(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
-async function ethereumProvider () {
-  let wallet = getWallet();
-  let account = _optionalChain$2([wallet, 'optionalAccess', _ => _.account, 'call', _2 => _2()]);
+let provider$2;
 
-  if (await account && await wallet.connectedTo('ethereum')) {
-    return await new ethers.providers.Web3Provider(window.ethereum)
-  } else {
-    return await new ethers.providers.JsonRpcProvider(
-      ['https://mainnet.infu', 'ra.io/v3/9aa3d95b3bc440fa8', '8ea12eaa4456161'].join(''),
-    )
-  }
+async function ethereumProvider () {
+
+  if(provider$2) { return provider$2 }
+
+  provider$2 = await new ethers.providers.JsonRpcBatchProvider(
+    ['https://mainnet.infu', 'ra.io/v3/9aa3d95b3bc440fa8', '8ea12eaa4456161'].join(''),
+  );
+
+  return provider$2
 }
 
 let paramsToContractArgs = ({ contract, method, params }) => {
@@ -166,18 +165,17 @@ var requestEthereum = async ({ address, api, method, params }) => {
   })
 };
 
-function _optionalChain$1(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
-async function bscProvider () {
-  let wallet = getWallet();
-  let account = _optionalChain$1([wallet, 'optionalAccess', _ => _.account, 'call', _2 => _2()]);
+let provider$1;
 
-  if (await account && await wallet.connectedTo('bsc')) {
-    return await new ethers.providers.Web3Provider(window.ethereum)
-  } else {
-    return await new ethers.providers.JsonRpcProvider(
-      'https://bsc-dataseed.binance.org'
-    )
-  }
+async function bscProvider () {
+
+  if(provider$1) { return provider$1 }
+
+  provider$1 = await new ethers.providers.JsonRpcBatchProvider(
+    'https://bsc-dataseed.binance.org'
+  );
+
+  return provider$1
 }
 
 var requestBsc = async ({ address, api, method, params }) => {

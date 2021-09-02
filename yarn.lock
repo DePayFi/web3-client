@@ -2253,17 +2253,17 @@ depay-web3-constants@^3.0.1:
   resolved "https://registry.yarnpkg.com/depay-web3-constants/-/depay-web3-constants-3.0.1.tgz#c8979b063de9b875eb7692e8d93b0c9da80232b9"
   integrity sha512-bRHj8mLnXuPWORZ6eE/2qKry3C9k7W7z4EHPKc5cruTJuBLnhN/zqmZWo/3nbEMaqd6n2tI/ObwW6bzA+E4rlg==
 
-depay-web3-mock@^5.9.0:
-  version "5.9.1"
-  resolved "https://registry.yarnpkg.com/depay-web3-mock/-/depay-web3-mock-5.9.1.tgz#30cd84953c882aef33e937dff11de5540f993c64"
-  integrity sha512-/6iX/jg1asajwthXlAugK3l8RATRllr98ND0Rbx7B6WgMCI5pv7cjDj0kmimG6lSrkoeOzVRzsr2uG/vafbWWQ==
+depay-web3-mock@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/depay-web3-mock/-/depay-web3-mock-7.0.0.tgz#d7ceb1261bb4832ea88283f65000612ffe61235d"
+  integrity sha512-h/O9mFgQT1Z/M31PTx76CgJVuBJlQ+nINx874hf0PefFjriA1cPbwKsQ2K8HTR2RssZvsHWRYFaJWdK1YZNpew==
 
 depay-web3-tokens@^3.0.5:
   version "3.0.5"
   resolved "https://registry.yarnpkg.com/depay-web3-tokens/-/depay-web3-tokens-3.0.5.tgz#1723104b520f649c641d3e8bd17331abd47c308a"
   integrity sha512-9UlWuT56zsIJZouh7Jk5/xv9CCH9eN+cPM4+zIWVVP4ZKBbIOn0ijS0+/3cachu3iM550u/dWktrUNDNsdc4hw==
 
-depay-web3-wallets@^5.1.0:
+depay-web3-wallets@^5.1.1:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/depay-web3-wallets/-/depay-web3-wallets-5.1.1.tgz#1befa5c85b41d5d68f67a8c733f9918cc8ee6012"
   integrity sha512-bWoIWlulInLsKUIwhbVVylX8tpYU3q0FW3sMwvrlL+ZioAsPCB2ZzpzOBMGiODvO6X82Jixpv+49V9oTPc0SjQ==

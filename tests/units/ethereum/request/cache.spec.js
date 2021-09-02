@@ -1,10 +1,12 @@
 import { ethers } from 'ethers'
 import { mock, resetMocks } from 'depay-web3-mock'
-import { request, resetCache } from 'src/'
+import { request, resetCache, provider as getProvider } from 'src/'
 import { Token } from 'depay-web3-tokens'
 
 describe('request cache on ethereum', () => {
 
+  let provider
+  beforeEach(async ()=>{ provider = await getProvider('ethereum') })
   beforeEach(resetMocks)
   beforeEach(resetCache)
   afterEach(resetMocks)
@@ -34,6 +36,7 @@ describe('request cache on ethereum', () => {
 
   let mockCall = function(){
     return mock({
+      provider,
       blockchain: 'ethereum',
       call: {
         to: '0x7a250d5630b4cf539739df2c5dacb4c659f2488d',
@@ -58,10 +61,10 @@ describe('request cache on ethereum', () => {
 
   it('serves responses made in parallel for various requests correctly on ethereum', async ()=> {
 
-    let decimalMock1 = mock({ blockchain: 'ethereum', call: { to: '0x6b175474e89094c44da98b954eedeac495271d0f', api: Token['ethereum'].DEFAULT, method: 'decimals', return: '18' } })
-    let decimalMock2 = mock({ blockchain: 'ethereum', call: { to: '0xdac17f958d2ee523a2206206994597c13d831ec7', api: Token['ethereum'].DEFAULT, method: 'decimals', return: '6' } })
-    let decimalMock3 = mock({ blockchain: 'ethereum', call: { to: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb', api: Token['ethereum'].DEFAULT, method: 'decimals', return: '18' } })
-    let decimalMock4 = mock({ blockchain: 'ethereum', call: { to: '0x3ab100442484dc2414aa75b2952a0a6f03f8abfd', api: Token['ethereum'].DEFAULT, method: 'decimals', return: '8' } })
+    let decimalMock1 = mock({ provider, blockchain: 'ethereum', call: { to: '0x6b175474e89094c44da98b954eedeac495271d0f', api: Token['ethereum'].DEFAULT, method: 'decimals', return: '18' } })
+    let decimalMock2 = mock({ provider, blockchain: 'ethereum', call: { to: '0xdac17f958d2ee523a2206206994597c13d831ec7', api: Token['ethereum'].DEFAULT, method: 'decimals', return: '6' } })
+    let decimalMock3 = mock({ provider, blockchain: 'ethereum', call: { to: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb', api: Token['ethereum'].DEFAULT, method: 'decimals', return: '18' } })
+    let decimalMock4 = mock({ provider, blockchain: 'ethereum', call: { to: '0x3ab100442484dc2414aa75b2952a0a6f03f8abfd', api: Token['ethereum'].DEFAULT, method: 'decimals', return: '8' } })
 
     let decimals = await Promise.all([
       request({ blockchain: 'ethereum', address: '0x6b175474e89094c44da98b954eedeac495271d0f', method: 'decimals' },{ api: Token['ethereum'].DEFAULT, cache: 86400000 }),
@@ -85,8 +88,8 @@ describe('request cache on ethereum', () => {
 
   it('serves responses correctly even if some of them fail', async ()=>{
 
-    let decimalMock1 = mock({ blockchain: 'ethereum', call: { to: '0x6b175474e89094c44da98b954eedeac495271d0f', api: Token['ethereum'].DEFAULT, method: 'decimals', return: Error('something went wrong') } })
-    let decimalMock2 = mock({ blockchain: 'ethereum', call: { to: '0xdac17f958d2ee523a2206206994597c13d831ec7', api: Token['ethereum'].DEFAULT, method: 'decimals', return: '6' } })
+    let decimalMock1 = mock({ provider, blockchain: 'ethereum', call: { to: '0x6b175474e89094c44da98b954eedeac495271d0f', api: Token['ethereum'].DEFAULT, method: 'decimals', return: Error('something went wrong') } })
+    let decimalMock2 = mock({ provider, blockchain: 'ethereum', call: { to: '0xdac17f958d2ee523a2206206994597c13d831ec7', api: Token['ethereum'].DEFAULT, method: 'decimals', return: '6' } })
 
     request({ blockchain: 'ethereum', address: '0x6b175474e89094c44da98b954eedeac495271d0f', method: 'decimals' },{ api: Token['ethereum'].DEFAULT, cache: 86400000 })
       .then(()=>{})
