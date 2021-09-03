@@ -118,6 +118,22 @@ describe('resetCache', ()=>{
 })
 ```
 
+#### provider
+
+In order to mock requests with [depay-web3-mock](https://github.com/DePayFi/depay-web3-mock) you need to fetch `depay-web3-client` provider and pass it to `depay-web3-mock`:
+
+```javascript
+import { provider } from 'depay-web3-client'
+import { mock } from 'depay-web3-mock'
+
+mock({
+  provider: provider('ethereum'),
+  blockchain: 'ethereum'
+})
+
+// ...
+```
+
 ### estimate
 
 Allows you to estimate transactions before they happen to determine if they are possible and how much they will cost:

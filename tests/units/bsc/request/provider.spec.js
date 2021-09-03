@@ -7,10 +7,10 @@ describe('request provider on bsc', () => {
   beforeEach(resetMocks)
   afterEach(resetMocks)
   
-  it('provides an JsonRpcBatchProvider per default on bsc', async ()=> {
+  it('provides an StaticJsonRpcBatchProvider per default on bsc', async ()=> {
     let selectedProvider = await provider('bsc');
     expect(
-      !!Object.getPrototypeOf(selectedProvider).constructor.toString().match('JsonRpcBatchProvider')
+      !!Object.getPrototypeOf(selectedProvider).constructor.toString().match('StaticJsonRpcBatchProvider')
     ).toEqual(true)
   });
 

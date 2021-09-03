@@ -1,18 +1,16 @@
-import { request, provider as getProvider } from 'src/'
+import { request, provider } from 'src/'
 import { ethers } from 'ethers'
 import { mock, resetMocks } from 'depay-web3-mock'
 
 describe('request balance on bsc', () => {
 
-  let provider
-  beforeEach(async()=>{ provider = await getProvider('bsc') })
   beforeEach(resetMocks)
   afterEach(resetMocks)
   
   it('should request account balance on bsc', async ()=> {
 
     mock({
-      provider,
+      provider: provider('bsc'),
       blockchain: 'bsc',
       balance: {
         for: '0x7a250d5630b4cf539739df2c5dacb4c659f2488d',
@@ -27,7 +25,7 @@ describe('request balance on bsc', () => {
   it('allows to request account balance also with deconstructed URL on bsc', async ()=> {
 
     mock({
-      provider,
+      provider: provider('bsc'),
       blockchain: 'bsc',
       balance: {
         for: '0x7a250d5630b4cf539739df2c5dacb4c659f2488d',

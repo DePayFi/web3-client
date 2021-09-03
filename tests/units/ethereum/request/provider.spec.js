@@ -7,10 +7,10 @@ describe('request provider on ethereum', () => {
   beforeEach(resetMocks)
   afterEach(resetMocks)
   
-  it('provides an JsonRpcBatchProvider per default on ethereum', async ()=> {
+  it('provides an StaticJsonRpcBatchProvider per default on ethereum', async ()=> {
     let selectedProvider = await provider('ethereum');
     expect(
-      !!Object.getPrototypeOf(selectedProvider).constructor.toString().match('JsonRpcBatchProvider')
+      !!Object.getPrototypeOf(selectedProvider).constructor.toString().match('StaticJsonRpcBatchProvider')
     ).toEqual(true)
   });
 });

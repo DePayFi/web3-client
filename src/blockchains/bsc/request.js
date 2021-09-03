@@ -2,7 +2,7 @@ import bscProvider from './provider'
 import request from '../../vms/evm/request'
 
 export default async ({ address, api, method, params }) => {
-  let provider = await bscProvider()
+  let provider = bscProvider()
 
   return request({
     provider,

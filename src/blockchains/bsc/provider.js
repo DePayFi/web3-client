@@ -1,14 +1,13 @@
-import { ethers } from 'ethers'
+import { StaticJsonRpcBatchProvider } from '../../ethers/providers'
 
 let provider
-let promise
 
-export default async function () {
+export default function () {
 
   if(provider) { return provider }
 
-  provider = await new ethers.providers.JsonRpcBatchProvider(
-    'https://bsc-dataseed.binance.org'
+  provider = new StaticJsonRpcBatchProvider(
+    'https://bsc-dataseed.binance.org', 'bsc'
   )
 
   return provider

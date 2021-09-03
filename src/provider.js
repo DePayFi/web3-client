@@ -1,15 +1,15 @@
 import ethereumProvider from './blockchains/ethereum/provider'
 import bscProvider from './blockchains/bsc/provider'
 
-export default async function (blockchain) {
+export default function (blockchain) {
   switch (blockchain) {
     
     case 'ethereum':
-      return await ethereumProvider()
+      return ethereumProvider()
       break
 
     case 'bsc':
-      return await bscProvider()
+      return bscProvider()
       break
     
     default:
