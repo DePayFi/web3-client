@@ -2,13 +2,23 @@ import { StaticJsonRpcBatchProvider } from '../../ethers/providers'
 
 let provider
 
-export default function () {
+const getProvider = ()=> {
 
   if(provider) { return provider }
 
-  provider = new StaticJsonRpcBatchProvider(
-    'https://bsc-dataseed.binance.org', 'bsc'
-  )
+  setProvider(['https://bsc-dataseed.binance.org'])
 
   return provider
+}
+
+const setProvider = (endpoints)=> {
+
+  provider = new StaticJsonRpcBatchProvider(
+    endpoints[0], 'bsc'
+  )
+}
+
+export {
+  getProvider,
+  setProvider
 }

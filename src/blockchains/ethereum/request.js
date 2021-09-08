@@ -1,8 +1,8 @@
-import ethereumProvider from './provider'
+import { getProvider } from './provider'
 import request from '../../vms/evm/request'
 
 export default async ({ address, api, method, params }) => {
-  let provider = ethereumProvider()
+  let provider = getProvider()
 
   return request({
     provider,

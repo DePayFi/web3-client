@@ -14,4 +14,9 @@ describe('request provider on bsc', () => {
     ).toEqual(true)
   });
 
+  it('allows to set another provider', async ()=> {
+    setProvider('bsc', ['http://localhost:8545'])
+    let selectedProvider = await provider('bsc')
+    expect(selectedProvider.connection.url).toEqual('http://localhost:8545')
+  });
 });

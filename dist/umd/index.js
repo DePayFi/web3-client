@@ -14241,16 +14241,21 @@
 
   let provider$2;
 
-  function ethereumProvider () {
+  const getProvider$1 = ()=> {
 
     if(provider$2) { return provider$2 }
 
-    provider$2 = new StaticJsonRpcBatchProvider(
-      ['https://mainnet.infu', 'ra.io/v3/9aa3d95b3bc440fa8', '8ea12eaa4456161'].join(''), 'ethereum'
-    );
+    setProvider$2([['https://mainnet.infu', 'ra.io/v3/9aa3d95b3bc440fa8', '8ea12eaa4456161'].join('')]);
 
     return provider$2
-  }
+  };
+
+  const setProvider$2 = (endpoints)=> {
+
+    provider$2 = new StaticJsonRpcBatchProvider(
+      endpoints[0], 'ethereum'
+    );
+  };
 
   let paramsToContractArgs = ({ contract, method, params }) => {
     let fragment = contract.interface.fragments.find((fragment) => {
@@ -14285,7 +14290,7 @@
   };
 
   var requestEthereum = async ({ address, api, method, params }) => {
-    let provider = ethereumProvider();
+    let provider = getProvider$1();
 
     return request$2({
       provider,
@@ -14298,19 +14303,24 @@
 
   let provider$1;
 
-  function bscProvider () {
+  const getProvider = ()=> {
 
     if(provider$1) { return provider$1 }
 
-    provider$1 = new StaticJsonRpcBatchProvider(
-      'https://bsc-dataseed.binance.org', 'bsc'
-    );
+    setProvider$1(['https://bsc-dataseed.binance.org']);
 
     return provider$1
-  }
+  };
+
+  const setProvider$1 = (endpoints)=> {
+
+    provider$1 = new StaticJsonRpcBatchProvider(
+      endpoints[0], 'bsc'
+    );
+  };
 
   var requestBsc = async ({ address, api, method, params }) => {
-    let provider = bscProvider();
+    let provider = getProvider();
 
     return request$2({
       provider,
@@ -14404,24 +14414,41 @@
     }
   };
 
-  function provider (blockchain) {
+  const provider = (blockchain)=>{
+
     switch (blockchain) {
       
       case 'ethereum':
-        return ethereumProvider()
+        return getProvider$1()
 
       case 'bsc':
-        return bscProvider()
+        return getProvider()
       
       default:
         throw 'Unknown blockchain: ' + blockchain
     }
-  }
+  };
+
+  const setProvider = (blockchain, endpoints)=>{
+
+    switch (blockchain) {
+      
+      case 'ethereum':
+        return setProvider$2(endpoints)
+
+      case 'bsc':
+        return setProvider$1(endpoints)
+      
+      default:
+        throw 'Unknown blockchain: ' + blockchain
+    }
+  };
 
   exports.estimate = request;
   exports.provider = provider;
   exports.request = request$1;
   exports.resetCache = resetCache;
+  exports.setProvider = setProvider;
 
   Object.defineProperty(exports, '__esModule', { value: true });
 

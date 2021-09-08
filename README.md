@@ -120,6 +120,22 @@ describe('resetCache', ()=>{
 
 #### provider
 
+##### set providers
+
+In order to set RPC provider endpoints you can use `setProvider`:
+
+```javascript
+import { setProvider } from 'depay-web3-client'
+
+setProvider('ethreum', ['http://localhost:8545'])
+```
+
+Make sure you pass an array of endpoints to setProvider.
+
+Currently we only connect to the first provider of that array, but for future reasons we might introduce RPC endpoint fallbacks eventually.
+
+##### mock providers for testing
+
 In order to mock requests with [depay-web3-mock](https://github.com/DePayFi/depay-web3-mock) you need to fetch `depay-web3-client` provider and pass it to `depay-web3-mock`:
 
 ```javascript
