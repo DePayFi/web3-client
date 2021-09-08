@@ -1,6 +1,6 @@
 import { ethers } from 'ethers'
 import { mock, resetMocks } from 'depay-web3-mock'
-import { provider } from 'src/'
+import { provider, setProvider } from 'src/'
 
 describe('request provider on bsc', () => {
 
