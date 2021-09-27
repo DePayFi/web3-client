@@ -1,6 +1,6 @@
 import { request } from 'src/'
 
-describe('request contract data', () => {
+describe('request', () => {
 
   it('should reject the promise if the given blockchain is unknown', async ()=> {
     await expect(

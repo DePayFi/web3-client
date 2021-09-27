@@ -1,15 +1,15 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('depay-web3-blockchains'), require('buffer'), require('util'), require('ethers'), require('depay-web3-wallets')) :
-  typeof define === 'function' && define.amd ? define(['exports', 'depay-web3-blockchains', 'buffer', 'util', 'ethers', 'depay-web3-wallets'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.Web3Client = {}, global.Web3Blockchains, global.require$$0, global.require$$0$1, global.ethers, global.Web3Wallets));
-}(this, (function (exports, depayWeb3Blockchains, require$$0, require$$0$1, ethers, depayWeb3Wallets) { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('depay-web3-blockchains'), require('buffer'), require('util'), require('ethers')) :
+  typeof define === 'function' && define.amd ? define(['exports', 'depay-web3-blockchains', 'buffer', 'util', 'ethers'], factory) :
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.Web3Client = {}, global.Web3Blockchains, global.require$$0, global.require$$0$1, global.ethers));
+}(this, (function (exports, depayWeb3Blockchains, require$$0, require$$0$1, ethers) { 'use strict';
 
   function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
   var require$$0__default = /*#__PURE__*/_interopDefaultLegacy(require$$0);
   var require$$0__default$1 = /*#__PURE__*/_interopDefaultLegacy(require$$0$1);
 
-  function _optionalChain$1(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }let getWindow = () => {
+  function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }let getWindow = () => {
     if (typeof global == 'object') return global
     return window
   };
@@ -42,7 +42,7 @@
 
   let get = function ({ key, expires }) {
     let cachedEntry = getCacheStore()[key];
-    if (_optionalChain$1([cachedEntry, 'optionalAccess', _ => _.expiresAt]) > Date.now()) {
+    if (_optionalChain([cachedEntry, 'optionalAccess', _ => _.expiresAt]) > Date.now()) {
       return cachedEntry.value
     }
   };
@@ -14281,7 +14281,7 @@
     return provider.getBalance(address)
   };
 
-  var request$2 = async ({ provider, address, api, method, params }) => {
+  var request$1 = async ({ provider, address, api, method, params }) => {
     if (api) {
       return contractCall({ address, api, method, params, provider })
     } else if (method === 'balance') {
@@ -14292,7 +14292,7 @@
   var requestEthereum = async ({ address, api, method, params }) => {
     let provider = getProvider$1();
 
-    return request$2({
+    return request$1({
       provider,
       address,
       api,
@@ -14322,7 +14322,7 @@
   var requestBsc = async ({ address, api, method, params }) => {
     let provider = getProvider();
 
-    return request$2({
+    return request$1({
       provider,
       address,
       api,
@@ -14339,7 +14339,7 @@
     return deconstructed.groups
   };
 
-  let request$1 = async function (url, options) {
+  let request = async function (url, options) {
     let { blockchain, address, method } = parseUrl(url);
     let { api, params, cache: cache$1 } = options || {};
     if(!['ethereum', 'bsc'].includes(blockchain)) { throw 'Unknown blockchain: ' + blockchain }
@@ -14359,59 +14359,6 @@
       },
     });
     return result
-  };
-
-  function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
-  let estimate = async ({ externalProvider, address, method, api, params, value }) => {
-    let account = await _optionalChain([depayWeb3Wallets.getWallet, 'call', _ => _(), 'optionalAccess', _2 => _2.account, 'call', _3 => _3()]);
-    if (!account) {
-      throw 'No wallet connected!'
-    }
-
-    let provider = new ethers.ethers.providers.Web3Provider(externalProvider);
-    let signer = provider.getSigner();
-
-    let contract = new ethers.ethers.Contract(address, api, provider);
-    let args = paramsToContractArgs({ contract, method, params });
-    return contract.connect(signer).estimateGas[method](...args)
-  };
-
-  var estimateEthereum = async ({ address, method, api, params, value }) => {
-    return estimate({
-      externalProvider: window.ethereum,
-      address,
-      method,
-      api,
-      params,
-      value
-    })
-  };
-
-  var estimateBsc = async ({ address, method, api, params, value }) => {
-    return estimate({
-      externalProvider: window.ethereum,
-      address,
-      method,
-      api,
-      params,
-      value
-    })
-  };
-
-  let request = async function (url, options) {
-    let { blockchain, address, method } = parseUrl(url);
-    let { api, params, value } = options || {};
-    switch (blockchain) {
-      
-      case 'ethereum':
-        return estimateEthereum({ address, method, api, params, value })
-
-      case 'bsc':
-        return estimateBsc({ address, method, api, params, value })
-
-      default:
-        throw 'Unknown blockchain: ' + blockchain
-    }
   };
 
   const provider = (blockchain)=>{
@@ -14444,9 +14391,8 @@
     }
   };
 
-  exports.estimate = request;
   exports.provider = provider;
-  exports.request = request$1;
+  exports.request = request;
   exports.resetCache = resetCache;
   exports.setProvider = setProvider;
 
