@@ -1,4 +1,4 @@
-import { Blockchain } from 'depay-web3-blockchains'
+import { Blockchain } from '@depay/web3-blockchains'
 import { deepCopy } from "@ethersproject/properties"
 import { fetchJson } from "@ethersproject/web"
 import { JsonRpcBatchProvider } from '@ethersproject/providers'

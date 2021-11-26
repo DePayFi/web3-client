@@ -1,6 +1,6 @@
 import { request, provider, resetCache } from 'src/'
 import { ethers } from 'ethers'
-import { mock, resetMocks, connect } from 'depay-web3-mock'
+import { mock, resetMocks, connect } from '@depay/web3-mock'
 
 describe('request contract data', () => {
 

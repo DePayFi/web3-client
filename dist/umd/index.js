@@ -1,8 +1,8 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('depay-web3-blockchains'), require('buffer'), require('util'), require('ethers')) :
-  typeof define === 'function' && define.amd ? define(['exports', 'depay-web3-blockchains', 'buffer', 'util', 'ethers'], factory) :
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@depay/web3-blockchains'), require('buffer'), require('util'), require('ethers')) :
+  typeof define === 'function' && define.amd ? define(['exports', '@depay/web3-blockchains', 'buffer', 'util', 'ethers'], factory) :
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.Web3Client = {}, global.Web3Blockchains, global.require$$0, global.require$$0$1, global.ethers));
-}(this, (function (exports, depayWeb3Blockchains, require$$0, require$$0$1, ethers) { 'use strict';
+}(this, (function (exports, web3Blockchains, require$$0, require$$0$1, ethers) { 'use strict';
 
   function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -14167,7 +14167,7 @@
       }
 
       detectNetwork() {
-        return Promise.resolve(depayWeb3Blockchains.Blockchain.findByName(this._network).id)
+        return Promise.resolve(web3Blockchains.Blockchain.findByName(this._network).id)
       }
       
       send(method, params) {

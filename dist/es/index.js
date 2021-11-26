@@ -1,4 +1,4 @@
-import { Blockchain } from 'depay-web3-blockchains';
+import { Blockchain } from '@depay/web3-blockchains';
 import require$$0 from 'buffer';
 import require$$0$1 from 'util';
 import { ethers } from 'ethers';

@@ -1,5 +1,5 @@
 import { ethers } from 'ethers'
-import { mock, resetMocks } from 'depay-web3-mock'
+import { mock, resetMocks } from '@depay/web3-mock'
 import { provider, setProvider, setProviderEndpoints } from 'src/'
 
 describe('provider', () => {

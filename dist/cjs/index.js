@@ -2,7 +2,7 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-var depayWeb3Blockchains = require('depay-web3-blockchains');
+var web3Blockchains = require('@depay/web3-blockchains');
 var require$$0 = require('buffer');
 var require$$0$1 = require('util');
 var ethers = require('ethers');
@@ -14170,7 +14170,7 @@ class StaticJsonRpcBatchProvider extends JsonRpcBatchProvider {
     }
 
     detectNetwork() {
-      return Promise.resolve(depayWeb3Blockchains.Blockchain.findByName(this._network).id)
+      return Promise.resolve(web3Blockchains.Blockchain.findByName(this._network).id)
     }
     
     send(method, params) {

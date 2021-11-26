@@ -1,6 +1,6 @@
 import { request, provider } from 'src/'
 import { ethers } from 'ethers'
-import { mock, resetMocks } from 'depay-web3-mock'
+import { mock, resetMocks } from '@depay/web3-mock'
 
 describe('request balance', () => {
 

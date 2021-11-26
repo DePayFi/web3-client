@@ -147,11 +147,11 @@ setProvider('ethereum', provider)
 
 ##### mock providers for testing
 
-In order to mock requests with [depay-web3-mock](https://github.com/DePayFi/depay-web3-mock) you need to fetch `@depay/web3-client` provider and pass it to `depay-web3-mock`:
+In order to mock requests with [web3-mock](https://github.com/DePayFi/web3-mock) you need to fetch `@depay/web3-client` provider and pass it to `web3-mock`:
 
 ```javascript
 import { provider } from '@depay/web3-client'
-import { mock } from 'depay-web3-mock'
+import { mock } from '@depay/web3-mock'
 
 mock({
   provider: provider('ethereum'),
