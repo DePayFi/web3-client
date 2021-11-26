@@ -6,19 +6,25 @@ const getProvider = ()=> {
 
   if(provider) { return provider }
 
-  setProvider(['https://bsc-dataseed.binance.org'])
+  setProviderEndpoints(['https://bsc-dataseed.binance.org'])
 
   return provider
 }
 
-const setProvider = (endpoints)=> {
-
-  provider = new StaticJsonRpcBatchProvider(
-    endpoints[0], 'bsc'
+const setProviderEndpoints = (endpoints)=> {
+  setProvider(
+    new StaticJsonRpcBatchProvider(
+      endpoints[0], 'bsc'
+    )
   )
+}
+
+const setProvider = (givenProvider)=> {
+  provider = givenProvider
 }
 
 export {
   getProvider,
-  setProvider
+  setProvider,
+  setProviderEndpoints,
 }

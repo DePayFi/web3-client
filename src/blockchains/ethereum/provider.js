@@ -6,19 +6,25 @@ const getProvider = ()=> {
 
   if(provider) { return provider }
 
-  setProvider([['https://mainnet.infu', 'ra.io/v3/9aa3d95b3bc440fa8', '8ea12eaa4456161'].join('')])
+  setProviderEndpoints([['https://mainnet.infu', 'ra.io/v3/9aa3d95b3bc440fa8', '8ea12eaa4456161'].join('')])
 
   return provider
 }
 
-const setProvider = (endpoints)=> {
-
-  provider = new StaticJsonRpcBatchProvider(
-    endpoints[0], 'ethereum'
+const setProviderEndpoints = (endpoints)=> {
+  setProvider(
+    new StaticJsonRpcBatchProvider(
+      endpoints[0], 'ethereum'
+    )
   )
+}
+
+const setProvider = (givenProvider)=> {
+  provider = givenProvider
 }
 
 export {
   getProvider,
-  setProvider
+  setProvider,
+  setProviderEndpoints,
 }

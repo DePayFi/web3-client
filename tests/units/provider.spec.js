@@ -1,8 +1,8 @@
 import { ethers } from 'ethers'
 import { mock, resetMocks } from 'depay-web3-mock'
-import { provider, setProvider } from 'src/'
+import { provider, setProvider, setProviderEndpoints } from 'src/'
 
-describe('request provider', () => {
+describe('provider', () => {
 
   ['ethereum', 'bsc'].forEach((blockchain)=>{
 
@@ -19,10 +19,19 @@ describe('request provider', () => {
         ).toEqual(true)
       })
 
-      it('allows to set another provider', async ()=> {
-        setProvider('ethereum', ['http://localhost:8545'])
+      it('allows to set provider endpoints', async ()=> {
+        setProviderEndpoints('ethereum', ['http://localhost:8545'])
         let selectedProvider = await provider('ethereum')
         expect(selectedProvider.connection.url).toEqual('http://localhost:8545')
+      })
+
+      it('allows to set an initialized provider', async ()=> {
+        let newProvider = new ethers.providers.JsonRpcProvider('http://localhost:8545', 1)
+        setProvider('ethereum', newProvider)
+        let selectedProvider = await provider('ethereum')
+        expect(selectedProvider.connection.url).toEqual('http://localhost:8545')
+        // reset
+        setProviderEndpoints('ethereum', ['http://localhost:8545'])
       })
     })
   })

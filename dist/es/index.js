@@ -14239,16 +14239,21 @@ const getProvider$1 = ()=> {
 
   if(provider$2) { return provider$2 }
 
-  setProvider$2([['https://mainnet.infu', 'ra.io/v3/9aa3d95b3bc440fa8', '8ea12eaa4456161'].join('')]);
+  setProviderEndpoints$2([['https://mainnet.infu', 'ra.io/v3/9aa3d95b3bc440fa8', '8ea12eaa4456161'].join('')]);
 
   return provider$2
 };
 
-const setProvider$2 = (endpoints)=> {
-
-  provider$2 = new StaticJsonRpcBatchProvider(
-    endpoints[0], 'ethereum'
+const setProviderEndpoints$2 = (endpoints)=> {
+  setProvider$2(
+    new StaticJsonRpcBatchProvider(
+      endpoints[0], 'ethereum'
+    )
   );
+};
+
+const setProvider$2 = (givenProvider)=> {
+  provider$2 = givenProvider;
 };
 
 let paramsToContractArgs = ({ contract, method, params }) => {
@@ -14301,16 +14306,21 @@ const getProvider = ()=> {
 
   if(provider$1) { return provider$1 }
 
-  setProvider$1(['https://bsc-dataseed.binance.org']);
+  setProviderEndpoints$1(['https://bsc-dataseed.binance.org']);
 
   return provider$1
 };
 
-const setProvider$1 = (endpoints)=> {
-
-  provider$1 = new StaticJsonRpcBatchProvider(
-    endpoints[0], 'bsc'
+const setProviderEndpoints$1 = (endpoints)=> {
+  setProvider$1(
+    new StaticJsonRpcBatchProvider(
+      endpoints[0], 'bsc'
+    )
   );
+};
+
+const setProvider$1 = (givenProvider)=> {
+  provider$1 = givenProvider;
 };
 
 var requestBsc = async ({ address, api, method, params }) => {
@@ -14370,19 +14380,34 @@ const provider = (blockchain)=>{
   }
 };
 
-const setProvider = (blockchain, endpoints)=>{
+const setProvider = (blockchain, provider)=>{
 
   switch (blockchain) {
     
     case 'ethereum':
-      return setProvider$2(endpoints)
+      return setProvider$2(provider)
 
     case 'bsc':
-      return setProvider$1(endpoints)
+      return setProvider$1(provider)
     
     default:
       throw 'Unknown blockchain: ' + blockchain
   }
 };
 
-export { provider, request, resetCache, setProvider };
+const setProviderEndpoints = (blockchain, endpoints)=>{
+
+  switch (blockchain) {
+    
+    case 'ethereum':
+      return setProviderEndpoints$2(endpoints)
+
+    case 'bsc':
+      return setProviderEndpoints$1(endpoints)
+    
+    default:
+      throw 'Unknown blockchain: ' + blockchain
+  }
+};
+
+export { provider, request, resetCache, setProvider, setProviderEndpoints };
