@@ -1,5 +1,5 @@
 import request from './request'
-import { provider, setProvider } from './provider'
+import { provider, setProviderEndpoints, setProvider } from './provider'
 import { resetCache } from './cache'
 
-export { request, provider, setProvider, resetCache }
+export { request, provider, setProviderEndpoints, setProvider, resetCache }

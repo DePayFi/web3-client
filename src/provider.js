@@ -1,5 +1,14 @@
-import { getProvider as getEthereumProvider, setProvider as setEthereumProvider } from './blockchains/ethereum/provider'
-import { getProvider as getBscProvider, setProvider as setBscProvider } from './blockchains/bsc/provider'
+import { 
+  getProvider as getEthereumProvider,
+  setProviderEndpoints as setEthereumProviderEndpoints,
+  setProvider as setEthereumProvider
+} from './blockchains/ethereum/provider'
+
+import {
+  getProvider as getBscProvider,
+  setProviderEndpoints as setBscProviderEndpoints,
+  setProvider as setBscProvider,
+} from './blockchains/bsc/provider'
 
 const provider = (blockchain)=>{
 
@@ -18,16 +27,16 @@ const provider = (blockchain)=>{
   }
 }
 
-const setProvider = (blockchain, endpoints)=>{
+const setProvider = (blockchain, provider)=>{
 
   switch (blockchain) {
     
     case 'ethereum':
-      return setEthereumProvider(endpoints)
+      return setEthereumProvider(provider)
       break
 
     case 'bsc':
-      return setBscProvider(endpoints)
+      return setBscProvider(provider)
       break
     
     default:
@@ -35,8 +44,25 @@ const setProvider = (blockchain, endpoints)=>{
   }
 }
 
+const setProviderEndpoints = (blockchain, endpoints)=>{
+
+  switch (blockchain) {
+    
+    case 'ethereum':
+      return setEthereumProviderEndpoints(endpoints)
+      break
+
+    case 'bsc':
+      return setBscProviderEndpoints(endpoints)
+      break
+    
+    default:
+      throw 'Unknown blockchain: ' + blockchain
+  }
+}
 
 export {
   provider,
-  setProvider
+  setProvider,
+  setProviderEndpoints,
 }
