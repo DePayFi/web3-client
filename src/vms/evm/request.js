@@ -14,6 +14,8 @@ let balance = ({ address, provider }) => {
 export default async ({ provider, address, api, method, params }) => {
   if (api) {
     return contractCall({ address, api, method, params, provider })
+  } else if (method === 'latestBlockNumber') {
+    return provider.getBlockNumber()
   } else if (method === 'balance') {
     return balance({ address, provider })
   }

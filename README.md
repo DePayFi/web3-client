@@ -78,6 +78,14 @@ import { request } from '@depay/web3-client'
 request('ethereum://0x5Af489c8786A018EC4814194dC8048be1007e390/balance').then((balance)=>console.log(balance))
 ```
 
+#### request latestBlockNumber
+
+```javascript
+import { request } from '@depay/web3-client'
+
+request('ethereum://latestBlockNumber').then((latestBlockNumber)=>console.log(latestBlockNumber))
+```
+
 #### cache
 
 `@depay/web3-client` caches indentical, pending requests/responses and serves them from the same response via queued promises.

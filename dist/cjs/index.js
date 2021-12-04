@@ -14292,6 +14292,8 @@ let balance = ({ address, provider }) => {
 var request$1 = async ({ provider, address, api, method, params }) => {
   if (api) {
     return contractCall({ address, api, method, params, provider })
+  } else if (method === 'latestBlockNumber') {
+    return provider.getBlockNumber()
   } else if (method === 'balance') {
     return balance({ address, provider })
   }
@@ -14348,8 +14350,20 @@ var parseUrl = (url) => {
   if (typeof url == 'object') {
     return url
   }
-  let deconstructed = url.match(/(?<blockchain>\w+):\/\/(?<address>[\w\d]+)\/(?<method>[\w\d]+)/);
-  return deconstructed.groups
+  let deconstructed = url.match(/(?<blockchain>\w+):\/\/(?<part1>[\w\d]+)(\/(?<part2>[\w\d]+))?/);
+
+  if(deconstructed.groups.part2 == undefined) {
+    return {
+      blockchain: deconstructed.groups.blockchain,
+      method: deconstructed.groups.part1
+    }
+  } else {
+    return {
+      blockchain: deconstructed.groups.blockchain,
+      address: deconstructed.groups.part1,
+      method: deconstructed.groups.part2
+    }
+  }
 };
 
 let request = async function (url, options) {
