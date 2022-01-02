@@ -875,20 +875,20 @@
     "@babel/helper-validator-identifier" "^7.14.9"
     to-fast-properties "^2.0.0"
 
-"@depay/web3-blockchains@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@depay/web3-blockchains/-/web3-blockchains-3.0.0.tgz#e393d547b88bc4d7bf65ec7f7b98ba8ad9f76ac5"
-  integrity sha512-Mnc3fCCwD+B9YMBGcAB6DJC5cVNn5AcddGcpXbX9cvVY1iJ8IDe0sVKYEBJmHPr1punumU1H1nrhs5ctPZkosQ==
-
-"@depay/web3-constants@^4.0.0":
+"@depay/web3-blockchains@^4.0.0":
   version "4.0.0"
-  resolved "https://registry.yarnpkg.com/@depay/web3-constants/-/web3-constants-4.0.0.tgz#255ac4ee15ac62620db822bb1871d1a560fa772c"
-  integrity sha512-O5qKAh3xPVgTyw+oVdAH+q/W/YDBigtGWSacPekCAKiTit7TMrqUfb+ZORjAmXXV3dIXSlUS1QrN1d0guWlWjw==
+  resolved "https://registry.yarnpkg.com/@depay/web3-blockchains/-/web3-blockchains-4.0.0.tgz#049f3132d309f90401f138485b5257e6f1a98650"
+  integrity sha512-mMtWwubtYhjygJso3iVAYrRBmANH3VbBHkvtOwOc2rPHoTAS3uYZTMfbNc9sFVCyxXo+hsa8453rsxFNJi9Y3A==
 
-"@depay/web3-mock@^9.1.1":
-  version "9.1.1"
-  resolved "https://registry.yarnpkg.com/@depay/web3-mock/-/web3-mock-9.1.1.tgz#6205de4fae4c54c6ceb32418a96af3b0de9656b5"
-  integrity sha512-IZ8M+O05kcdIAMoT3dulLC6o5W2uNo8wLICmTKM6O6T3+gbb9r0ieXALYH1jg4jNooQxfmmdZ85ncGZ8ySQ5mw==
+"@depay/web3-constants@^5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@depay/web3-constants/-/web3-constants-5.0.0.tgz#89a8392586a619d63ab73f483b341ba17f03dd51"
+  integrity sha512-P7GnRdykODAJUH9EC1d6/ZektPmL42hVcklUsub8oGmngDCa+AFz+Pyf1TcL3jaVaznlUTcRZt0fu+r+5MJBew==
+
+"@depay/web3-mock@^11.0.0":
+  version "11.0.0"
+  resolved "https://registry.yarnpkg.com/@depay/web3-mock/-/web3-mock-11.0.0.tgz#e5768ca934e000d67e60d8b62937815f5c63974e"
+  integrity sha512-73jlVh6lDbAGREqdXMeom76NBofJZLysNuo4meuJeVOaGn+mJf6U8ware5XbjysC+Rk11NhMvN4MJyOZCUMpDA==
 
 "@eslint/eslintrc@^0.4.3":
   version "0.4.3"
