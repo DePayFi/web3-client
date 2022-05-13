@@ -36,7 +36,8 @@ request('ethereum://0x7a250d5630b4cf539739df2c5dacb4c659f2488d/getAmountsOut', {
 This library supports the following blockchains:
 
 - [Ethereum](https://ethereum.org)
-- [Binance Smart Chain](https://www.binance.org/en/smartChain)
+- [BNB Smart Chain](https://www.binance.org/smartChain)
+- [Polygon](https://polygon.technology)
 
 ## Functionalities
 

@@ -4,7 +4,7 @@ import { provider, setProvider, setProviderEndpoints } from 'src/'
 
 describe('provider', () => {
 
-  ['ethereum', 'bsc'].forEach((blockchain)=>{
+  ['ethereum', 'bsc', 'polygon'].forEach((blockchain)=>{
 
     describe(blockchain, ()=> {
 
@@ -12,26 +12,26 @@ describe('provider', () => {
       beforeEach(resetMocks)
       beforeEach(()=>mock({ blockchain, accounts: { return: accounts } }))
       
-      it('provides an StaticJsonRpcBatchProvider per default on ethereum', async ()=> {
-        let selectedProvider = await provider('ethereum');
+      it('provides an StaticJsonRpcBatchProvider per default', async ()=> {
+        let selectedProvider = await provider(blockchain);
         expect(
           !!Object.getPrototypeOf(selectedProvider).constructor.toString().match('StaticJsonRpcBatchProvider')
         ).toEqual(true)
       })
 
       it('allows to set provider endpoints', async ()=> {
-        setProviderEndpoints('ethereum', ['http://localhost:8545'])
-        let selectedProvider = await provider('ethereum')
+        setProviderEndpoints(blockchain, ['http://localhost:8545'])
+        let selectedProvider = await provider(blockchain)
         expect(selectedProvider.connection.url).toEqual('http://localhost:8545')
       })
 
       it('allows to set an initialized provider', async ()=> {
         let newProvider = new ethers.providers.JsonRpcProvider('http://localhost:8545', 1)
-        setProvider('ethereum', newProvider)
-        let selectedProvider = await provider('ethereum')
+        setProvider(blockchain, newProvider)
+        let selectedProvider = await provider(blockchain)
         expect(selectedProvider.connection.url).toEqual('http://localhost:8545')
         // reset
-        setProviderEndpoints('ethereum', ['http://localhost:8545'])
+        setProviderEndpoints(blockchain, ['http://localhost:8545'])
       })
     })
   })

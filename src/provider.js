@@ -10,6 +10,12 @@ import {
   setProvider as setBscProvider,
 } from './blockchains/bsc/provider'
 
+import {
+  getProvider as getPolygonProvider,
+  setProviderEndpoints as setPolygonProviderEndpoints,
+  setProvider as setPolygonProvider,
+} from './blockchains/polygon/provider'
+
 const provider = (blockchain)=>{
 
   switch (blockchain) {
@@ -20,6 +26,10 @@ const provider = (blockchain)=>{
 
     case 'bsc':
       return getBscProvider()
+      break
+
+    case 'polygon':
+      return getPolygonProvider()
       break
     
     default:
@@ -38,6 +48,10 @@ const setProvider = (blockchain, provider)=>{
     case 'bsc':
       return setBscProvider(provider)
       break
+
+    case 'polygon':
+      return setPolygonProvider(provider)
+      break
     
     default:
       throw 'Unknown blockchain: ' + blockchain
@@ -54,6 +68,10 @@ const setProviderEndpoints = (blockchain, endpoints)=>{
 
     case 'bsc':
       return setBscProviderEndpoints(endpoints)
+      break
+
+    case 'polygon':
+      return setPolygonProviderEndpoints(endpoints)
       break
     
     default:

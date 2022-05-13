@@ -1,12 +1,13 @@
-import { cache as cacheRequest } from './cache'
-import requestEthereum from './blockchains/ethereum/request'
-import requestBsc from './blockchains/bsc/request'
 import parseUrl from './parseUrl'
+import requestBsc from './blockchains/bsc/request'
+import requestEthereum from './blockchains/ethereum/request'
+import requestPolygon from './blockchains/polygon/request'
+import { cache as cacheRequest } from './cache'
 
 let request = async function (url, options) {
   let { blockchain, address, method } = parseUrl(url)
   let { api, params, cache } = options || {}
-  if(!['ethereum', 'bsc'].includes(blockchain)) { throw 'Unknown blockchain: ' + blockchain }
+  if(!['ethereum', 'bsc', 'polygon'].includes(blockchain)) { throw 'Unknown blockchain: ' + blockchain }
   let result = await cacheRequest({
     expires: cache || 0,
     key: [blockchain, address, method, params],
@@ -19,6 +20,10 @@ let request = async function (url, options) {
 
         case 'bsc':
           return requestBsc({ address, api, method, params })
+          break
+
+        case 'polygon':
+          return requestPolygon({ address, api, method, params })
           break
           
       }
