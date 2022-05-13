@@ -3,7 +3,7 @@ import { request, provider, resetCache } from 'src/'
 
 describe('request', () => {
 
-  ['ethereum', 'bsc'].forEach((blockchain)=>{
+  ['ethereum', 'bsc', 'polygon'].forEach((blockchain)=>{
 
     describe(blockchain, ()=> {
 
