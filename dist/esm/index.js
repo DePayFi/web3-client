@@ -3,26 +3,6 @@ import require$$0 from 'buffer';
 import require$$0$1 from 'util';
 import { ethers } from 'ethers';
 
-var parseUrl = (url) => {
-  if (typeof url == 'object') {
-    return url
-  }
-  let deconstructed = url.match(/(?<blockchain>\w+):\/\/(?<part1>[\w\d]+)(\/(?<part2>[\w\d]+))?/);
-
-  if(deconstructed.groups.part2 == undefined) {
-    return {
-      blockchain: deconstructed.groups.blockchain,
-      method: deconstructed.groups.part1
-    }
-  } else {
-    return {
-      blockchain: deconstructed.groups.blockchain,
-      address: deconstructed.groups.part1,
-      method: deconstructed.groups.part2
-    }
-  }
-};
-
 const version$f = "logger/5.6.0";
 
 let _permanentCensorErrors = false;
@@ -14929,48 +14909,36 @@ const setProvider$3 = (givenProvider)=> {
   provider$3 = givenProvider;
 };
 
-let paramsToContractArgs = ({ contract, method, params }) => {
+const getContractArguments = ({ contract, method, params })=>{
   let fragment = contract.interface.fragments.find((fragment) => {
     return fragment.name == method
   });
 
-  return fragment.inputs.map((input, index) => {
-    if (Array.isArray(params)) {
-      return params[index]
-    } else {
+  if(params instanceof Array) {
+    return params
+  } else if (params instanceof Object) {
+    return fragment.inputs.map((input) => {
       return params[input.name]
-    }
-  })
-};
-
-let contractCall = ({ address, api, method, params, provider }) => {
-  let contract = new ethers.Contract(address, api, provider);
-  let args = paramsToContractArgs({ contract, method, params });
-  return contract[method](...args)
-};
-
-let balance = ({ address, provider }) => {
-  return provider.getBalance(address)
-};
-
-var request$1 = async ({ provider, address, api, method, params }) => {
-  if (api) {
-    return contractCall({ address, api, method, params, provider })
-  } else if (method === 'latestBlockNumber') {
-    return provider.getBlockNumber()
-  } else if (method === 'balance') {
-    return balance({ address, provider })
+    })
+  } else {
+    throw 'Contract params have wrong type!'
   }
 };
 
-var requestBsc = async ({ address, api, method, params }) => {
-  let provider = getProvider$2();
+var estimate$1 = async ({ provider, from, to, value, method, api, params }) => {
+  let contract = new ethers.Contract(to, api, provider);
+  return contract.estimateGas[method](...getContractArguments({ contract, method, params }), { from, value })
+};
 
-  return request$1({
+var estimateBsc = async ({ from, to, value, method, api, params }) => {
+  let provider = getProvider$2();
+  return estimate$1({
     provider,
-    address,
-    api,
+    from,
+    to,
+    value,
     method,
+    api,
     params
   })
 };
@@ -14998,14 +14966,15 @@ const setProvider$2 = (givenProvider)=> {
   provider$2 = givenProvider;
 };
 
-var requestEthereum = async ({ address, api, method, params }) => {
+var estimateEthereum = async ({ from, to, value, method, api, params }) => {
   let provider = getProvider$1();
-
-  return request$1({
+  return estimate$1({
     provider,
-    address,
-    api,
+    from,
+    to,
+    value,
     method,
+    api,
     params
   })
 };
@@ -15016,7 +14985,7 @@ const getProvider = ()=> {
 
   if(provider$1) { return provider$1 }
 
-  setProviderEndpoints$1(['https://rpc-mainnet.matic.network']);
+  setProviderEndpoints$1(['https://polygon-rpc.com']);
 
   return provider$1
 };
@@ -15033,14 +15002,15 @@ const setProvider$1 = (givenProvider)=> {
   provider$1 = givenProvider;
 };
 
-var requestPolygon = async ({ address, api, method, params }) => {
+var estimatePolygon = async ({ from, to, value, method, api, params }) => {
   let provider = getProvider();
-
-  return request$1({
+  return estimate$1({
     provider,
-    address,
-    api,
+    from,
+    to,
+    value,
     method,
+    api,
     params
   })
 };
@@ -15152,6 +15122,121 @@ let cache = function ({ call, key, expires = 0 }) {
   })
 };
 
+let estimate = async function ({ blockchain, from, to, value, method, api, params, cache: cache$1 }) {
+  if(!['ethereum', 'bsc', 'polygon'].includes(blockchain)) { throw 'Unknown blockchain: ' + blockchain }
+  if(typeof value == 'undefined') { value = '0'; }
+
+  let result = await cache({
+    expires: cache$1 || 0,
+    key: [blockchain, from, to, value, method, params],
+    call: async () => {
+      switch (blockchain) {
+
+        case 'ethereum':
+          return estimateEthereum({ from, to, value, method, api, params })
+
+        case 'bsc':
+          return estimateBsc({ from, to, value, method, api, params })
+
+        case 'polygon':
+          return estimatePolygon({ from, to, value, method, api, params })
+          
+      }
+    },
+  });
+  return result
+};
+
+var parseUrl = (url) => {
+  if (typeof url == 'object') {
+    return url
+  }
+  let deconstructed = url.match(/(?<blockchain>\w+):\/\/(?<part1>[\w\d]+)(\/(?<part2>[\w\d]+))?/);
+
+  if(deconstructed.groups.part2 == undefined) {
+    return {
+      blockchain: deconstructed.groups.blockchain,
+      method: deconstructed.groups.part1
+    }
+  } else {
+    return {
+      blockchain: deconstructed.groups.blockchain,
+      address: deconstructed.groups.part1,
+      method: deconstructed.groups.part2
+    }
+  }
+};
+
+let paramsToContractArgs = ({ contract, method, params }) => {
+  let fragment = contract.interface.fragments.find((fragment) => {
+    return fragment.name == method
+  });
+
+  return fragment.inputs.map((input, index) => {
+    if (Array.isArray(params)) {
+      return params[index]
+    } else {
+      return params[input.name]
+    }
+  })
+};
+
+let contractCall = ({ address, api, method, params, provider }) => {
+  let contract = new ethers.Contract(address, api, provider);
+  let args = paramsToContractArgs({ contract, method, params });
+  return contract[method](...args)
+};
+
+let balance = ({ address, provider }) => {
+  return provider.getBalance(address)
+};
+
+var request$1 = async ({ provider, address, api, method, params }) => {
+  if (api) {
+    return contractCall({ address, api, method, params, provider })
+  } else if (method === 'latestBlockNumber') {
+    return provider.getBlockNumber()
+  } else if (method === 'balance') {
+    return balance({ address, provider })
+  }
+};
+
+var requestBsc = async ({ address, api, method, params }) => {
+  let provider = getProvider$2();
+
+  return request$1({
+    provider,
+    address,
+    api,
+    method,
+    params
+  })
+};
+
+var requestEthereum = async ({ address, api, method, params }) => {
+  let provider = getProvider$1();
+
+  return request$1({
+    provider,
+    address,
+    api,
+    method,
+    params
+  })
+};
+
+var requestPolygon = async ({ address, api, method, params }) => {
+  let provider = getProvider();
+
+  return request$1({
+    provider,
+    address,
+    api,
+    method,
+    params
+  })
+};
+
 let request = async function (url, options) {
   let { blockchain, address, method } = parseUrl(url);
   let { api, params, cache: cache$1 } = options || {};
@@ -15231,4 +15316,4 @@ const setProviderEndpoints = (blockchain, endpoints)=>{
   }
 };
 
-export { provider, request, resetCache, setProvider, setProviderEndpoints };
+export { estimate, provider, request, resetCache, setProvider, setProviderEndpoints };

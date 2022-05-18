@@ -6,7 +6,7 @@ const getProvider = ()=> {
 
   if(provider) { return provider }
 
-  setProviderEndpoints(['https://rpc-mainnet.matic.network'])
+  setProviderEndpoints(['https://polygon-rpc.com'])
 
   return provider
 }
