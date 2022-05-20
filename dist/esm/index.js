@@ -14926,8 +14926,12 @@ const getContractArguments = ({ contract, method, params })=>{
 };
 
 var estimate$1 = async ({ provider, from, to, value, method, api, params }) => {
-  let contract = new ethers.Contract(to, api, provider);
-  return contract.estimateGas[method](...getContractArguments({ contract, method, params }), { from, value })
+  if(typeof api == "undefined"){
+    return provider.estimateGas({ from, to, value })
+  } else {
+    let contract = new ethers.Contract(to, api, provider);
+    return contract.estimateGas[method](...getContractArguments({ contract, method, params }), { from, value })
+  }
 };
 
 var estimateBsc = async ({ from, to, value, method, api, params }) => {
