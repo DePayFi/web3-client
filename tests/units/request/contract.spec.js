@@ -1,4 +1,3 @@
-import nock from 'nock'
 import { ethers } from 'ethers'
 import { mock, resetMocks, connect } from '@depay/web3-mock'
 import { request, provider, resetCache } from 'src/'
