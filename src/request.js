@@ -6,7 +6,7 @@ import { cache as cacheRequest } from './cache'
 
 let request = async function (url, options) {
   let { blockchain, address, method } = parseUrl(url)
-  let { api, params, cache } = options || {}
+  let { api, params, cache, block } = options || {}
   if(!['ethereum', 'bsc', 'polygon'].includes(blockchain)) { throw 'Unknown blockchain: ' + blockchain }
   let result = await cacheRequest({
     expires: cache || 0,
@@ -15,15 +15,15 @@ let request = async function (url, options) {
       switch (blockchain) {
 
         case 'ethereum':
-          return requestEthereum({ address, api, method, params })
+          return requestEthereum({ address, api, method, params, block })
           break
 
         case 'bsc':
-          return requestBsc({ address, api, method, params })
+          return requestBsc({ address, api, method, params, block })
           break
 
         case 'polygon':
-          return requestPolygon({ address, api, method, params })
+          return requestPolygon({ address, api, method, params, block })
           break
           
       }

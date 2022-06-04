@@ -15185,19 +15185,19 @@ let paramsToContractArgs = ({ contract, method, params }) => {
   })
 };
 
-let contractCall = ({ address, api, method, params, provider }) => {
+let contractCall = ({ address, api, method, params, provider, block }) => {
   let contract = new ethers.Contract(address, api, provider);
   let args = paramsToContractArgs({ contract, method, params });
-  return contract[method](...args)
+  return contract[method](...args, { blockTag: block })
 };
 
 let balance = ({ address, provider }) => {
   return provider.getBalance(address)
 };
 
-var request$1 = async ({ provider, address, api, method, params }) => {
+var request$1 = async ({ provider, address, api, method, params, block }) => {
   if (api) {
-    return contractCall({ address, api, method, params, provider })
+    return contractCall({ address, api, method, params, provider, block })
   } else if (method === 'latestBlockNumber') {
     return provider.getBlockNumber()
   } else if (method === 'balance') {
@@ -15205,7 +15205,7 @@ var request$1 = async ({ provider, address, api, method, params }) => {
   }
 };
 
-var requestBsc = async ({ address, api, method, params }) => {
+var requestBsc = async ({ address, api, method, params, block }) => {
   let provider = getProvider$2();
 
   return request$1({
@@ -15213,11 +15213,12 @@ var requestBsc = async ({ address, api, method, params }) => {
     address,
     api,
     method,
-    params
+    params,
+    block
   })
 };
 
-var requestEthereum = async ({ address, api, method, params }) => {
+var requestEthereum = async ({ address, api, method, params, block }) => {
   let provider = getProvider$1();
 
   return request$1({
@@ -15225,11 +15226,12 @@ var requestEthereum = async ({ address, api, method, params }) => {
     address,
     api,
     method,
-    params
+    params,
+    block
   })
 };
 
-var requestPolygon = async ({ address, api, method, params }) => {
+var requestPolygon = async ({ address, api, method, params, block }) => {
   let provider = getProvider();
 
   return request$1({
@@ -15237,13 +15239,14 @@ var requestPolygon = async ({ address, api, method, params }) => {
     address,
     api,
     method,
-    params
+    params,
+    block
   })
 };
 
 let request = async function (url, options) {
   let { blockchain, address, method } = parseUrl(url);
-  let { api, params, cache: cache$1 } = options || {};
+  let { api, params, cache: cache$1, block } = options || {};
   if(!['ethereum', 'bsc', 'polygon'].includes(blockchain)) { throw 'Unknown blockchain: ' + blockchain }
   let result = await cache({
     expires: cache$1 || 0,
@@ -15252,13 +15255,13 @@ let request = async function (url, options) {
       switch (blockchain) {
 
         case 'ethereum':
-          return requestEthereum({ address, api, method, params })
+          return requestEthereum({ address, api, method, params, block })
 
         case 'bsc':
-          return requestBsc({ address, api, method, params })
+          return requestBsc({ address, api, method, params, block })
 
         case 'polygon':
-          return requestPolygon({ address, api, method, params })
+          return requestPolygon({ address, api, method, params, block })
           
       }
     },

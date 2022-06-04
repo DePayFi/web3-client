@@ -1,7 +1,7 @@
 import { getProvider } from './provider'
 import request from '../../vms/evm/request'
 
-export default async ({ address, api, method, params }) => {
+export default async ({ address, api, method, params, block }) => {
   let provider = getProvider()
 
   return request({
@@ -9,6 +9,7 @@ export default async ({ address, api, method, params }) => {
     address,
     api,
     method,
-    params
+    params,
+    block
   })
 }

@@ -87,6 +87,21 @@ import { request } from '@depay/web3-client'
 request('ethereum://latestBlockNumber').then((latestBlockNumber)=>console.log(latestBlockNumber))
 ```
 
+#### block
+
+Allows you make the request for a specific block (historical).
+
+```javascript
+let getAmountsOut = ()=>request('ethereum://0x7a250d5630b4cf539739df2c5dacb4c659f2488d/getAmountsOut', {
+  api: abi,
+  params: {
+    amountIn: '1000000000000000000',
+    path: ['0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2','0xa0bed124a09ac2bd941b10349d8d224fe3c955eb']
+  },
+  block: 14904434 // at block 14904434
+})
+```
+
 #### cache
 
 `@depay/web3-client` caches indentical, pending requests/responses and serves them from the same response via queued promises.
@@ -232,7 +247,7 @@ request('ethereum://0x7a250d5630b4cf539739df2c5dacb4c659f2488d/getAmountsOut', o
 or destructed:
 
 ```javascript
-request({ blockchain: 'ethereum', address: '0x7a250d5630b4cf539739df2c5dacb4c659f2488d', method: 'getAmountsOut'}, options)
+request({ blockchain: 'ethereum', address: '0x7a250d5630b4cf539739df2c5dacb4c659f2488d', method: 'getAmountsOut' })
 ```
 
 ## Development
