@@ -1,7 +1,7 @@
 {
   "name": "@depay/web3-client",
   "moduleName": "Web3Client",
-  "version": "8.3.0",
+  "version": "8.3.1",
   "description": "A web3 client to fetch blockchain data just like you are used to with HTTP clients.",
   "main": "dist/umd/index.js",
   "module": "dist/esm/index.js",
@@ -35,7 +35,7 @@
   "dependencies": {},
   "peerDependencies": {
     "@depay/web3-blockchains": "^4.5.0",
-    "ethers": "^5.6.5"
+    "ethers": "^5.6.8"
   },
   "engines": {
     "node": ">=16"
@@ -55,7 +55,7 @@
     "eslint": "^7.15.0",
     "eslint-loader": "^4.0.2",
     "eslint-plugin-import": "^2.22.1",
-    "ethers": "^5.6.5",
+    "ethers": "^5.6.8",
     "jest-environment-jsdom": "^28.1.0",
     "nock": "^13.2.6",
     "regenerator-runtime": "^0.13.7",
