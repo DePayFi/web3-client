@@ -15186,7 +15186,7 @@
       if(!['ethereum', 'bsc', 'polygon'].includes(blockchain)) { throw 'Unknown blockchain: ' + blockchain }
       let result = await cache({
         expires: cache$1 || 0,
-        key: [blockchain, address, method, params],
+        key: [blockchain, address, method, params, block],
         call: async () => {
           switch (blockchain) {
 
