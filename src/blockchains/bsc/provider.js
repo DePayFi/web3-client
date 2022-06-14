@@ -23,8 +23,11 @@ const setProvider = (givenProvider)=> {
   provider = givenProvider
 }
 
+const resetProvider = ()=> { provider = undefined }
+
 export {
   getProvider,
   setProvider,
   setProviderEndpoints,
+  resetProvider,
 }

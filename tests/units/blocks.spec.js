@@ -1,4 +1,4 @@
-import { mock, resetMocks } from '@depay/web3-mock'
+import { mock, resetMocks, increaseBlock } from '@depay/web3-mock'
 import { request, provider, resetCache } from 'src/'
 
 describe('request', () => {
@@ -15,6 +15,18 @@ describe('request', () => {
       it('provides latest block number', async ()=> {
         let blockNumber = await request(`${blockchain}://latestBlockNumber`)
         expect(blockNumber).toEqual(1)
+      })
+
+      it('resets providers between specs to reset block numbers', async ()=> {
+        increaseBlock(9)
+        let blockNumber = await request(`${blockchain}://latestBlockNumber`)
+        expect(blockNumber).toEqual(10)
+      })
+
+      it('resets providers between specs to reset block numbers', async ()=> {
+        increaseBlock(9)
+        let blockNumber = await request(`${blockchain}://latestBlockNumber`)
+        expect(blockNumber).toEqual(10)
       })
     })
   })

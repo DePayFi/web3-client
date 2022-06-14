@@ -1,4 +1,4 @@
-import { request, provider } from 'src/'
+import { request, provider, resetCache } from 'src/'
 import { ethers } from 'ethers'
 import { mock, resetMocks } from '@depay/web3-mock'
 
@@ -10,6 +10,7 @@ describe('request balance', () => {
 
       const accounts = ['0xd8da6bf26964af9d7eed9e03e53415d37aa96045']
       beforeEach(resetMocks)
+      beforeEach(resetCache)
       beforeEach(()=>mock({ blockchain, accounts: { return: accounts } }))
 
       it('should request account balance', async ()=> {

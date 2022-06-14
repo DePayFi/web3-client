@@ -1,4 +1,4 @@
-import { estimate, provider } from 'src/'
+import { estimate, provider, resetCache } from 'src/'
 import { mock, resetMocks } from '@depay/web3-mock'
 
 describe('estimate', () => {
@@ -9,6 +9,7 @@ describe('estimate', () => {
 
       const accounts = ['0xd8da6bf26964af9d7eed9e03e53415d37aa96045']
       beforeEach(resetMocks)
+      beforeEach(resetCache)
       beforeEach(()=>mock({ blockchain, provider: provider(blockchain), accounts: { return: accounts } }))
 
       it('estimates a contract transaction', async ()=> {

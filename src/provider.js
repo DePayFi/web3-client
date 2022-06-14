@@ -1,19 +1,22 @@
 import { 
   getProvider as getEthereumProvider,
   setProviderEndpoints as setEthereumProviderEndpoints,
-  setProvider as setEthereumProvider
+  setProvider as setEthereumProvider,
+  resetProvider as resetEthereumProvider,
 } from './blockchains/ethereum/provider'
 
 import {
   getProvider as getBscProvider,
   setProviderEndpoints as setBscProviderEndpoints,
   setProvider as setBscProvider,
+  resetProvider as resetBscProvider,
 } from './blockchains/bsc/provider'
 
 import {
   getProvider as getPolygonProvider,
   setProviderEndpoints as setPolygonProviderEndpoints,
   setProvider as setPolygonProvider,
+  resetProvider as resetPolygonProvider,
 } from './blockchains/polygon/provider'
 
 const provider = (blockchain)=>{
@@ -79,8 +82,15 @@ const setProviderEndpoints = (blockchain, endpoints)=>{
   }
 }
 
+const resetProviders = ()=>{
+  resetEthereumProvider()
+  resetBscProvider()
+  resetPolygonProvider()
+}
+
 export {
   provider,
   setProvider,
   setProviderEndpoints,
+  resetProviders,
 }

@@ -1,3 +1,5 @@
+import { resetProviders } from './provider'
+
 let getWindow = () => {
   if (typeof global == 'object') return global
   return window
@@ -20,6 +22,7 @@ let getPromiseStore = () => {
 let resetCache = () => {
   getWindow()._cacheStore = {}
   getWindow()._promiseStore = {}
+  resetProviders()
 }
 
 let set = function ({ key, value, expires }) {

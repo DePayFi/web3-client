@@ -14845,6 +14845,8 @@
       provider$3 = givenProvider;
     };
 
+    const resetProvider$2 = ()=> { provider$3 = undefined; };
+
     const getContractArguments = ({ contract, method, params })=>{
       let fragment = contract.interface.fragments.find((fragment) => {
         return fragment.name == method
@@ -14906,6 +14908,8 @@
       provider$2 = givenProvider;
     };
 
+    const resetProvider$1 = ()=> { provider$2 = undefined; };
+
     var estimateEthereum = async ({ from, to, value, method, api, params }) => {
       let provider = getProvider$1();
       return estimate$1({
@@ -14942,6 +14946,8 @@
       provider$1 = givenProvider;
     };
 
+    const resetProvider = ()=> { provider$1 = undefined; };
+
     var estimatePolygon = async ({ from, to, value, method, api, params }) => {
       let provider = getProvider();
       return estimate$1({
@@ -14955,7 +14961,68 @@
       })
     };
 
-    function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }let getWindow = () => {
+    const provider = (blockchain)=>{
+
+      switch (blockchain) {
+        
+        case 'ethereum':
+          return getProvider$1()
+
+        case 'bsc':
+          return getProvider$2()
+
+        case 'polygon':
+          return getProvider()
+        
+        default:
+          throw 'Unknown blockchain: ' + blockchain
+      }
+    };
+
+    const setProvider = (blockchain, provider)=>{
+
+      switch (blockchain) {
+        
+        case 'ethereum':
+          return setProvider$2(provider)
+
+        case 'bsc':
+          return setProvider$3(provider)
+
+        case 'polygon':
+          return setProvider$1(provider)
+        
+        default:
+          throw 'Unknown blockchain: ' + blockchain
+      }
+    };
+
+    const setProviderEndpoints = (blockchain, endpoints)=>{
+
+      switch (blockchain) {
+        
+        case 'ethereum':
+          return setProviderEndpoints$2(endpoints)
+
+        case 'bsc':
+          return setProviderEndpoints$3(endpoints)
+
+        case 'polygon':
+          return setProviderEndpoints$1(endpoints)
+        
+        default:
+          throw 'Unknown blockchain: ' + blockchain
+      }
+    };
+
+    const resetProviders = ()=>{
+      resetProvider$1();
+      resetProvider$2();
+      resetProvider();
+    };
+
+    function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
+    let getWindow = () => {
       if (typeof global == 'object') return global
       return window
     };
@@ -14977,6 +15044,7 @@
     let resetCache = () => {
       getWindow()._cacheStore = {};
       getWindow()._promiseStore = {};
+      resetProviders();
     };
 
     let set = function ({ key, value, expires }) {
@@ -15203,60 +15271,6 @@
         },
       });
       return result
-    };
-
-    const provider = (blockchain)=>{
-
-      switch (blockchain) {
-        
-        case 'ethereum':
-          return getProvider$1()
-
-        case 'bsc':
-          return getProvider$2()
-
-        case 'polygon':
-          return getProvider()
-        
-        default:
-          throw 'Unknown blockchain: ' + blockchain
-      }
-    };
-
-    const setProvider = (blockchain, provider)=>{
-
-      switch (blockchain) {
-        
-        case 'ethereum':
-          return setProvider$2(provider)
-
-        case 'bsc':
-          return setProvider$3(provider)
-
-        case 'polygon':
-          return setProvider$1(provider)
-        
-        default:
-          throw 'Unknown blockchain: ' + blockchain
-      }
-    };
-
-    const setProviderEndpoints = (blockchain, endpoints)=>{
-
-      switch (blockchain) {
-        
-        case 'ethereum':
-          return setProviderEndpoints$2(endpoints)
-
-        case 'bsc':
-          return setProviderEndpoints$3(endpoints)
-
-        case 'polygon':
-          return setProviderEndpoints$1(endpoints)
-        
-        default:
-          throw 'Unknown blockchain: ' + blockchain
-      }
     };
 
     exports.estimate = estimate;
