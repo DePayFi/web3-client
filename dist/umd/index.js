@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@depay/web3-blockchains'), require('buffer'), require('util'), require('ethers')) :
-    typeof define === 'function' && define.amd ? define(['exports', '@depay/web3-blockchains', 'buffer', 'util', 'ethers'], factory) :
-    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.Web3Client = {}, global.Web3Blockchains, global.require$$0, global.require$$0$1, global.ethers));
-}(this, (function (exports, web3Blockchains, require$$0, require$$0$1, ethers) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@depay/web3-blockchains'), require('buffer'), require('util'), require('ethers'), require('@solana/web3.js')) :
+    typeof define === 'function' && define.amd ? define(['exports', '@depay/web3-blockchains', 'buffer', 'util', 'ethers', '@solana/web3.js'], factory) :
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.Web3Client = {}, global.Web3Blockchains, global.require$$0, global.require$$0$1, global.ethers, global.solanaWeb3));
+}(this, (function (exports, web3Blockchains, require$$0, require$$0$1, ethers, web3_js) { 'use strict';
 
     function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -355,134 +355,9 @@
     Logger.errors = ErrorCode;
     Logger.levels = LogLevel;
 
-    const version$e = "properties/5.6.0";
+    const version$e = "bytes/5.6.1";
 
-    var __awaiter$7 = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
-        function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-        return new (P || (P = Promise))(function (resolve, reject) {
-            function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-            function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-            function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-            step((generator = generator.apply(thisArg, _arguments || [])).next());
-        });
-    };
     const logger$g = new Logger(version$e);
-    function defineReadOnly(object, name, value) {
-        Object.defineProperty(object, name, {
-            enumerable: true,
-            value: value,
-            writable: false,
-        });
-    }
-    // Crawl up the constructor chain to find a static method
-    function getStatic(ctor, key) {
-        for (let i = 0; i < 32; i++) {
-            if (ctor[key]) {
-                return ctor[key];
-            }
-            if (!ctor.prototype || typeof (ctor.prototype) !== "object") {
-                break;
-            }
-            ctor = Object.getPrototypeOf(ctor.prototype).constructor;
-        }
-        return null;
-    }
-    function resolveProperties(object) {
-        return __awaiter$7(this, void 0, void 0, function* () {
-            const promises = Object.keys(object).map((key) => {
-                const value = object[key];
-                return Promise.resolve(value).then((v) => ({ key: key, value: v }));
-            });
-            const results = yield Promise.all(promises);
-            return results.reduce((accum, result) => {
-                accum[(result.key)] = result.value;
-                return accum;
-            }, {});
-        });
-    }
-    function checkProperties(object, properties) {
-        if (!object || typeof (object) !== "object") {
-            logger$g.throwArgumentError("invalid object", "object", object);
-        }
-        Object.keys(object).forEach((key) => {
-            if (!properties[key]) {
-                logger$g.throwArgumentError("invalid object key - " + key, "transaction:" + key, object);
-            }
-        });
-    }
-    function shallowCopy(object) {
-        const result = {};
-        for (const key in object) {
-            result[key] = object[key];
-        }
-        return result;
-    }
-    const opaque = { bigint: true, boolean: true, "function": true, number: true, string: true };
-    function _isFrozen(object) {
-        // Opaque objects are not mutable, so safe to copy by assignment
-        if (object === undefined || object === null || opaque[typeof (object)]) {
-            return true;
-        }
-        if (Array.isArray(object) || typeof (object) === "object") {
-            if (!Object.isFrozen(object)) {
-                return false;
-            }
-            const keys = Object.keys(object);
-            for (let i = 0; i < keys.length; i++) {
-                let value = null;
-                try {
-                    value = object[keys[i]];
-                }
-                catch (error) {
-                    // If accessing a value triggers an error, it is a getter
-                    // designed to do so (e.g. Result) and is therefore "frozen"
-                    continue;
-                }
-                if (!_isFrozen(value)) {
-                    return false;
-                }
-            }
-            return true;
-        }
-        return logger$g.throwArgumentError(`Cannot deepCopy ${typeof (object)}`, "object", object);
-    }
-    // Returns a new copy of object, such that no properties may be replaced.
-    // New properties may be added only to objects.
-    function _deepCopy(object) {
-        if (_isFrozen(object)) {
-            return object;
-        }
-        // Arrays are mutable, so we need to create a copy
-        if (Array.isArray(object)) {
-            return Object.freeze(object.map((item) => deepCopy(item)));
-        }
-        if (typeof (object) === "object") {
-            const result = {};
-            for (const key in object) {
-                const value = object[key];
-                if (value === undefined) {
-                    continue;
-                }
-                defineReadOnly(result, key, deepCopy(value));
-            }
-            return result;
-        }
-        return logger$g.throwArgumentError(`Cannot deepCopy ${typeof (object)}`, "object", object);
-    }
-    function deepCopy(object) {
-        return _deepCopy(object);
-    }
-    class Description {
-        constructor(info) {
-            for (const key in info) {
-                this[key] = deepCopy(info[key]);
-            }
-        }
-    }
-
-    const version$d = "bytes/5.6.1";
-
-    const logger$f = new Logger(version$d);
     ///////////////////////////////
     function isHexable(value) {
         return !!(value.toHexString);
@@ -529,7 +404,7 @@
             options = {};
         }
         if (typeof (value) === "number") {
-            logger$f.checkSafeUint53(value, "invalid arrayify value");
+            logger$g.checkSafeUint53(value, "invalid arrayify value");
             const result = [];
             while (value) {
                 result.unshift(value & 0xff);
@@ -556,7 +431,7 @@
                     hex += "0";
                 }
                 else {
-                    logger$f.throwArgumentError("hex data is odd-length", "value", value);
+                    logger$g.throwArgumentError("hex data is odd-length", "value", value);
                 }
             }
             const result = [];
@@ -568,7 +443,7 @@
         if (isBytes(value)) {
             return addSlice(new Uint8Array(value));
         }
-        return logger$f.throwArgumentError("invalid arrayify value", "value", value);
+        return logger$g.throwArgumentError("invalid arrayify value", "value", value);
     }
     function concat(items) {
         const objects = items.map(item => arrayify(item));
@@ -599,7 +474,7 @@
     function zeroPad(value, length) {
         value = arrayify(value);
         if (value.length > length) {
-            logger$f.throwArgumentError("value out of range", "value", arguments[0]);
+            logger$g.throwArgumentError("value out of range", "value", arguments[0]);
         }
         const result = new Uint8Array(length);
         result.set(value, length - value.length);
@@ -620,7 +495,7 @@
             options = {};
         }
         if (typeof (value) === "number") {
-            logger$f.checkSafeUint53(value, "invalid hexlify value");
+            logger$g.checkSafeUint53(value, "invalid hexlify value");
             let hex = "";
             while (value) {
                 hex = HexCharacters[value & 0xf] + hex;
@@ -656,7 +531,7 @@
                     value += "0";
                 }
                 else {
-                    logger$f.throwArgumentError("hex data is odd-length", "value", value);
+                    logger$g.throwArgumentError("hex data is odd-length", "value", value);
                 }
             }
             return value.toLowerCase();
@@ -669,7 +544,7 @@
             }
             return result;
         }
-        return logger$f.throwArgumentError("invalid hexlify value", "value", value);
+        return logger$g.throwArgumentError("invalid hexlify value", "value", value);
     }
     /*
     function unoddify(value: BytesLike | Hexable | number): BytesLike | Hexable | number {
@@ -693,7 +568,7 @@
             data = hexlify(data);
         }
         else if (!isHexString(data) || (data.length % 2)) {
-            logger$f.throwArgumentError("invalid hexData", "value", data);
+            logger$g.throwArgumentError("invalid hexData", "value", data);
         }
         offset = 2 + 2 * offset;
         if (endOffset != null) {
@@ -720,7 +595,7 @@
             value = hexlify(value);
         }
         if (!isHexString(value)) {
-            logger$f.throwArgumentError("invalid hex string", "value", value);
+            logger$g.throwArgumentError("invalid hex string", "value", value);
         }
         value = value.substring(2);
         let offset = 0;
@@ -734,10 +609,10 @@
             value = hexlify(value);
         }
         else if (!isHexString(value)) {
-            logger$f.throwArgumentError("invalid hex string", "value", value);
+            logger$g.throwArgumentError("invalid hex string", "value", value);
         }
         if (value.length > 2 * length + 2) {
-            logger$f.throwArgumentError("value out of range", "value", arguments[1]);
+            logger$g.throwArgumentError("value out of range", "value", arguments[1]);
         }
         while (value.length < 2 * length + 2) {
             value = "0x0" + value.substring(2);
@@ -770,7 +645,7 @@
                 result.v = bytes[64];
             }
             else {
-                logger$f.throwArgumentError("invalid signature string", "signature", signature);
+                logger$g.throwArgumentError("invalid signature string", "signature", signature);
             }
             // Allow a recid to be used as the v
             if (result.v < 27) {
@@ -778,7 +653,7 @@
                     result.v += 27;
                 }
                 else {
-                    logger$f.throwArgumentError("signature invalid v byte", "signature", signature);
+                    logger$g.throwArgumentError("signature invalid v byte", "signature", signature);
                 }
             }
             // Compute recoveryParam from v
@@ -806,7 +681,7 @@
                     result.recoveryParam = recoveryParam;
                 }
                 else if (result.recoveryParam !== recoveryParam) {
-                    logger$f.throwArgumentError("signature recoveryParam mismatch _vs", "signature", signature);
+                    logger$g.throwArgumentError("signature recoveryParam mismatch _vs", "signature", signature);
                 }
                 // Set or check the s
                 vs[0] &= 0x7f;
@@ -815,13 +690,13 @@
                     result.s = s;
                 }
                 else if (result.s !== s) {
-                    logger$f.throwArgumentError("signature v mismatch _vs", "signature", signature);
+                    logger$g.throwArgumentError("signature v mismatch _vs", "signature", signature);
                 }
             }
             // Use recid and v to populate each other
             if (result.recoveryParam == null) {
                 if (result.v == null) {
-                    logger$f.throwArgumentError("signature missing v and recoveryParam", "signature", signature);
+                    logger$g.throwArgumentError("signature missing v and recoveryParam", "signature", signature);
                 }
                 else if (result.v === 0 || result.v === 1) {
                     result.recoveryParam = result.v;
@@ -837,25 +712,25 @@
                 else {
                     const recId = (result.v === 0 || result.v === 1) ? result.v : (1 - (result.v % 2));
                     if (result.recoveryParam !== recId) {
-                        logger$f.throwArgumentError("signature recoveryParam mismatch v", "signature", signature);
+                        logger$g.throwArgumentError("signature recoveryParam mismatch v", "signature", signature);
                     }
                 }
             }
             if (result.r == null || !isHexString(result.r)) {
-                logger$f.throwArgumentError("signature missing or invalid r", "signature", signature);
+                logger$g.throwArgumentError("signature missing or invalid r", "signature", signature);
             }
             else {
                 result.r = hexZeroPad(result.r, 32);
             }
             if (result.s == null || !isHexString(result.s)) {
-                logger$f.throwArgumentError("signature missing or invalid s", "signature", signature);
+                logger$g.throwArgumentError("signature missing or invalid s", "signature", signature);
             }
             else {
                 result.s = hexZeroPad(result.s, 32);
             }
             const vs = arrayify(result.s);
             if (vs[0] >= 128) {
-                logger$f.throwArgumentError("signature s out of range", "signature", signature);
+                logger$g.throwArgumentError("signature s out of range", "signature", signature);
             }
             if (result.recoveryParam) {
                 vs[0] |= 0x80;
@@ -863,7 +738,7 @@
             const _vs = hexlify(vs);
             if (result._vs) {
                 if (!isHexString(result._vs)) {
-                    logger$f.throwArgumentError("signature invalid _vs", "signature", signature);
+                    logger$g.throwArgumentError("signature invalid _vs", "signature", signature);
                 }
                 result._vs = hexZeroPad(result._vs, 32);
             }
@@ -872,7 +747,7 @@
                 result._vs = _vs;
             }
             else if (result._vs !== _vs) {
-                logger$f.throwArgumentError("signature _vs mismatch v and s", "signature", signature);
+                logger$g.throwArgumentError("signature _vs mismatch v and s", "signature", signature);
             }
         }
         result.yParityAndS = result._vs;
@@ -895,6 +770,131 @@
             textData += String.fromCharCode(data[i]);
         }
         return btoa(textData);
+    }
+
+    const version$d = "properties/5.6.0";
+
+    var __awaiter$7 = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+        function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+        return new (P || (P = Promise))(function (resolve, reject) {
+            function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+            function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+            function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+            step((generator = generator.apply(thisArg, _arguments || [])).next());
+        });
+    };
+    const logger$f = new Logger(version$d);
+    function defineReadOnly(object, name, value) {
+        Object.defineProperty(object, name, {
+            enumerable: true,
+            value: value,
+            writable: false,
+        });
+    }
+    // Crawl up the constructor chain to find a static method
+    function getStatic(ctor, key) {
+        for (let i = 0; i < 32; i++) {
+            if (ctor[key]) {
+                return ctor[key];
+            }
+            if (!ctor.prototype || typeof (ctor.prototype) !== "object") {
+                break;
+            }
+            ctor = Object.getPrototypeOf(ctor.prototype).constructor;
+        }
+        return null;
+    }
+    function resolveProperties(object) {
+        return __awaiter$7(this, void 0, void 0, function* () {
+            const promises = Object.keys(object).map((key) => {
+                const value = object[key];
+                return Promise.resolve(value).then((v) => ({ key: key, value: v }));
+            });
+            const results = yield Promise.all(promises);
+            return results.reduce((accum, result) => {
+                accum[(result.key)] = result.value;
+                return accum;
+            }, {});
+        });
+    }
+    function checkProperties(object, properties) {
+        if (!object || typeof (object) !== "object") {
+            logger$f.throwArgumentError("invalid object", "object", object);
+        }
+        Object.keys(object).forEach((key) => {
+            if (!properties[key]) {
+                logger$f.throwArgumentError("invalid object key - " + key, "transaction:" + key, object);
+            }
+        });
+    }
+    function shallowCopy(object) {
+        const result = {};
+        for (const key in object) {
+            result[key] = object[key];
+        }
+        return result;
+    }
+    const opaque = { bigint: true, boolean: true, "function": true, number: true, string: true };
+    function _isFrozen(object) {
+        // Opaque objects are not mutable, so safe to copy by assignment
+        if (object === undefined || object === null || opaque[typeof (object)]) {
+            return true;
+        }
+        if (Array.isArray(object) || typeof (object) === "object") {
+            if (!Object.isFrozen(object)) {
+                return false;
+            }
+            const keys = Object.keys(object);
+            for (let i = 0; i < keys.length; i++) {
+                let value = null;
+                try {
+                    value = object[keys[i]];
+                }
+                catch (error) {
+                    // If accessing a value triggers an error, it is a getter
+                    // designed to do so (e.g. Result) and is therefore "frozen"
+                    continue;
+                }
+                if (!_isFrozen(value)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return logger$f.throwArgumentError(`Cannot deepCopy ${typeof (object)}`, "object", object);
+    }
+    // Returns a new copy of object, such that no properties may be replaced.
+    // New properties may be added only to objects.
+    function _deepCopy(object) {
+        if (_isFrozen(object)) {
+            return object;
+        }
+        // Arrays are mutable, so we need to create a copy
+        if (Array.isArray(object)) {
+            return Object.freeze(object.map((item) => deepCopy(item)));
+        }
+        if (typeof (object) === "object") {
+            const result = {};
+            for (const key in object) {
+                const value = object[key];
+                if (value === undefined) {
+                    continue;
+                }
+                defineReadOnly(result, key, deepCopy(value));
+            }
+            return result;
+        }
+        return logger$f.throwArgumentError(`Cannot deepCopy ${typeof (object)}`, "object", object);
+    }
+    function deepCopy(object) {
+        return _deepCopy(object);
+    }
+    class Description {
+        constructor(info) {
+            for (const key in info) {
+                this[key] = deepCopy(info[key]);
+            }
+        }
     }
 
     const AddressZero = "0x0000000000000000000000000000000000000000";
@@ -14779,18 +14779,7 @@
               this._pendingBatchAggregator = null;
               // Get the request as an array of requests
               const request = batch.map((inflight) => inflight.request);
-              this.emit("debug", {
-                action: "requestBatch",
-                request: deepCopy(request),
-                provider: this
-              });
               return fetchJson(this.connection, JSON.stringify(request)).then((result) => {
-                this.emit("debug", {
-                  action: "response",
-                  request: request,
-                  response: result,
-                  provider: this
-                });
                 // For each result, feed it to the correct Promise, depending
                 // on whether it was a success or error
                 batch.forEach((inflightRequest, index) => {
@@ -14806,12 +14795,6 @@
                   }
                 });
               }, (error) => {
-                this.emit("debug", {
-                  action: "response",
-                  error: error,
-                  request: request,
-                  provider: this
-                });
                 batch.forEach((inflightRequest) => {
                   inflightRequest.reject(error);
                 });
@@ -14822,30 +14805,30 @@
       }
     }
 
-    let provider$3;
+    let provider$4;
 
-    const getProvider$2 = ()=> {
+    const getProvider$3 = ()=> {
 
-      if(provider$3) { return provider$3 }
+      if(provider$4) { return provider$4 }
 
-      setProviderEndpoints$3(['https://bsc-dataseed.binance.org']);
+      setProviderEndpoints$4(['https://bsc-dataseed.binance.org']);
 
-      return provider$3
+      return provider$4
     };
 
-    const setProviderEndpoints$3 = (endpoints)=> {
-      setProvider$3(
+    const setProviderEndpoints$4 = (endpoints)=> {
+      setProvider$4(
         new StaticJsonRpcBatchProvider(
           endpoints[0], 'bsc'
         )
       );
     };
 
-    const setProvider$3 = (givenProvider)=> {
-      provider$3 = givenProvider;
+    const setProvider$4 = (givenProvider)=> {
+      provider$4 = givenProvider;
     };
 
-    const resetProvider$2 = ()=> { provider$3 = undefined; };
+    const resetProvider$3 = ()=> { provider$4 = undefined; };
 
     const getContractArguments = ({ contract, method, params })=>{
       let fragment = contract.interface.fragments.find((fragment) => {
@@ -14873,6 +14856,44 @@
     };
 
     var estimateBsc = async ({ from, to, value, method, api, params }) => {
+      let provider = getProvider$3();
+      return estimate$1({
+        provider,
+        from,
+        to,
+        value,
+        method,
+        api,
+        params
+      })
+    };
+
+    let provider$3;
+
+    const getProvider$2 = ()=> {
+
+      if(provider$3) { return provider$3 }
+
+      setProviderEndpoints$3([['https://mainnet.infu', 'ra.io/v3/9aa3d95b3bc440fa8', '8ea12eaa4456161'].join('')]);
+
+      return provider$3
+    };
+
+    const setProviderEndpoints$3 = (endpoints)=> {
+      setProvider$3(
+        new StaticJsonRpcBatchProvider(
+          endpoints[0], 'ethereum'
+        )
+      );
+    };
+
+    const setProvider$3 = (givenProvider)=> {
+      provider$3 = givenProvider;
+    };
+
+    const resetProvider$2 = ()=> { provider$3 = undefined; };
+
+    var estimateEthereum = async ({ from, to, value, method, api, params }) => {
       let provider = getProvider$2();
       return estimate$1({
         provider,
@@ -14891,7 +14912,7 @@
 
       if(provider$2) { return provider$2 }
 
-      setProviderEndpoints$2([['https://mainnet.infu', 'ra.io/v3/9aa3d95b3bc440fa8', '8ea12eaa4456161'].join('')]);
+      setProviderEndpoints$2(['https://polygon-rpc.com']);
 
       return provider$2
     };
@@ -14899,7 +14920,7 @@
     const setProviderEndpoints$2 = (endpoints)=> {
       setProvider$2(
         new StaticJsonRpcBatchProvider(
-          endpoints[0], 'ethereum'
+          endpoints[0], 'polygon'
         )
       );
     };
@@ -14910,7 +14931,7 @@
 
     const resetProvider$1 = ()=> { provider$2 = undefined; };
 
-    var estimateEthereum = async ({ from, to, value, method, api, params }) => {
+    var estimatePolygon = async ({ from, to, value, method, api, params }) => {
       let provider = getProvider$1();
       return estimate$1({
         provider,
@@ -14923,21 +14944,29 @@
       })
     };
 
+    class StaticJsonRpcSequentialProvider extends web3_js.Connection {
+
+      constructor(url, network) {
+        super(url);
+        this._network = network;
+      }
+    }
+
     let provider$1;
 
     const getProvider = ()=> {
 
       if(provider$1) { return provider$1 }
 
-      setProviderEndpoints$1(['https://polygon-rpc.com']);
+      setProviderEndpoints$1(['https://api.mainnet-beta.solana.com']);
 
       return provider$1
     };
 
     const setProviderEndpoints$1 = (endpoints)=> {
       setProvider$1(
-        new StaticJsonRpcBatchProvider(
-          endpoints[0], 'polygon'
+        new StaticJsonRpcSequentialProvider(
+          endpoints[0], 'solana'
         )
       );
     };
@@ -14948,31 +14977,21 @@
 
     const resetProvider = ()=> { provider$1 = undefined; };
 
-    var estimatePolygon = async ({ from, to, value, method, api, params }) => {
-      let provider = getProvider();
-      return estimate$1({
-        provider,
-        from,
-        to,
-        value,
-        method,
-        api,
-        params
-      })
-    };
-
     const provider = (blockchain)=>{
 
       switch (blockchain) {
         
         case 'ethereum':
-          return getProvider$1()
-
-        case 'bsc':
           return getProvider$2()
 
+        case 'bsc':
+          return getProvider$3()
+
         case 'polygon':
-          return getProvider()
+          return getProvider$1()
+
+        case 'solana':
+          return getProvider();
         
         default:
           throw 'Unknown blockchain: ' + blockchain
@@ -14984,12 +15003,15 @@
       switch (blockchain) {
         
         case 'ethereum':
-          return setProvider$2(provider)
-
-        case 'bsc':
           return setProvider$3(provider)
 
+        case 'bsc':
+          return setProvider$4(provider)
+
         case 'polygon':
+          return setProvider$2(provider)
+
+        case 'solana':
           return setProvider$1(provider)
         
         default:
@@ -15002,12 +15024,15 @@
       switch (blockchain) {
         
         case 'ethereum':
-          return setProviderEndpoints$2(endpoints)
-
-        case 'bsc':
           return setProviderEndpoints$3(endpoints)
 
+        case 'bsc':
+          return setProviderEndpoints$4(endpoints)
+
         case 'polygon':
+          return setProviderEndpoints$2(endpoints)
+
+        case 'solana':
           return setProviderEndpoints$1(endpoints)
         
         default:
@@ -15016,8 +15041,9 @@
     };
 
     const resetProviders = ()=>{
-      resetProvider$1();
       resetProvider$2();
+      resetProvider$3();
+      resetProvider$1();
       resetProvider();
     };
 
@@ -15189,30 +15215,30 @@
       })
     };
 
-    let contractCall = ({ address, api, method, params, provider, block }) => {
+    let contractCall$1 = ({ address, api, method, params, provider, block }) => {
       let contract = new ethers.ethers.Contract(address, api, provider);
       let args = paramsToContractArgs({ contract, method, params });
       return contract[method](...args, { blockTag: block })
     };
 
-    let balance = ({ address, provider }) => {
+    let balance$1 = ({ address, provider }) => {
       return provider.getBalance(address)
     };
 
-    var request$1 = async ({ provider, address, api, method, params, block }) => {
+    var request$2 = async ({ provider, address, api, method, params, block }) => {
       if (api) {
-        return contractCall({ address, api, method, params, provider, block })
+        return contractCall$1({ address, api, method, params, provider, block })
       } else if (method === 'latestBlockNumber') {
         return provider.getBlockNumber()
       } else if (method === 'balance') {
-        return balance({ address, provider })
+        return balance$1({ address, provider })
       }
     };
 
     var requestBsc = async ({ address, api, method, params, block }) => {
-      let provider = getProvider$2();
+      let provider = getProvider$3();
 
-      return request$1({
+      return request$2({
         provider,
         address,
         api,
@@ -15223,9 +15249,9 @@
     };
 
     var requestEthereum = async ({ address, api, method, params, block }) => {
-      let provider = getProvider$1();
+      let provider = getProvider$2();
 
-      return request$1({
+      return request$2({
         provider,
         address,
         api,
@@ -15236,6 +15262,38 @@
     };
 
     var requestPolygon = async ({ address, api, method, params, block }) => {
+      let provider = getProvider$1();
+
+      return request$2({
+        provider,
+        address,
+        api,
+        method,
+        params,
+        block
+      })
+    };
+
+    let contractCall = ({ address, api, method, params, provider, block }) => {
+      provider.getAccountInfo(new web3_js.PublicKey(address));
+      return 
+    };
+
+    let balance = ({ address, provider }) => {
+      return provider.getBalance(new web3_js.PublicKey(address))
+    };
+
+    var request$1 = async ({ provider, address, api, method, params, block }) => {
+      if (api) {
+        return contractCall({ address, api, method, params, provider, block })
+      } else if (method === 'latestBlockNumber') {
+        return provider.getBlockHeight()  
+      } else if (method === 'balance') {
+        return balance({ address, provider })
+      }
+    };
+
+    var requestSolana = async ({ address, api, method, params, block }) => {
       let provider = getProvider();
 
       return request$1({
@@ -15248,10 +15306,14 @@
       })
     };
 
+    let supported = ['ethereum', 'bsc', 'polygon', 'solana'];
+    supported.evm = ['ethereum', 'bsc', 'polygon'];
+    supported.solana = ['solana'];
+
     let request = async function (url, options) {
       let { blockchain, address, method } = parseUrl(url);
       let { api, params, cache: cache$1, block } = options || {};
-      if(!['ethereum', 'bsc', 'polygon'].includes(blockchain)) { throw 'Unknown blockchain: ' + blockchain }
+      if(!supported.includes(blockchain)) { throw 'Unknown blockchain: ' + blockchain }
       let result = await cache({
         expires: cache$1 || 0,
         key: [blockchain, address, method, params, block],
@@ -15266,6 +15328,9 @@
 
             case 'polygon':
               return requestPolygon({ address, api, method, params, block })
+
+            case 'solana':
+              return requestSolana({ address, api, method, params, block })
               
           }
         },

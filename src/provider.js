@@ -19,6 +19,13 @@ import {
   resetProvider as resetPolygonProvider,
 } from './blockchains/polygon/provider'
 
+import {
+  getProvider as getSolanaProvider,
+  setProviderEndpoints as setSolanaProviderEndpoints,
+  setProvider as setSolanaProvider,
+  resetProvider as resetSolanaProvider,
+} from './blockchains/solana/provider'
+
 const provider = (blockchain)=>{
 
   switch (blockchain) {
@@ -33,6 +40,10 @@ const provider = (blockchain)=>{
 
     case 'polygon':
       return getPolygonProvider()
+      break
+
+    case 'solana':
+      return getSolanaProvider();
       break
     
     default:
@@ -55,6 +66,10 @@ const setProvider = (blockchain, provider)=>{
     case 'polygon':
       return setPolygonProvider(provider)
       break
+
+    case 'solana':
+      return setSolanaProvider(provider)
+      break
     
     default:
       throw 'Unknown blockchain: ' + blockchain
@@ -76,6 +91,10 @@ const setProviderEndpoints = (blockchain, endpoints)=>{
     case 'polygon':
       return setPolygonProviderEndpoints(endpoints)
       break
+
+    case 'solana':
+      return setSolanaProviderEndpoints(endpoints)
+      break
     
     default:
       throw 'Unknown blockchain: ' + blockchain
@@ -86,6 +105,7 @@ const resetProviders = ()=>{
   resetEthereumProvider()
   resetBscProvider()
   resetPolygonProvider()
+  resetSolanaProvider()
 }
 
 export {

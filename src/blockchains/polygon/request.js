@@ -1,13 +1,13 @@
 import { getProvider } from './provider'
-import request from '../../vms/evm/request'
+import request from '../../platforms/evm/request'
 
-export default async ({ address, api, method, params, block }) => {
+export default async ({ address, interface, method, params, block }) => {
   let provider = getProvider()
 
   return request({
     provider,
     address,
-    api,
+    interface,
     method,
     params,
     block

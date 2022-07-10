@@ -1,10 +1,11 @@
 import { ethers } from 'ethers'
 import { mock, resetMocks } from '@depay/web3-mock'
 import { provider, setProvider, setProviderEndpoints } from 'src/'
+import { supported } from 'src/blockchains'
 
 describe('provider', () => {
 
-  ['ethereum', 'bsc', 'polygon'].forEach((blockchain)=>{
+  supported.evm.forEach((blockchain)=>{
 
     describe(blockchain, ()=> {
 

@@ -1,7 +1,7 @@
 import { getProvider } from './provider'
-import estimate from '../../vms/evm/estimate'
+import estimate from '../../platforms/evm/estimate'
 
-export default async ({ from, to, value, method, api, params }) => {
+export default async ({ from, to, value, method, interface, params }) => {
   let provider = getProvider()
   return estimate({
     provider,
@@ -9,7 +9,7 @@ export default async ({ from, to, value, method, api, params }) => {
     to,
     value,
     method,
-    api,
+    interface,
     params
   })
 }

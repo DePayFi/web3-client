@@ -1,16 +1,16 @@
 import { mock, resetMocks, increaseBlock } from '@depay/web3-mock'
 import { request, provider, resetCache } from 'src/'
+import { supported } from 'src/blockchains'
 
 describe('request', () => {
 
-  ['ethereum', 'bsc', 'polygon'].forEach((blockchain)=>{
+  supported.solana.forEach((blockchain)=>{
 
     describe(blockchain, ()=> {
 
-      const accounts = ['0xd8da6bf26964af9d7eed9e03e53415d37aa96045']
       beforeEach(resetMocks)
       beforeEach(resetCache)
-      beforeEach(()=>mock({ blockchain, provider: provider(blockchain), accounts: { return: accounts } }))
+      beforeEach(()=>mock({ blockchain, provider: provider(blockchain)}))
 
       it('provides latest block number', async ()=> {
         let blockNumber = await request(`${blockchain}://latestBlockNumber`)
