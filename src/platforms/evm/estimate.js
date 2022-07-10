@@ -16,11 +16,11 @@ const getContractArguments = ({ contract, method, params })=>{
   }
 }
 
-export default async ({ provider, from, to, value, method, interface, params }) => {
-  if(typeof interface == "undefined"){
+export default async ({ provider, from, to, value, method, api, params }) => {
+  if(typeof api == "undefined"){
     return provider.estimateGas({ from, to, value })
   } else {
-    let contract = new ethers.Contract(to, interface, provider)
+    let contract = new ethers.Contract(to, api, provider)
     return contract.estimateGas[method](...getContractArguments({ contract, method, params }), { from, value })
   }
 }

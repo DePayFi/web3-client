@@ -15271,6 +15271,7 @@ var requestPolygon = async ({ address, api, method, params, block }) => {
 
 let contractCall = ({ address, api, method, params, provider, block }) => {
   provider.getAccountInfo(new PublicKey(address));
+  
   return 
 };
 

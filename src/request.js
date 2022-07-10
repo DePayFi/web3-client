@@ -8,7 +8,7 @@ import { supported } from './blockchains'
 
 let request = async function (url, options) {
   let { blockchain, address, method } = parseUrl(url)
-  let { interface, params, cache, block } = options || {}
+  let { api, params, cache, block } = options || {}
   if(!supported.includes(blockchain)) { throw 'Unknown blockchain: ' + blockchain }
   let result = await cacheRequest({
     expires: cache || 0,
@@ -17,19 +17,19 @@ let request = async function (url, options) {
       switch (blockchain) {
 
         case 'ethereum':
-          return requestEthereum({ address, interface, method, params, block })
+          return requestEthereum({ address, api, method, params, block })
           break
 
         case 'bsc':
-          return requestBsc({ address, interface, method, params, block })
+          return requestBsc({ address, api, method, params, block })
           break
 
         case 'polygon':
-          return requestPolygon({ address, interface, method, params, block })
+          return requestPolygon({ address, api, method, params, block })
           break
 
         case 'solana':
-          return requestSolana({ address, interface, method, params, block })
+          return requestSolana({ address, api, method, params, block })
           break
           
       }

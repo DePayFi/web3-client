@@ -15276,6 +15276,7 @@
 
     let contractCall = ({ address, api, method, params, provider, block }) => {
       provider.getAccountInfo(new web3_js.PublicKey(address));
+      
       return 
     };
 
