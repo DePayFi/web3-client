@@ -1,10 +1,11 @@
 import { ethers } from 'ethers'
 import { mock, resetMocks, connect } from '@depay/web3-mock'
 import { request, provider, resetCache } from 'src/'
+import { supported } from 'src/blockchains'
 
 describe('request contract data', () => {
 
-  ['ethereum', 'bsc', 'polygon'].forEach((blockchain)=>{
+  supported.evm.forEach((blockchain)=>{
 
     describe(blockchain, ()=> {
       beforeEach(resetMocks)
@@ -20,9 +21,9 @@ describe('request contract data', () => {
         mock({
           provider: provider(blockchain),
           blockchain,
-          call: {
+          request: {
             to: '0x7a250d5630b4cf539739df2c5dacb4c659f2488d',
-            api: api,
+            api,
             method: 'getAmountsOut',
             params: ['1000000000000000000', ['0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2','0xa0bed124a09ac2bd941b10349d8d224fe3c955eb']],
             return: ['1000000000000000000', '1310652554072266033285']
@@ -30,7 +31,7 @@ describe('request contract data', () => {
         })
         
         let value = await request(`${blockchain}://0x7a250d5630b4cf539739df2c5dacb4c659f2488d/getAmountsOut`, {
-          api: api,
+          api,
           params: {
             amountIn: '1000000000000000000',
             path: ['0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2','0xa0bed124a09ac2bd941b10349d8d224fe3c955eb']
@@ -47,9 +48,9 @@ describe('request contract data', () => {
         mock({
           provider: provider(blockchain),
           blockchain,
-          call: {
+          request: {
             to: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f',
-            api: api,
+            api,
             method: 'getPair',
             params: ['0xa0bed124a09ac2bd941b10349d8d224fe3c955eb','0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'],
             return: '0xEF8cD6Cb5c841A4f02986e8A8ab3cC545d1B8B6d'
@@ -57,7 +58,7 @@ describe('request contract data', () => {
         });
 
         let pair = await request(`${blockchain}://0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f/getPair`, {
-          api: api,
+          api,
           params: ['0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb','0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'],
           cache: 60000
         })
@@ -72,9 +73,9 @@ describe('request contract data', () => {
         mock({
           provider: provider(blockchain),
           blockchain,
-          call: {
+          request: {
             to: '0x7a250d5630b4cf539739df2c5dacb4c659f2488d',
-            api: api,
+            api,
             method: 'getAmountsOut',
             params: ['1000000000000000000', ['0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2','0xa0bed124a09ac2bd941b10349d8d224fe3c955eb']],
             return: ['1000000000000000000', '1310652554072266033285']
@@ -84,9 +85,8 @@ describe('request contract data', () => {
         let value = await request({
           blockchain,
           address: '0x7a250d5630b4cf539739df2c5dacb4c659f2488d',
-          method: 'getAmountsOut'
-        },{
-          api: api,
+          method: 'getAmountsOut',
+          api,
           params: {
             amountIn: '1000000000000000000',
             path: ['0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2','0xa0bed124a09ac2bd941b10349d8d224fe3c955eb']
@@ -105,9 +105,9 @@ describe('request contract data', () => {
           mock({
             provider: provider(blockchain),
             blockchain,
-            call: {
+            request: {
               to: '0x7a250d5630b4cf539739df2c5dacb4c659f2488d',
-              api: api,
+              api,
               method: 'getAmountsOut',
               params: ['1000000000000000000', ['0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2','0xa0bed124a09ac2bd941b10349d8d224fe3c955eb']],
               return: ['1000000000000000000', '1310652554072266033285']
@@ -115,7 +115,7 @@ describe('request contract data', () => {
           });
 
           let value = await request(`${blockchain}://0x7a250d5630b4cf539739df2c5dacb4c659f2488d/getAmountsOut`, {
-            api: api,
+            api,
             params: {
               amountIn: '1000000000000000000',
               path: ['0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2','0xa0bed124a09ac2bd941b10349d8d224fe3c955eb']
@@ -132,9 +132,9 @@ describe('request contract data', () => {
           mock({
             provider: provider(blockchain),
             blockchain,
-            call: {
+            request: {
               to: '0x7a250d5630b4cf539739df2c5dacb4c659f2488d',
-              api: api,
+              api,
               method: 'getAmountsOut',
               params: ['1000000000000000000', ['0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2','0xa0bed124a09ac2bd941b10349d8d224fe3c955eb']],
               return: ['1000000000000000000', '1310652554072266033285']
@@ -143,7 +143,7 @@ describe('request contract data', () => {
 
           connect('bsc')
           let value = await request(`${blockchain}://0x7a250d5630b4cf539739df2c5dacb4c659f2488d/getAmountsOut`, {
-            api: api,
+            api,
             params: {
               amountIn: '1000000000000000000',
               path: ['0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2','0xa0bed124a09ac2bd941b10349d8d224fe3c955eb']

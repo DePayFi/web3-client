@@ -1,5 +1,4 @@
 import { Blockchain } from '@depay/web3-blockchains'
-import { deepCopy } from "@ethersproject/properties"
 import { fetchJson } from "@ethersproject/web"
 import { JsonRpcBatchProvider } from '@ethersproject/providers'
 
@@ -42,18 +41,7 @@ class StaticJsonRpcBatchProvider extends JsonRpcBatchProvider {
           this._pendingBatchAggregator = null;
           // Get the request as an array of requests
           const request = batch.map((inflight) => inflight.request);
-          this.emit("debug", {
-            action: "requestBatch",
-            request: deepCopy(request),
-            provider: this
-          });
           return fetchJson(this.connection, JSON.stringify(request)).then((result) => {
-            this.emit("debug", {
-              action: "response",
-              request: request,
-              response: result,
-              provider: this
-            });
             // For each result, feed it to the correct Promise, depending
             // on whether it was a success or error
             batch.forEach((inflightRequest, index) => {
@@ -69,12 +57,6 @@ class StaticJsonRpcBatchProvider extends JsonRpcBatchProvider {
               }
             });
           }, (error) => {
-            this.emit("debug", {
-              action: "response",
-              error: error,
-              request: request,
-              provider: this
-            });
             batch.forEach((inflightRequest) => {
               inflightRequest.reject(error);
             });
@@ -85,4 +67,4 @@ class StaticJsonRpcBatchProvider extends JsonRpcBatchProvider {
   }
 }
 
-export { StaticJsonRpcBatchProvider }
+export default StaticJsonRpcBatchProvider

@@ -1,10 +1,11 @@
 import { ethers } from 'ethers'
 import { mock, resetMocks } from '@depay/web3-mock'
 import { request, resetCache, provider } from 'src/'
+import { supported } from 'src/blockchains'
 
 describe('request cache', () => {
 
-  ['ethereum', 'bsc', 'polygon'].forEach((blockchain)=>{
+  supported.evm.forEach((blockchain)=>{
 
     const ERC20 = [{constant:true,inputs:[],name:'name',outputs:[{name:'',type:'string'}],payable:false,stateMutability:'view',type:'function',},{constant:false,inputs:[{name:'_spender',type:'address'},{name:'_value',type:'uint256'},],name:'approve',outputs:[{name:'',type:'bool'}],payable:false,stateMutability:'nonpayable',type:'function',},{constant:true,inputs:[],name:'totalSupply',outputs:[{name:'',type:'uint256'}],payable:false,stateMutability:'view',type:'function',},{constant:false,inputs:[{name:'_from',type:'address'},{name:'_to',type:'address'},{name:'_value',type:'uint256'},],name:'transferFrom',outputs:[{name:'',type:'bool'}],payable:false,stateMutability:'nonpayable',type:'function',},{constant:true,inputs:[],name:'decimals',outputs:[{name:'',type:'uint8'}],payable:false,stateMutability:'view',type:'function',},{constant:true,inputs:[{name:'_owner',type:'address'}],name:'balanceOf',outputs:[{name:'balance',type:'uint256'}],payable:false,stateMutability:'view',type:'function',},{constant:true,inputs:[],name:'symbol',outputs:[{name:'',type:'string'}],payable:false,stateMutability:'view',type:'function',},{constant:false,inputs:[{name:'_to',type:'address'},{name:'_value',type:'uint256'},],name:'transfer',outputs:[{name:'',type:'bool'}],payable:false,stateMutability:'nonpayable',type:'function',},{constant:true,inputs:[{name:'_owner',type:'address'},{name:'_spender',type:'address'},],name:'allowance',outputs:[{name:'',type:'uint256'}],payable:false,stateMutability:'view',type:'function',},{payable:true,stateMutability:'payable',type:'fallback'},{anonymous:false,inputs:[{indexed:true,name:'owner',type:'address'},{indexed:true,name:'spender',type:'address'},{indexed:false,name:'value',type:'uint256'},],name:'Approval',type:'event',},{anonymous:false,inputs:[{indexed:true,name:'from',type:'address'},{indexed:true,name:'to',type:'address'},{indexed:false,name:'value',type:'uint256'},],name:'Transfer',type:'event',}];
 
@@ -20,7 +21,7 @@ describe('request cache', () => {
       let doRequestWithCache = async function(){
         return await request(`${blockchain}://0x7a250d5630b4cf539739df2c5dacb4c659f2488d/getAmountsOut`, {
           cache: 1000,
-          api: api,
+          api,
           params: {
             amountIn: '1000000000000000000',
             path: ['0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2','0xa0bed124a09ac2bd941b10349d8d224fe3c955eb']
@@ -30,7 +31,7 @@ describe('request cache', () => {
 
       let doRequestWithoutCache = async function(){
         return await request(`${blockchain}://0x7a250d5630b4cf539739df2c5dacb4c659f2488d/getAmountsOut`, {
-          api: api,
+          api,
           params: {
             amountIn: '1000000000000000000',
             path: ['0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2','0xa0bed124a09ac2bd941b10349d8d224fe3c955eb']
@@ -42,9 +43,9 @@ describe('request cache', () => {
         return mock({
           provider: provider(blockchain),
           blockchain,
-          call: {
+          request: {
             to: '0x7a250d5630b4cf539739df2c5dacb4c659f2488d',
-            api: api,
+            api,
             method: 'getAmountsOut',
             params: ['1000000000000000000', ['0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2','0xa0bed124a09ac2bd941b10349d8d224fe3c955eb']],
             return: ['1000000000000000000', '1310652554072266033285']
@@ -65,21 +66,21 @@ describe('request cache', () => {
 
       it('serves responses made in parallel for various requests correctly', async ()=> {
 
-        let decimalMock1 = mock({ provider: provider(blockchain), blockchain, call: { to: '0x6b175474e89094c44da98b954eedeac495271d0f', api: ERC20, method: 'decimals', return: '18' } })
-        let decimalMock2 = mock({ provider: provider(blockchain), blockchain, call: { to: '0xdac17f958d2ee523a2206206994597c13d831ec7', api: ERC20, method: 'decimals', return: '6' } })
-        let decimalMock3 = mock({ provider: provider(blockchain), blockchain, call: { to: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb', api: ERC20, method: 'decimals', return: '18' } })
-        let decimalMock4 = mock({ provider: provider(blockchain), blockchain, call: { to: '0x3ab100442484dc2414aa75b2952a0a6f03f8abfd', api: ERC20, method: 'decimals', return: '8' } })
+        let decimalMock1 = mock({ provider: provider(blockchain), blockchain, request: { to: '0x6b175474e89094c44da98b954eedeac495271d0f', api: ERC20, method: 'decimals', return: '18' } })
+        let decimalMock2 = mock({ provider: provider(blockchain), blockchain, request: { to: '0xdac17f958d2ee523a2206206994597c13d831ec7', api: ERC20, method: 'decimals', return: '6' } })
+        let decimalMock3 = mock({ provider: provider(blockchain), blockchain, request: { to: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb', api: ERC20, method: 'decimals', return: '18' } })
+        let decimalMock4 = mock({ provider: provider(blockchain), blockchain, request: { to: '0x3ab100442484dc2414aa75b2952a0a6f03f8abfd', api: ERC20, method: 'decimals', return: '8' } })
 
         let decimals = await Promise.all([
-          request({ blockchain, address: '0x6b175474e89094c44da98b954eedeac495271d0f', method: 'decimals' },{ api: ERC20, cache: 86400000 }),
-          request({ blockchain, address: '0xdac17f958d2ee523a2206206994597c13d831ec7', method: 'decimals' },{ api: ERC20, cache: 86400000 }),
-          request({ blockchain, address: '0x6b175474e89094c44da98b954eedeac495271d0f', method: 'decimals' },{ api: ERC20, cache: 86400000 }),
-          request({ blockchain, address: '0xdac17f958d2ee523a2206206994597c13d831ec7', method: 'decimals' },{ api: ERC20, cache: 86400000 }),
-          request({ blockchain, address: '0x6b175474e89094c44da98b954eedeac495271d0f', method: 'decimals' },{ api: ERC20, cache: 86400000 }),
-          request({ blockchain, address: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb', method: 'decimals' },{ api: ERC20, cache: 86400000 }),
-          request({ blockchain, address: '0x3ab100442484dc2414aa75b2952a0a6f03f8abfd', method: 'decimals' },{ api: ERC20, cache: 86400000 }),
-          request({ blockchain, address: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb', method: 'decimals' },{ api: ERC20, cache: 86400000 }),
-          request({ blockchain, address: '0x3ab100442484dc2414aa75b2952a0a6f03f8abfd', method: 'decimals' },{ api: ERC20, cache: 86400000 }),
+          request({ blockchain, address: '0x6b175474e89094c44da98b954eedeac495271d0f', method: 'decimals', api: ERC20, cache: 86400000 }),
+          request({ blockchain, address: '0xdac17f958d2ee523a2206206994597c13d831ec7', method: 'decimals', api: ERC20, cache: 86400000 }),
+          request({ blockchain, address: '0x6b175474e89094c44da98b954eedeac495271d0f', method: 'decimals', api: ERC20, cache: 86400000 }),
+          request({ blockchain, address: '0xdac17f958d2ee523a2206206994597c13d831ec7', method: 'decimals', api: ERC20, cache: 86400000 }),
+          request({ blockchain, address: '0x6b175474e89094c44da98b954eedeac495271d0f', method: 'decimals', api: ERC20, cache: 86400000 }),
+          request({ blockchain, address: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb', method: 'decimals', api: ERC20, cache: 86400000 }),
+          request({ blockchain, address: '0x3ab100442484dc2414aa75b2952a0a6f03f8abfd', method: 'decimals', api: ERC20, cache: 86400000 }),
+          request({ blockchain, address: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb', method: 'decimals', api: ERC20, cache: 86400000 }),
+          request({ blockchain, address: '0x3ab100442484dc2414aa75b2952a0a6f03f8abfd', method: 'decimals', api: ERC20, cache: 86400000 }),
         ])
 
         expect(decimals).toEqual([18, 6, 18, 6, 18, 18, 8, 18, 8])
@@ -92,8 +93,8 @@ describe('request cache', () => {
 
       it('serves responses correctly even if some of them fail', async ()=>{
 
-        let decimalMock1 = mock({ provider: provider(blockchain), blockchain, call: { to: '0x6b175474e89094c44da98b954eedeac495271d0f', api: ERC20, method: 'decimals', return: Error('something went wrong') } })
-        let decimalMock2 = mock({ provider: provider(blockchain), blockchain, call: { to: '0xdac17f958d2ee523a2206206994597c13d831ec7', api: ERC20, method: 'decimals', return: '6' } })
+        let decimalMock1 = mock({ provider: provider(blockchain), blockchain, request: { to: '0x6b175474e89094c44da98b954eedeac495271d0f', api: ERC20, method: 'decimals', return: Error('something went wrong') } })
+        let decimalMock2 = mock({ provider: provider(blockchain), blockchain, request: { to: '0xdac17f958d2ee523a2206206994597c13d831ec7', api: ERC20, method: 'decimals', return: '6' } })
 
         request({ blockchain, address: '0x6b175474e89094c44da98b954eedeac495271d0f', method: 'decimals' },{ api: ERC20, cache: 86400000 })
           .then(()=>{})

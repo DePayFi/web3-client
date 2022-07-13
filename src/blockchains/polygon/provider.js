@@ -1,4 +1,4 @@
-import { StaticJsonRpcBatchProvider } from '../../ethers/providers'
+import StaticJsonRpcBatchProvider from '../../clients/ethers/provider'
 
 let provider
 

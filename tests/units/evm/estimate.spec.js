@@ -1,9 +1,10 @@
 import { estimate, provider, resetCache } from 'src/'
 import { mock, resetMocks } from '@depay/web3-mock'
+import { supported } from 'src/blockchains'
 
 describe('estimate', () => {
 
-  ['ethereum', 'bsc', 'polygon'].forEach((blockchain)=>{
+  supported.evm.forEach((blockchain)=>{
 
     describe(blockchain, ()=> {
 

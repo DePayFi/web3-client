@@ -1,4 +1,4 @@
-import StaticJsonRpcBatchProvider from '../../clients/ethers/provider'
+import StaticJsonRpcBatchProvider from '../../clients/solana/provider'
 
 let provider
 
@@ -6,7 +6,7 @@ const getProvider = ()=> {
 
   if(provider) { return provider }
 
-  setProviderEndpoints(['https://bsc-dataseed.binance.org'])
+  setProviderEndpoints(['https://api.mainnet-beta.solana.com'])
 
   return provider
 }
@@ -14,7 +14,7 @@ const getProvider = ()=> {
 const setProviderEndpoints = (endpoints)=> {
   setProvider(
     new StaticJsonRpcBatchProvider(
-      endpoints[0], 'bsc'
+      endpoints[0], 'solana'
     )
   )
 }
