@@ -8,7 +8,7 @@ import { supported } from './blockchains'
 
 let request = async function (url, options) {
   let { blockchain, address, method } = parseUrl(url)
-  let { api, params, cache, block } = options || {}
+  let { api, params, cache, block } = (typeof(url) == 'object' ? url : options) || {}
   if(!supported.includes(blockchain)) { throw 'Unknown blockchain: ' + blockchain }
   let result = await cacheRequest({
     expires: cache || 0,

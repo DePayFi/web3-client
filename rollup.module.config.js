@@ -32,9 +32,7 @@ export default {
       exclude: ['node_modules/**'],
       transforms: ['jsx']
     }),
-    resolve({
-      extensions: ['.js',  '.jsx']
-    }),
+    resolve(),
     nodeResolve(),
     commonjs({
       include: 'node_modules/**'

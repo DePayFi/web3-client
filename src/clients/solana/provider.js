@@ -1,4 +1,4 @@
-import { Connection } from '@solana/web3.js'
+import { Connection } from '@depay/solana-web3.js'
 
 class StaticJsonRpcSequentialProvider extends Connection {
 

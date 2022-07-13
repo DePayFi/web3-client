@@ -1,6 +1,5 @@
-import { request, provider, resetCache } from 'src/'
-import { ethers } from 'ethers'
 import { mock, resetMocks } from '@depay/web3-mock'
+import { request, provider, resetCache } from 'src/'
 import { supported } from 'src/blockchains'
 
 describe('request balance', () => {

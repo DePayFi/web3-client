@@ -43,7 +43,7 @@ describe('request cache', () => {
         return mock({
           provider: provider(blockchain),
           blockchain,
-          call: {
+          request: {
             to: '0x7a250d5630b4cf539739df2c5dacb4c659f2488d',
             api,
             method: 'getAmountsOut',
@@ -66,21 +66,21 @@ describe('request cache', () => {
 
       it('serves responses made in parallel for various requests correctly', async ()=> {
 
-        let decimalMock1 = mock({ provider: provider(blockchain), blockchain, call: { to: '0x6b175474e89094c44da98b954eedeac495271d0f', api: ERC20, method: 'decimals', return: '18' } })
-        let decimalMock2 = mock({ provider: provider(blockchain), blockchain, call: { to: '0xdac17f958d2ee523a2206206994597c13d831ec7', api: ERC20, method: 'decimals', return: '6' } })
-        let decimalMock3 = mock({ provider: provider(blockchain), blockchain, call: { to: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb', api: ERC20, method: 'decimals', return: '18' } })
-        let decimalMock4 = mock({ provider: provider(blockchain), blockchain, call: { to: '0x3ab100442484dc2414aa75b2952a0a6f03f8abfd', api: ERC20, method: 'decimals', return: '8' } })
+        let decimalMock1 = mock({ provider: provider(blockchain), blockchain, request: { to: '0x6b175474e89094c44da98b954eedeac495271d0f', api: ERC20, method: 'decimals', return: '18' } })
+        let decimalMock2 = mock({ provider: provider(blockchain), blockchain, request: { to: '0xdac17f958d2ee523a2206206994597c13d831ec7', api: ERC20, method: 'decimals', return: '6' } })
+        let decimalMock3 = mock({ provider: provider(blockchain), blockchain, request: { to: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb', api: ERC20, method: 'decimals', return: '18' } })
+        let decimalMock4 = mock({ provider: provider(blockchain), blockchain, request: { to: '0x3ab100442484dc2414aa75b2952a0a6f03f8abfd', api: ERC20, method: 'decimals', return: '8' } })
 
         let decimals = await Promise.all([
-          request({ blockchain, address: '0x6b175474e89094c44da98b954eedeac495271d0f', method: 'decimals' },{ api: ERC20, cache: 86400000 }),
-          request({ blockchain, address: '0xdac17f958d2ee523a2206206994597c13d831ec7', method: 'decimals' },{ api: ERC20, cache: 86400000 }),
-          request({ blockchain, address: '0x6b175474e89094c44da98b954eedeac495271d0f', method: 'decimals' },{ api: ERC20, cache: 86400000 }),
-          request({ blockchain, address: '0xdac17f958d2ee523a2206206994597c13d831ec7', method: 'decimals' },{ api: ERC20, cache: 86400000 }),
-          request({ blockchain, address: '0x6b175474e89094c44da98b954eedeac495271d0f', method: 'decimals' },{ api: ERC20, cache: 86400000 }),
-          request({ blockchain, address: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb', method: 'decimals' },{ api: ERC20, cache: 86400000 }),
-          request({ blockchain, address: '0x3ab100442484dc2414aa75b2952a0a6f03f8abfd', method: 'decimals' },{ api: ERC20, cache: 86400000 }),
-          request({ blockchain, address: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb', method: 'decimals' },{ api: ERC20, cache: 86400000 }),
-          request({ blockchain, address: '0x3ab100442484dc2414aa75b2952a0a6f03f8abfd', method: 'decimals' },{ api: ERC20, cache: 86400000 }),
+          request({ blockchain, address: '0x6b175474e89094c44da98b954eedeac495271d0f', method: 'decimals', api: ERC20, cache: 86400000 }),
+          request({ blockchain, address: '0xdac17f958d2ee523a2206206994597c13d831ec7', method: 'decimals', api: ERC20, cache: 86400000 }),
+          request({ blockchain, address: '0x6b175474e89094c44da98b954eedeac495271d0f', method: 'decimals', api: ERC20, cache: 86400000 }),
+          request({ blockchain, address: '0xdac17f958d2ee523a2206206994597c13d831ec7', method: 'decimals', api: ERC20, cache: 86400000 }),
+          request({ blockchain, address: '0x6b175474e89094c44da98b954eedeac495271d0f', method: 'decimals', api: ERC20, cache: 86400000 }),
+          request({ blockchain, address: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb', method: 'decimals', api: ERC20, cache: 86400000 }),
+          request({ blockchain, address: '0x3ab100442484dc2414aa75b2952a0a6f03f8abfd', method: 'decimals', api: ERC20, cache: 86400000 }),
+          request({ blockchain, address: '0xa0bEd124a09ac2Bd941b10349d8d224fe3c955eb', method: 'decimals', api: ERC20, cache: 86400000 }),
+          request({ blockchain, address: '0x3ab100442484dc2414aa75b2952a0a6f03f8abfd', method: 'decimals', api: ERC20, cache: 86400000 }),
         ])
 
         expect(decimals).toEqual([18, 6, 18, 6, 18, 18, 8, 18, 8])
@@ -93,8 +93,8 @@ describe('request cache', () => {
 
       it('serves responses correctly even if some of them fail', async ()=>{
 
-        let decimalMock1 = mock({ provider: provider(blockchain), blockchain, call: { to: '0x6b175474e89094c44da98b954eedeac495271d0f', api: ERC20, method: 'decimals', return: Error('something went wrong') } })
-        let decimalMock2 = mock({ provider: provider(blockchain), blockchain, call: { to: '0xdac17f958d2ee523a2206206994597c13d831ec7', api: ERC20, method: 'decimals', return: '6' } })
+        let decimalMock1 = mock({ provider: provider(blockchain), blockchain, request: { to: '0x6b175474e89094c44da98b954eedeac495271d0f', api: ERC20, method: 'decimals', return: Error('something went wrong') } })
+        let decimalMock2 = mock({ provider: provider(blockchain), blockchain, request: { to: '0xdac17f958d2ee523a2206206994597c13d831ec7', api: ERC20, method: 'decimals', return: '6' } })
 
         request({ blockchain, address: '0x6b175474e89094c44da98b954eedeac495271d0f', method: 'decimals' },{ api: ERC20, cache: 86400000 })
           .then(()=>{})
