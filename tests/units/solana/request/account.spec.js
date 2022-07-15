@@ -55,6 +55,26 @@ describe('request balance', () => {
         expect(data.closeAuthorityOption).toEqual(0)
         expect(data.closeAuthority.toString()).toEqual('11111111111111111111111111111111')
       })
+
+      it('should fail', async ()=> {
+
+        let api = struct([ publicKey('mint'), publicKey('owner'), u64('amount'), u32('delegateOption'), publicKey('delegate'), u8('state'), u32('isNativeOption'), u64('isNative'), u64('delegatedAmount'), u32('closeAuthorityOption'), publicKey('closeAuthority')])
+
+        let requestMock = mock({
+          provider: provider(blockchain),
+          blockchain,
+          request: {
+            method: 'getAccountInfo',
+            to: '2wmVCSfPxGPjrnMMn7rchp4uaeoTqN39mXFC2zhPdri9',
+            api,
+            return: Error('SOMETHING WENT WRONG')
+          }
+        })
+
+        await expect(
+          request('solana://2wmVCSfPxGPjrnMMn7rchp4uaeoTqN39mXFC2zhPdri9', { api })
+        ).rejects.toEqual(Error('failed to get info about account 2wmVCSfPxGPjrnMMn7rchp4uaeoTqN39mXFC2zhPdri9: SOMETHING WENT WRONG'))
+      })
     })
   })
 })

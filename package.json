@@ -1,7 +1,7 @@
 {
   "name": "@depay/web3-client",
   "moduleName": "Web3Client",
-  "version": "9.0.0",
+  "version": "9.0.1",
   "description": "A web3 client to fetch blockchain data just like you are used to with HTTP clients.",
   "main": "dist/umd/index.js",
   "module": "dist/esm/index.js",
@@ -46,7 +46,7 @@
     "@depay/solana-web3.js": "^1.5.0",
     "@depay/web3-blockchains": "^5.0.2",
     "@depay/web3-constants": "^6.1.1",
-    "@depay/web3-mock": "^13.1.0",
+    "@depay/web3-mock": "^13.3.0",
     "@rollup/plugin-commonjs": "^22.0.1",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^13.3.0",
