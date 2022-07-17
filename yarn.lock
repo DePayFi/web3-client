@@ -911,10 +911,10 @@
   resolved "https://registry.yarnpkg.com/@depay/web3-constants/-/web3-constants-6.1.1.tgz#4ffa1f63f5af1ac359c6d44eddd8759c58d1f900"
   integrity sha512-HWRAGZ3x1Xgs0BXjNeARNsvh4pGZBASK+n6tRg5irpxA+e6OW/ncrmva+eA90dMJuCe2b+tJRfJWsFKRrAXJlw==
 
-"@depay/web3-mock@^13.3.0":
-  version "13.3.0"
-  resolved "https://registry.yarnpkg.com/@depay/web3-mock/-/web3-mock-13.3.0.tgz#2d216637d8ad62d937b8f329a8a9070b99d83792"
-  integrity sha512-2yJNj7Y98DeYNXQbgnsw5BtllwSt/DmVSjdd1uJjXkSkQ03OHkYbjqxstYei7nYX6vVyZwKBO9cQ/D3w7XyUJg==
+"@depay/web3-mock@^13.6.0":
+  version "13.6.0"
+  resolved "https://registry.yarnpkg.com/@depay/web3-mock/-/web3-mock-13.6.0.tgz#7167458916394a3f234b86f760889b9edce709af"
+  integrity sha512-b+kGqK9eQUfZFCiVVzFSw/HDZ+JPzF+IDBlZL7pSihjwx/N0fC9Wfn2hTsDzSRjYCEO7IXWXmQGw9HXzKBMqWw==
 
 "@eslint/eslintrc@^0.4.3":
   version "0.4.3"

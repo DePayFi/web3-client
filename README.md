@@ -64,13 +64,36 @@ request('ethereum://0x7a250d5630b4cf539739df2c5dacb4c659f2488d/getAmountsOut', {
 
 ##### Solana: request data
 
+###### Solana: getAccountInfo
+
+Either pass `/getAccountInfo` as explicit method, or pass no method to a request and it will perform a `getAccountInfo` explicitly.
+
 ```javascript
 import { request } from '@depay/web3-client'
 import { struct, publicKey, u64, u32, u8 } from '@depay/solana-web3.js'
 
-request('solana://EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', {
-  api: struct([ publicKey('mint'), publicKey('owner'), u64('amount'), u32('delegateOption'), publicKey('delegate'), u8('state'), u32('isNativeOption'), u64('isNative'), u64('delegatedAmount'), u32('closeAuthorityOption'), publicKey('closeAuthority')])
-}).then((value)=>console.log(value))
+let api = struct([ publicKey('mint'), publicKey('owner'), u64('amount'), u32('delegateOption'), publicKey('delegate'), u8('state'), u32('isNativeOption'), u64('isNative'), u64('delegatedAmount'), u32('closeAuthorityOption'), publicKey('closeAuthority')])
+
+request('solana://EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', { api })
+request('solana://EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v/getAccountInfo', { api })
+```
+
+###### Solana: other methods
+
+For all other methods just pass them:
+
+```javascript
+
+let wallet = '2UgCJaHU5y8NC4uWQcZYeV9a5RyYLF7iKYCybCsdFFD1'
+let mint = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'
+
+let filters = [
+  { dataSize: 165 },
+  { memcmp: { offset: 32, bytes: wallet }},
+  { memcmp: { offset: 0, bytes: mint }},
+]
+
+request('solana://TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA/getProgramAccounts', { api, params: { filters } })
 ```
 
 #### request account balance

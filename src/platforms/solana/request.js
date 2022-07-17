@@ -11,7 +11,13 @@ let balance = ({ address, provider }) => {
 
 export default async ({ provider, address, api, method, params, block }) => {
   if (api) {
-    return accountInfo({ address, api, method, params, provider, block })
+    if(method == undefined || method === 'getAccountInfo') {
+      return accountInfo({ address, api, method, params, provider, block })
+    }
+  } else if(method === 'getProgramAccounts') {
+    return provider.getProgramAccounts(new PublicKey(address), params)
+  } else if(method === 'getTokenAccountBalance') {
+    return provider.getTokenAccountBalance(new PublicKey(address))
   } else if (method === 'latestBlockNumber') {
     return provider.getBlockHeight()  
   } else if (method === 'balance') {
