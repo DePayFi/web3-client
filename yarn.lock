@@ -896,10 +896,10 @@
     "@babel/helper-validator-identifier" "^7.14.9"
     to-fast-properties "^2.0.0"
 
-"@depay/solana-web3.js@^1.5.0":
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/@depay/solana-web3.js/-/solana-web3.js-1.5.0.tgz#05d2ea44391baff02a0170c3bde7744225127f90"
-  integrity sha512-t9H9V+tGBOHqPNQ92qvco7LCC07mSO6nni+OxwA8rKAPtW6NaLhTD50XMmm9Rk4C3kH3def1aqAWepYKD+p0xg==
+"@depay/solana-web3.js@^1.9.0":
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/@depay/solana-web3.js/-/solana-web3.js-1.9.0.tgz#5293164771da96baccc427683c4a7eba87b6deee"
+  integrity sha512-PCPpG4u8fG5AHcCyMPLUIt+909HqjeZvwEXJukqBVy/mYj/2raNeivH1o3uGyajJ9t1ayDlrviFNxNX8rrnVnA==
 
 "@depay/web3-blockchains@^5.0.2":
   version "5.0.2"
@@ -911,10 +911,10 @@
   resolved "https://registry.yarnpkg.com/@depay/web3-constants/-/web3-constants-6.1.1.tgz#4ffa1f63f5af1ac359c6d44eddd8759c58d1f900"
   integrity sha512-HWRAGZ3x1Xgs0BXjNeARNsvh4pGZBASK+n6tRg5irpxA+e6OW/ncrmva+eA90dMJuCe2b+tJRfJWsFKRrAXJlw==
 
-"@depay/web3-mock@^13.6.0":
-  version "13.6.0"
-  resolved "https://registry.yarnpkg.com/@depay/web3-mock/-/web3-mock-13.6.0.tgz#7167458916394a3f234b86f760889b9edce709af"
-  integrity sha512-b+kGqK9eQUfZFCiVVzFSw/HDZ+JPzF+IDBlZL7pSihjwx/N0fC9Wfn2hTsDzSRjYCEO7IXWXmQGw9HXzKBMqWw==
+"@depay/web3-mock@^13.6.4":
+  version "13.6.4"
+  resolved "https://registry.yarnpkg.com/@depay/web3-mock/-/web3-mock-13.6.4.tgz#469aadd4362b9de8cc2a1818e8c1950768f43652"
+  integrity sha512-8r9QA4BqXd3K8alNojBlLlJ2PEQ+6lqmSFFnkxoUe69Yg68KgKuc0L4EpTNvK+sog5UMkJ3U1bYY+KFlnbQB5g==
 
 "@eslint/eslintrc@^0.4.3":
   version "0.4.3"
