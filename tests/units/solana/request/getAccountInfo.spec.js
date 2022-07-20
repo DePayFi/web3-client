@@ -41,7 +41,7 @@ describe('request getAccountInfo', () => {
           }
         })
 
-        let data = await request('solana://2wmVCSfPxGPjrnMMn7rchp4uaeoTqN39mXFC2zhPdri9', { api })
+        let data = await request('solana://2wmVCSfPxGPjrnMMn7rchp4uaeoTqN39mXFC2zhPdri9')
 
         expect(data.mint.toString()).toEqual('8rUUP52Bb6Msg6E14odyPWUFafi5wLEMpLjtmNfBp3r')
         expect(data.owner.toString()).toEqual('Cq7CPoJ3b84nANKnz61HCCywSMVJNbRzmoaqvAxBi4vX')

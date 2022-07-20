@@ -896,10 +896,10 @@
     "@babel/helper-validator-identifier" "^7.14.9"
     to-fast-properties "^2.0.0"
 
-"@depay/solana-web3.js@^1.9.0":
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/@depay/solana-web3.js/-/solana-web3.js-1.9.0.tgz#5293164771da96baccc427683c4a7eba87b6deee"
-  integrity sha512-PCPpG4u8fG5AHcCyMPLUIt+909HqjeZvwEXJukqBVy/mYj/2raNeivH1o3uGyajJ9t1ayDlrviFNxNX8rrnVnA==
+"@depay/solana-web3.js@^1.12.0":
+  version "1.13.0"
+  resolved "https://registry.yarnpkg.com/@depay/solana-web3.js/-/solana-web3.js-1.13.0.tgz#78630d87a54b535f588ae94c0740b24188d9200c"
+  integrity sha512-x4hT4sEubmUV/Y4/RKCBxdVGdARvJ3Ij2RhW0wXiS/PmTiDSem8wSBAoQml7JufftjSCQeZWs8CIJx4wksGdFQ==
 
 "@depay/web3-blockchains@^5.0.2":
   version "5.0.2"

@@ -1,6 +1,6 @@
 import { Blockchain } from '@depay/web3-blockchains';
 import { ethers } from 'ethers';
-import { Connection, PublicKey } from '@depay/solana-web3.js';
+import { Connection, PublicKey, ACCOUNT_LAYOUT } from '@depay/solana-web3.js';
 
 const version$f = "logger/5.6.0";
 
@@ -15283,10 +15283,11 @@ let balance = ({ address, provider }) => {
 };
 
 var request$1 = async ({ provider, address, api, method, params, block }) => {
-  if (api) {
-    if(method == undefined || method === 'getAccountInfo') {
-      return accountInfo({ address, api, method, params, provider, block })
+  if(method == undefined || method === 'getAccountInfo') {
+    if(api == undefined) { 
+      api = ACCOUNT_LAYOUT; 
     }
+    return accountInfo({ address, api, method, params, provider, block })
   } else if(method === 'getProgramAccounts') {
     return provider.getProgramAccounts(new PublicKey(address), params)
   } else if(method === 'getTokenAccountBalance') {

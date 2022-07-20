@@ -15285,10 +15285,11 @@
     };
 
     var request$1 = async ({ provider, address, api, method, params, block }) => {
-      if (api) {
-        if(method == undefined || method === 'getAccountInfo') {
-          return accountInfo({ address, api, method, params, provider, block })
+      if(method == undefined || method === 'getAccountInfo') {
+        if(api == undefined) { 
+          api = solanaWeb3_js.ACCOUNT_LAYOUT; 
         }
+        return accountInfo({ address, api, method, params, provider, block })
       } else if(method === 'getProgramAccounts') {
         return provider.getProgramAccounts(new solanaWeb3_js.PublicKey(address), params)
       } else if(method === 'getTokenAccountBalance') {

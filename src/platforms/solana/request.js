@@ -1,4 +1,4 @@
-import { PublicKey } from '@depay/solana-web3.js'
+import { PublicKey, ACCOUNT_LAYOUT } from '@depay/solana-web3.js'
 
 let accountInfo = async ({ address, api, method, params, provider, block }) => {
   const info = await provider.getAccountInfo(new PublicKey(address))
@@ -10,10 +10,11 @@ let balance = ({ address, provider }) => {
 }
 
 export default async ({ provider, address, api, method, params, block }) => {
-  if (api) {
-    if(method == undefined || method === 'getAccountInfo') {
-      return accountInfo({ address, api, method, params, provider, block })
+  if(method == undefined || method === 'getAccountInfo') {
+    if(api == undefined) { 
+      api = ACCOUNT_LAYOUT 
     }
+    return accountInfo({ address, api, method, params, provider, block })
   } else if(method === 'getProgramAccounts') {
     return provider.getProgramAccounts(new PublicKey(address), params)
   } else if(method === 'getTokenAccountBalance') {
