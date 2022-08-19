@@ -16,7 +16,16 @@ export default async ({ provider, address, api, method, params, block }) => {
     }
     return accountInfo({ address, api, method, params, provider, block })
   } else if(method === 'getProgramAccounts') {
-    return provider.getProgramAccounts(new PublicKey(address), params)
+    return provider.getProgramAccounts(new PublicKey(address), params).then((accounts)=>{
+      if(api){
+        return accounts.map((account)=>{
+          account.data = api.decode(account.account.data)
+          return account
+        })
+      } else {
+        return accounts
+      }
+    })
   } else if(method === 'getTokenAccountBalance') {
     return provider.getTokenAccountBalance(new PublicKey(address))
   } else if (method === 'latestBlockNumber') {

@@ -15291,7 +15291,16 @@
         }
         return accountInfo({ address, api, method, params, provider, block })
       } else if(method === 'getProgramAccounts') {
-        return provider.getProgramAccounts(new solanaWeb3_js.PublicKey(address), params)
+        return provider.getProgramAccounts(new solanaWeb3_js.PublicKey(address), params).then((accounts)=>{
+          if(api){
+            return accounts.map((account)=>{
+              account.data = api.decode(account.account.data);
+              return account
+            })
+          } else {
+            return accounts
+          }
+        })
       } else if(method === 'getTokenAccountBalance') {
         return provider.getTokenAccountBalance(new solanaWeb3_js.PublicKey(address))
       } else if (method === 'latestBlockNumber') {
