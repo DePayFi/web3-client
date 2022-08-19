@@ -6,7 +6,7 @@ const getProvider = ()=> {
 
   if(provider) { return provider }
 
-  setProviderEndpoints(['https://api.mainnet-beta.solana.com'])
+  setProviderEndpoints(['https://solana-mainnet.phantom.tech'])
 
   return provider
 }

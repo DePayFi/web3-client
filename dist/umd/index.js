@@ -14952,7 +14952,7 @@
 
       if(provider$1) { return provider$1 }
 
-      setProviderEndpoints$1(['https://api.mainnet-beta.solana.com']);
+      setProviderEndpoints$1(['https://solana-mainnet.phantom.tech']);
 
       return provider$1
     };
