@@ -228,7 +228,34 @@ The number passed to `cache` is the amount of ms the cached result should stay v
 
 If nothing or `0` is passed to `cache`, the request is not cached.
 
-#### resetCache
+### simulate
+
+#### Solana: simulate
+
+Simulate a transaction.
+
+```javascript
+import { simulate } from '@depay/web3-client'
+
+let { logs } = await simulate({
+  blockchain: 'solana',
+  from: 'RaydiumSimuLateTransaction11111111111111111',
+  to: '675kPX9MHTjS2zt1qfr1NYHuzeLXfQM9H24wFSUt1Mp8',
+  keys: [
+    { pubkey: "58oQChx4yWmvKdwLLZzBi4ChoCc2fqCUWBkwMihLYQo2", isWritable: false, isSigner: false },
+    { pubkey: "5Q544fKrFoe6tsEbD7S8EmxGTJYAKtTVhAW5Q5pge4j1", isWritable: false, isSigner: false },
+    { pubkey: "HRk9CMrpq7Jn9sh7mzxE8CChHG8dneX9p475QKz4Fsfc", isWritable: false, isSigner: false },
+    { pubkey: "DQyrAcCrDXQ7NeoqGgDCZwBvWDcYmFCjSb9JtteuvPpz", isWritable: false, isSigner: false },
+    { pubkey: "HLmqeL62xR1QoZ1HKKbXRrdN1p3phKpxRMb2VVopvBBz", isWritable: false, isSigner: false },
+    { pubkey: "8HoQnePLqPj4M7PUDzfw8e3Ymdwgc7NLGnaTUapubyvu", isWritable: false, isSigner: false },
+    { pubkey: "9wFFyRfZBsuAha4YcuxcXLKwMxJR43S7fPfQLusDBzvT", isWritable: false, isSigner: false },
+  ],
+  api: struct([ u8("instruction"), u8("simulateType") ]),
+  params: { instruction: 12, simulateType: 0 }
+})
+```
+
+### resetCache
 
 Make sure you reset cache between your tests to prevent cached states affect other tests:
 
