@@ -31,6 +31,14 @@ request('ethereum://0x7a250d5630b4cf539739df2c5dacb4c659f2488d/getAmountsOut', {
 }).then((value)=>console.log(value))
 ```
 
+## Platform specific packaging
+
+In case you want to use and package only specific platforms, use platform specific entrypoints:
+
+```javascript
+import { request } from '@depay/web3-client/index.evm'
+```
+
 ## Support
 
 This library supports the following blockchains:

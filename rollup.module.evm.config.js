@@ -8,18 +8,18 @@ import sucrase from '@rollup/plugin-sucrase'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 
 export default {
-  input: 'src/index.js',
+  input: 'src/index.evm.js',
   output: [
     {
       format: 'es',
       globals: globals,
-      file: 'dist/esm/index.js'
+      file: 'dist/esm/index.evm.js'
     },
     {
       format: 'umd',
       name: pkg.moduleName,
       globals: globals,
-      file: 'dist/umd/index.js'
+      file: 'dist/umd/index.evm.js'
     }
   ],
   external: [
