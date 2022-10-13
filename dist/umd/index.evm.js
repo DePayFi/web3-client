@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@depay/web3-blockchains'), require('ethers'), require('@depay/solana-web3.js')) :
-    typeof define === 'function' && define.amd ? define(['exports', '@depay/web3-blockchains', 'ethers', '@depay/solana-web3.js'], factory) :
-    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.Web3Client = {}, global.Web3Blockchains, global.ethers, global.SolanaWeb3js));
-})(this, (function (exports, web3Blockchains, ethers, solanaWeb3_js) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@depay/web3-blockchains'), require('ethers')) :
+    typeof define === 'function' && define.amd ? define(['exports', '@depay/web3-blockchains', 'ethers'], factory) :
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.Web3Client = {}, global.Web3Blockchains, global.ethers));
+})(this, (function (exports, web3Blockchains, ethers) { 'use strict';
 
     const version$f = "logger/5.6.0";
 
@@ -14799,30 +14799,30 @@
       }
     }
 
-    let provider$4;
+    let provider$3;
 
-    const getProvider$3 = ()=> {
+    const getProvider$2 = ()=> {
 
-      if(provider$4) { return provider$4 }
+      if(provider$3) { return provider$3 }
 
-      setProviderEndpoints$4(['https://bsc-dataseed.binance.org']);
+      setProviderEndpoints$3(['https://bsc-dataseed.binance.org']);
 
-      return provider$4
+      return provider$3
     };
 
-    const setProviderEndpoints$4 = (endpoints)=> {
-      setProvider$4(
+    const setProviderEndpoints$3 = (endpoints)=> {
+      setProvider$3(
         new StaticJsonRpcBatchProvider(
           endpoints[0], 'bsc'
         )
       );
     };
 
-    const setProvider$4 = (givenProvider)=> {
-      provider$4 = givenProvider;
+    const setProvider$3 = (givenProvider)=> {
+      provider$3 = givenProvider;
     };
 
-    const resetProvider$3 = ()=> { provider$4 = undefined; };
+    const resetProvider$2 = ()=> { provider$3 = undefined; };
 
     const getContractArguments = ({ contract, method, params })=>{
       let fragment = contract.interface.fragments.find((fragment) => {
@@ -14850,44 +14850,6 @@
     };
 
     var estimateBsc = async ({ from, to, value, method, api, params }) => {
-      let provider = getProvider$3();
-      return estimate$1({
-        provider,
-        from,
-        to,
-        value,
-        method,
-        api,
-        params
-      })
-    };
-
-    let provider$3;
-
-    const getProvider$2 = ()=> {
-
-      if(provider$3) { return provider$3 }
-
-      setProviderEndpoints$3([['https://mainnet.infu', 'ra.io/v3/9aa3d95b3bc440fa8', '8ea12eaa4456161'].join('')]);
-
-      return provider$3
-    };
-
-    const setProviderEndpoints$3 = (endpoints)=> {
-      setProvider$3(
-        new StaticJsonRpcBatchProvider(
-          endpoints[0], 'ethereum'
-        )
-      );
-    };
-
-    const setProvider$3 = (givenProvider)=> {
-      provider$3 = givenProvider;
-    };
-
-    const resetProvider$2 = ()=> { provider$3 = undefined; };
-
-    var estimateEthereum = async ({ from, to, value, method, api, params }) => {
       let provider = getProvider$2();
       return estimate$1({
         provider,
@@ -14906,7 +14868,7 @@
 
       if(provider$2) { return provider$2 }
 
-      setProviderEndpoints$2(['https://polygon-rpc.com']);
+      setProviderEndpoints$2([['https://mainnet.infu', 'ra.io/v3/9aa3d95b3bc440fa8', '8ea12eaa4456161'].join('')]);
 
       return provider$2
     };
@@ -14914,7 +14876,7 @@
     const setProviderEndpoints$2 = (endpoints)=> {
       setProvider$2(
         new StaticJsonRpcBatchProvider(
-          endpoints[0], 'polygon'
+          endpoints[0], 'ethereum'
         )
       );
     };
@@ -14925,7 +14887,7 @@
 
     const resetProvider$1 = ()=> { provider$2 = undefined; };
 
-    var estimatePolygon = async ({ from, to, value, method, api, params }) => {
+    var estimateEthereum = async ({ from, to, value, method, api, params }) => {
       let provider = getProvider$1();
       return estimate$1({
         provider,
@@ -14938,269 +14900,21 @@
       })
     };
 
-    const resetProviders$1 = ()=>{
-      resetProvider$2();
-      resetProvider$3();
-      resetProvider$1();
-    };
-
-    function _optionalChain$2(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
-    let getWindow$1 = () => {
-      if (typeof global == 'object') return global
-      return window
-    };
-
-    let getCacheStore$1 = () => {
-      if (getWindow$1()._cacheStore == undefined) {
-        resetCache$1();
-      }
-      return getWindow$1()._cacheStore
-    };
-
-    let getPromiseStore$1 = () => {
-      if (getWindow$1()._promiseStore == undefined) {
-        resetCache$1();
-      }
-      return getWindow$1()._promiseStore
-    };
-
-    let resetCache$1 = () => {
-      getWindow$1()._cacheStore = {};
-      getWindow$1()._promiseStore = {};
-      resetProviders$1();
-    };
-
-    let set$1 = function ({ key, value, expires }) {
-      getCacheStore$1()[key] = {
-        expiresAt: Date.now() + expires,
-        value,
-      };
-    };
-
-    let get$1 = function ({ key, expires }) {
-      let cachedEntry = getCacheStore$1()[key];
-      if (_optionalChain$2([cachedEntry, 'optionalAccess', _ => _.expiresAt]) > Date.now()) {
-        return cachedEntry.value
-      }
-    };
-
-    let getPromise$1 = function({ key }) {
-      return getPromiseStore$1()[key]
-    };
-
-    let setPromise$1 = function({ key, promise }) {
-      getPromiseStore$1()[key] = promise;
-      return promise
-    };
-
-    let deletePromise$1 = function({ key }) {
-      getPromiseStore$1()[key] = undefined; 
-    };
-
-    let cache$1 = function ({ call, key, expires = 0 }) {
-      return new Promise((resolve, reject)=>{
-        let value;
-        key = JSON.stringify(key);
-        
-        // get existing promise (of a previous pending request asking for the exact same thing)
-        let existingPromise = getPromise$1({ key });
-        if(existingPromise) { 
-          return existingPromise
-            .then(resolve)
-            .catch(reject)
-        }
-
-        setPromise$1({ key, promise: new Promise((resolveQueue, rejectQueue)=>{
-          if (expires === 0) {
-            return call()
-              .then((value)=>{
-                resolve(value);
-                resolveQueue(value);
-              })
-              .catch((error)=>{
-                reject(error);
-                rejectQueue(error);
-              })
-          }
-          
-          // get cached value
-          value = get$1({ key, expires });
-          if (value) {
-            resolve(value);
-            resolveQueue(value);
-            return value
-          }
-
-          // set new cache value
-          call()
-            .then((value)=>{
-              if (value) {
-                set$1({ key, value, expires });
-              }
-              resolve(value);
-              resolveQueue(value);
-            })
-            .catch((error)=>{
-              reject(error);
-              rejectQueue(error);
-            });
-          })
-        }).then(()=>{
-          deletePromise$1({ key });
-        }).catch(()=>{
-          deletePromise$1({ key });
-        });
-      })
-    };
-
-    let estimate = async function ({ blockchain, from, to, value, method, api, params, cache }) {
-      if(!['ethereum', 'bsc', 'polygon'].includes(blockchain)) { throw 'Unknown blockchain: ' + blockchain }
-      if(typeof value == 'undefined') { value = '0'; }
-
-      let result = await cache$1({
-        expires: cache || 0,
-        key: [blockchain, from, to, value, method, params],
-        call: async () => {
-          switch (blockchain) {
-
-            case 'ethereum':
-              return estimateEthereum({ from, to, value, method, api, params })
-
-            case 'bsc':
-              return estimateBsc({ from, to, value, method, api, params })
-
-            case 'polygon':
-              return estimatePolygon({ from, to, value, method, api, params })
-              
-          }
-        },
-      });
-      return result
-    };
-
-    var parseUrl = (url) => {
-      if (typeof url == 'object') {
-        return url
-      }
-      let deconstructed = url.match(/(?<blockchain>\w+):\/\/(?<part1>[\w\d]+)(\/(?<part2>[\w\d]+)*)?/);
-
-      if(deconstructed.groups.part2 == undefined) {
-        if(deconstructed.groups.part1.match(/d/)) {
-          return {
-            blockchain: deconstructed.groups.blockchain,
-            address: deconstructed.groups.part1
-          }
-        } else {
-          return {
-            blockchain: deconstructed.groups.blockchain,
-            method: deconstructed.groups.part1
-          }
-        }
-      } else {
-        return {
-          blockchain: deconstructed.groups.blockchain,
-          address: deconstructed.groups.part1,
-          method: deconstructed.groups.part2
-        }
-      }
-    };
-
-    let paramsToContractArgs = ({ contract, method, params }) => {
-      let fragment = contract.interface.fragments.find((fragment) => {
-        return fragment.name == method
-      });
-
-      return fragment.inputs.map((input, index) => {
-        if (Array.isArray(params)) {
-          return params[index]
-        } else {
-          return params[input.name]
-        }
-      })
-    };
-
-    let contractCall = ({ address, api, method, params, provider, block }) => {
-      let contract = new ethers.ethers.Contract(address, api, provider);
-      let args = paramsToContractArgs({ contract, method, params });
-      return contract[method](...args, { blockTag: block })
-    };
-
-    let balance$1 = ({ address, provider }) => {
-      return provider.getBalance(address)
-    };
-
-    var request$2 = async ({ provider, address, api, method, params, block }) => {
-      if (api) {
-        return contractCall({ address, api, method, params, provider, block })
-      } else if (method === 'latestBlockNumber') {
-        return provider.getBlockNumber()
-      } else if (method === 'balance') {
-        return balance$1({ address, provider })
-      }
-    };
-
-    var requestBsc = async ({ address, api, method, params, block }) => {
-      let provider = getProvider$3();
-
-      return request$2({
-        provider,
-        address,
-        api,
-        method,
-        params,
-        block
-      })
-    };
-
-    var requestEthereum = async ({ address, api, method, params, block }) => {
-      let provider = getProvider$2();
-
-      return request$2({
-        provider,
-        address,
-        api,
-        method,
-        params,
-        block
-      })
-    };
-
-    var requestPolygon = async ({ address, api, method, params, block }) => {
-      let provider = getProvider$1();
-
-      return request$2({
-        provider,
-        address,
-        api,
-        method,
-        params,
-        block
-      })
-    };
-
-    class StaticJsonRpcSequentialProvider extends solanaWeb3_js.Connection {
-
-      constructor(url, network) {
-        super(url);
-        this._network = network;
-      }
-    }
-
     let provider$1;
 
     const getProvider = ()=> {
 
       if(provider$1) { return provider$1 }
 
-      setProviderEndpoints$1(['https://solana-mainnet.phantom.tech']);
+      setProviderEndpoints$1(['https://polygon-rpc.com']);
 
       return provider$1
     };
 
     const setProviderEndpoints$1 = (endpoints)=> {
       setProvider$1(
-        new StaticJsonRpcSequentialProvider(
-          endpoints[0], 'solana'
+        new StaticJsonRpcBatchProvider(
+          endpoints[0], 'polygon'
         )
       );
     };
@@ -15211,51 +14925,16 @@
 
     const resetProvider = ()=> { provider$1 = undefined; };
 
-    let accountInfo = async ({ address, api, method, params, provider, block }) => {
-      const info = await provider.getAccountInfo(new solanaWeb3_js.PublicKey(address));
-      return api.decode(info.data)
-    };
-
-    let balance = ({ address, provider }) => {
-      return provider.getBalance(new solanaWeb3_js.PublicKey(address))
-    };
-
-    var request$1 = async ({ provider, address, api, method, params, block }) => {
-      if(method == undefined || method === 'getAccountInfo') {
-        if(api == undefined) { 
-          api = solanaWeb3_js.ACCOUNT_LAYOUT; 
-        }
-        return accountInfo({ address, api, method, params, provider, block })
-      } else if(method === 'getProgramAccounts') {
-        return provider.getProgramAccounts(new solanaWeb3_js.PublicKey(address), params).then((accounts)=>{
-          if(api){
-            return accounts.map((account)=>{
-              account.data = api.decode(account.account.data);
-              return account
-            })
-          } else {
-            return accounts
-          }
-        })
-      } else if(method === 'getTokenAccountBalance') {
-        return provider.getTokenAccountBalance(new solanaWeb3_js.PublicKey(address))
-      } else if (method === 'latestBlockNumber') {
-        return provider.getBlockHeight()  
-      } else if (method === 'balance') {
-        return balance({ address, provider })
-      }
-    };
-
-    var requestSolana = async ({ address, api, method, params, block }) => {
+    var estimatePolygon = async ({ from, to, value, method, api, params }) => {
       let provider = getProvider();
-
-      return request$1({
+      return estimate$1({
         provider,
-        address,
-        api,
+        from,
+        to,
+        value,
         method,
-        params,
-        block
+        api,
+        params
       })
     };
 
@@ -15264,17 +14943,14 @@
       switch (blockchain) {
         
         case 'ethereum':
-          return getProvider$2()
-
-        case 'bsc':
-          return getProvider$3()
-
-        case 'polygon':
           return getProvider$1()
 
-        case 'solana':
-          return getProvider();
-        
+        case 'bsc':
+          return getProvider$2()
+
+        case 'polygon':
+          return getProvider()
+
         default:
           throw 'Unknown blockchain: ' + blockchain
       }
@@ -15285,17 +14961,14 @@
       switch (blockchain) {
         
         case 'ethereum':
-          return setProvider$3(provider)
-
-        case 'bsc':
-          return setProvider$4(provider)
-
-        case 'polygon':
           return setProvider$2(provider)
 
-        case 'solana':
+        case 'bsc':
+          return setProvider$3(provider)
+
+        case 'polygon':
           return setProvider$1(provider)
-        
+
         default:
           throw 'Unknown blockchain: ' + blockchain
       }
@@ -15306,30 +14979,26 @@
       switch (blockchain) {
         
         case 'ethereum':
-          return setProviderEndpoints$3(endpoints)
-
-        case 'bsc':
-          return setProviderEndpoints$4(endpoints)
-
-        case 'polygon':
           return setProviderEndpoints$2(endpoints)
 
-        case 'solana':
+        case 'bsc':
+          return setProviderEndpoints$3(endpoints)
+
+        case 'polygon':
           return setProviderEndpoints$1(endpoints)
-        
+
         default:
           throw 'Unknown blockchain: ' + blockchain
       }
     };
 
     const resetProviders = ()=>{
-      resetProvider$2();
-      resetProvider$3();
       resetProvider$1();
+      resetProvider$2();
       resetProvider();
     };
 
-    function _optionalChain$1(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
+    function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
     let getWindow = () => {
       if (typeof global == 'object') return global
       return window
@@ -15364,7 +15033,7 @@
 
     let get = function ({ key, expires }) {
       let cachedEntry = getCacheStore()[key];
-      if (_optionalChain$1([cachedEntry, 'optionalAccess', _ => _.expiresAt]) > Date.now()) {
+      if (_optionalChain([cachedEntry, 'optionalAccess', _ => _.expiresAt]) > Date.now()) {
         return cachedEntry.value
       }
     };
@@ -15438,9 +15107,134 @@
       })
     };
 
-    let supported = ['ethereum', 'bsc', 'polygon', 'solana'];
+    let estimate = async function ({ blockchain, from, to, value, method, api, params, cache: cache$1 }) {
+      if(!['ethereum', 'bsc', 'polygon'].includes(blockchain)) { throw 'Unknown blockchain: ' + blockchain }
+      if(typeof value == 'undefined') { value = '0'; }
+
+      let result = await cache({
+        expires: cache$1 || 0,
+        key: [blockchain, from, to, value, method, params],
+        call: async () => {
+          switch (blockchain) {
+
+            case 'ethereum':
+              return estimateEthereum({ from, to, value, method, api, params })
+
+            case 'bsc':
+              return estimateBsc({ from, to, value, method, api, params })
+
+            case 'polygon':
+              return estimatePolygon({ from, to, value, method, api, params })
+              
+          }
+        },
+      });
+      return result
+    };
+
+    var parseUrl = (url) => {
+      if (typeof url == 'object') {
+        return url
+      }
+      let deconstructed = url.match(/(?<blockchain>\w+):\/\/(?<part1>[\w\d]+)(\/(?<part2>[\w\d]+)*)?/);
+
+      if(deconstructed.groups.part2 == undefined) {
+        if(deconstructed.groups.part1.match(/d/)) {
+          return {
+            blockchain: deconstructed.groups.blockchain,
+            address: deconstructed.groups.part1
+          }
+        } else {
+          return {
+            blockchain: deconstructed.groups.blockchain,
+            method: deconstructed.groups.part1
+          }
+        }
+      } else {
+        return {
+          blockchain: deconstructed.groups.blockchain,
+          address: deconstructed.groups.part1,
+          method: deconstructed.groups.part2
+        }
+      }
+    };
+
+    let paramsToContractArgs = ({ contract, method, params }) => {
+      let fragment = contract.interface.fragments.find((fragment) => {
+        return fragment.name == method
+      });
+
+      return fragment.inputs.map((input, index) => {
+        if (Array.isArray(params)) {
+          return params[index]
+        } else {
+          return params[input.name]
+        }
+      })
+    };
+
+    let contractCall = ({ address, api, method, params, provider, block }) => {
+      let contract = new ethers.ethers.Contract(address, api, provider);
+      let args = paramsToContractArgs({ contract, method, params });
+      return contract[method](...args, { blockTag: block })
+    };
+
+    let balance = ({ address, provider }) => {
+      return provider.getBalance(address)
+    };
+
+    var request$1 = async ({ provider, address, api, method, params, block }) => {
+      if (api) {
+        return contractCall({ address, api, method, params, provider, block })
+      } else if (method === 'latestBlockNumber') {
+        return provider.getBlockNumber()
+      } else if (method === 'balance') {
+        return balance({ address, provider })
+      }
+    };
+
+    var requestBsc = async ({ address, api, method, params, block }) => {
+      let provider = getProvider$2();
+
+      return request$1({
+        provider,
+        address,
+        api,
+        method,
+        params,
+        block
+      })
+    };
+
+    var requestEthereum = async ({ address, api, method, params, block }) => {
+      let provider = getProvider$1();
+
+      return request$1({
+        provider,
+        address,
+        api,
+        method,
+        params,
+        block
+      })
+    };
+
+    var requestPolygon = async ({ address, api, method, params, block }) => {
+      let provider = getProvider();
+
+      return request$1({
+        provider,
+        address,
+        api,
+        method,
+        params,
+        block
+      })
+    };
+
+    let supported = ['ethereum', 'bsc', 'polygon'];
     supported.evm = ['ethereum', 'bsc', 'polygon'];
-    supported.solana = ['solana'];
+    supported.solana = [];
 
     let request = async function (url, options) {
       let { blockchain, address, method } = parseUrl(url);
@@ -15461,47 +15255,10 @@
             case 'polygon':
               return requestPolygon({ address, api, method, params, block })
 
-            case 'solana':
-              return requestSolana({ address, api, method, params, block })
-              
           }
         },
       });
       return result
-    };
-
-    function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
-    let simulate = async function ({ blockchain, from, to, keys, api, params }) {
-      if(!supported.solana.includes(blockchain)) { throw `${blockchain} not supported for simulation!` }
-
-      const data = solanaWeb3_js.Buffer.alloc(api.span);
-      api.encode(params, data);
-
-      keys = keys.map((key)=>{
-        return({...key,
-          pubkey: new solanaWeb3_js.PublicKey(key.pubkey)
-        })
-      });
-
-      const instruction = new solanaWeb3_js.TransactionInstruction({
-        programId: new solanaWeb3_js.PublicKey(to),
-        keys,
-        data
-      });
-
-      let transaction = new solanaWeb3_js.Transaction({ feePayer: new solanaWeb3_js.PublicKey(from) });
-      transaction.add(instruction);
-
-      let result;
-      try{
-        result = await provider('solana').simulateTransaction(transaction);
-      } catch (error) {
-        console.log(error);
-      }
-
-      return({
-        logs: _optionalChain([result, 'optionalAccess', _ => _.value, 'optionalAccess', _2 => _2.logs])
-      })
     };
 
     exports.estimate = estimate;
@@ -15510,7 +15267,6 @@
     exports.resetCache = resetCache;
     exports.setProvider = setProvider;
     exports.setProviderEndpoints = setProviderEndpoints;
-    exports.simulate = simulate;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 

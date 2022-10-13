@@ -1,7 +1,7 @@
 import estimateBsc from './blockchains/bsc/estimate'
 import estimateEthereum from './blockchains/ethereum/estimate'
 import estimatePolygon from './blockchains/polygon/estimate'
-import { cache as cacheRequest } from './cache'
+import { cache as cacheRequest } from './cache.evm'
 
 let estimate = async function ({ blockchain, from, to, value, method, api, params, cache }) {
   if(!['ethereum', 'bsc', 'polygon'].includes(blockchain)) { throw 'Unknown blockchain: ' + blockchain }
