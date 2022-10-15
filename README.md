@@ -48,6 +48,16 @@ This library supports the following blockchains:
 - [Polygon](https://polygon.technology)
 - [Solana](https://solana.com)
 
+## Entrypoints
+
+In case you want to load/build this library with only limited support for one blockchain platform (like EVM only),
+use the blockchain specific entrypoint when importing. This prevents blockchain platform specific dependencies to be required
+while building your own project.
+
+```javascript
+import { request } from '@depay/web3-client/umd/index.evm'
+```
+
 ## Functionalities
 
 ### request
