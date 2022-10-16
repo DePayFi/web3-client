@@ -16,9 +16,7 @@ export default async ({ provider, address, api, method, params, block }) => {
     }
     return accountInfo({ address, api, method, params, provider, block })
   } else if(method === 'getProgramAccounts') {
-    console.log("BEFORE ACCOUNTS!!!")
     return provider.getProgramAccounts(new PublicKey(address), params).then((accounts)=>{
-      console.log("AFTER ACCOUNTS!!!")
       if(api){
         return accounts.map((account)=>{
           account.data = api.decode(account.account.data)
