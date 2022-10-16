@@ -1,5 +1,5 @@
 import { mock, resetMocks } from '@depay/web3-mock'
-import { request, provider, resetCache } from 'src/'
+import { request, getProvider, resetCache } from 'src/'
 import { struct, publicKey, u64, u32, u8, PublicKey } from '@depay/solana-web3.js'
 import { supported } from 'src/blockchains'
 
@@ -9,17 +9,22 @@ describe('request getAccountInfo', () => {
 
     describe(blockchain, ()=> {
 
+      let provider
       const accounts = ['2UgCJaHU5y8NC4uWQcZYeV9a5RyYLF7iKYCybCsdFFD1']
-      beforeEach(resetMocks)
-      beforeEach(resetCache)
-      beforeEach(()=>mock({ blockchain, accounts: { return: accounts } }))
+
+      beforeEach(async ()=>{
+        resetMocks()
+        resetCache()
+        provider = await getProvider(blockchain)
+        mock({ blockchain, provider, accounts: { return: accounts } })
+      })
 
       it('should request account data implicitly if just the address is provided', async ()=> {
 
         let api = struct([ publicKey('mint'), publicKey('owner'), u64('amount'), u32('delegateOption'), publicKey('delegate'), u8('state'), u32('isNativeOption'), u64('isNative'), u64('delegatedAmount'), u32('closeAuthorityOption'), publicKey('closeAuthority')])
 
         let requestMock = mock({
-          provider: provider(blockchain),
+          provider,
           blockchain,
           request: {
             method: 'getAccountInfo',
@@ -61,7 +66,7 @@ describe('request getAccountInfo', () => {
         let api = struct([ publicKey('mint'), publicKey('owner'), u64('amount'), u32('delegateOption'), publicKey('delegate'), u8('state'), u32('isNativeOption'), u64('isNative'), u64('delegatedAmount'), u32('closeAuthorityOption'), publicKey('closeAuthority')])
 
         let requestMock = mock({
-          provider: provider(blockchain),
+          provider,
           blockchain,
           request: {
             method: 'getAccountInfo',
@@ -103,7 +108,7 @@ describe('request getAccountInfo', () => {
         let api = struct([ publicKey('mint'), publicKey('owner'), u64('amount'), u32('delegateOption'), publicKey('delegate'), u8('state'), u32('isNativeOption'), u64('isNative'), u64('delegatedAmount'), u32('closeAuthorityOption'), publicKey('closeAuthority')])
 
         let requestMock = mock({
-          provider: provider(blockchain),
+          provider,
           blockchain,
           request: {
             method: 'getAccountInfo',

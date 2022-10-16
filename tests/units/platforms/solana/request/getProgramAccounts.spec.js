@@ -1,5 +1,5 @@
 import { mock, resetMocks } from '@depay/web3-mock'
-import { request, provider, resetCache } from 'src/'
+import { request, getProvider, resetCache } from 'src/'
 import { struct, publicKey, u128, u64, u32, u8, seq, PublicKey, Buffer } from '@depay/solana-web3.js'
 import { supported } from 'src/blockchains'
 
@@ -9,12 +9,17 @@ describe('request getProgramAccounts', () => {
 
     describe(blockchain, ()=> {
 
+      let provider
       const accounts = ['2UgCJaHU5y8NC4uWQcZYeV9a5RyYLF7iKYCybCsdFFD1']
-      beforeEach(resetMocks)
-      beforeEach(resetCache)
-      beforeEach(()=>mock({ blockchain, accounts: { return: accounts } }))
 
-      it('requests getProgramAccounts with given filters', async ()=> {
+      beforeEach(async ()=>{
+        resetMocks()
+        resetCache()
+        provider = await getProvider(blockchain)
+        mock({ blockchain, provider, accounts: { return: accounts } })
+      })
+
+      it.only('requests getProgramAccounts with given filters', async ()=> {
 
         let wallet = '2wmVCSfPxGPjrnMMn7rchp4uaeoTqN39mXFC2zhPdri9'
         let mint = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'
@@ -26,7 +31,7 @@ describe('request getProgramAccounts', () => {
         ]
 
         let requestMock = mock({
-          provider: provider(blockchain),
+          provider,
           blockchain,
           request: {
             method: 'getProgramAccounts',
@@ -125,7 +130,7 @@ describe('request getProgramAccounts', () => {
         ]
 
         let requestMock = mock({
-          provider: provider(blockchain),
+          provider,
           blockchain,
           request: {
             method: 'getProgramAccounts',

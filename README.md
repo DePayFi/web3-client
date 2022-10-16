@@ -31,14 +31,6 @@ request('ethereum://0x7a250d5630b4cf539739df2c5dacb4c659f2488d/getAmountsOut', {
 }).then((value)=>console.log(value))
 ```
 
-## Platform specific packaging
-
-In case you want to use and package only specific platforms, use platform specific entrypoints:
-
-```javascript
-import { request } from '@depay/web3-client/index.evm'
-```
-
 ## Support
 
 This library supports the following blockchains:
@@ -48,14 +40,12 @@ This library supports the following blockchains:
 - [Polygon](https://polygon.technology)
 - [Solana](https://solana.com)
 
-## Entrypoints
+## Platform specific packaging
 
-In case you want to load/build this library with only limited support for one blockchain platform (like EVM only),
-use the blockchain specific entrypoint when importing. This prevents blockchain platform specific dependencies to be required
-while building your own project.
+In case you want to use and package only specific platforms, use platform specific entrypoints:
 
 ```javascript
-import { request } from '@depay/web3-client/umd/index.evm'
+import { request } from '@depay/web3-client/dist/umd/index.evm'
 ```
 
 ## Functionalities
@@ -321,11 +311,13 @@ setProvider('ethereum', provider)
 In order to mock requests with [web3-mock](https://github.com/DePayFi/web3-mock) you need to fetch `@depay/web3-client` provider and pass it to `web3-mock`:
 
 ```javascript
-import { provider } from '@depay/web3-client'
+import { getProvider } from '@depay/web3-client'
 import { mock } from '@depay/web3-mock'
 
+const provider = await getProvider('ethereum')
+
 mock({
-  provider: provider('ethereum'),
+  provider,
   blockchain: 'ethereum'
 })
 

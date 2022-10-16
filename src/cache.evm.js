@@ -1,9 +1,4 @@
-import { resetProviders } from './provider.evm'
-
-let getWindow = () => {
-  if (typeof global == 'object') return global
-  return window
-}
+import { getWindow } from './window'
 
 let getCacheStore = () => {
   if (getWindow()._cacheStore == undefined) {
@@ -22,7 +17,7 @@ let getPromiseStore = () => {
 let resetCache = () => {
   getWindow()._cacheStore = {}
   getWindow()._promiseStore = {}
-  resetProviders()
+  getWindow()._clientProviders = {}
 }
 
 let set = function ({ key, value, expires }) {

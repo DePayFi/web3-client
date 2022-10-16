@@ -1,33 +1,18 @@
-import StaticJsonRpcBatchProvider from '../../clients/solana/provider'
+import {
+  getProvider as getProviderFactory,
+  setProviderEndpoints as setProviderEndpointsFactory,
+  setProvider as setProviderFactory,
+} from '../../platforms/solana/provider'
 
-let provider
+const blockchain = 'solana'
+const endpoints = ['https://solana-mainnet.phantom.tech', 'https://solana-api.projectserum.com', 'https://ssc-dao.genesysgo.net']
 
-const getProvider = ()=> {
-
-  if(provider) { return provider }
-
-  setProviderEndpoints(['https://solana-mainnet.phantom.tech'])
-
-  return provider
-}
-
-const setProviderEndpoints = (endpoints)=> {
-  setProvider(
-    new StaticJsonRpcBatchProvider(
-      endpoints[0], 'solana'
-    )
-  )
-}
-
-const setProvider = (givenProvider)=> {
-  provider = givenProvider
-}
-
-const resetProvider = ()=> { provider = undefined }
+const setProvider = setProviderFactory(blockchain)
+const setProviderEndpoints = setProviderEndpointsFactory(blockchain, setProvider)
+const getProvider = getProviderFactory(blockchain, endpoints, setProviderEndpoints)
 
 export {
   getProvider,
   setProvider,
   setProviderEndpoints,
-  resetProvider,
 }

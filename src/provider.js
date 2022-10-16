@@ -2,31 +2,27 @@ import {
   getProvider as getEthereumProvider,
   setProviderEndpoints as setEthereumProviderEndpoints,
   setProvider as setEthereumProvider,
-  resetProvider as resetEthereumProvider,
 } from './blockchains/ethereum/provider'
 
 import {
   getProvider as getBscProvider,
   setProviderEndpoints as setBscProviderEndpoints,
   setProvider as setBscProvider,
-  resetProvider as resetBscProvider,
 } from './blockchains/bsc/provider'
 
 import {
   getProvider as getPolygonProvider,
   setProviderEndpoints as setPolygonProviderEndpoints,
   setProvider as setPolygonProvider,
-  resetProvider as resetPolygonProvider,
 } from './blockchains/polygon/provider'
 
 import {
   getProvider as getSolanaProvider,
   setProviderEndpoints as setSolanaProviderEndpoints,
   setProvider as setSolanaProvider,
-  resetProvider as resetSolanaProvider,
 } from './blockchains/solana/provider'
 
-const provider = (blockchain)=>{
+const getProvider = (blockchain)=>{
 
   switch (blockchain) {
     
@@ -101,16 +97,8 @@ const setProviderEndpoints = (blockchain, endpoints)=>{
   }
 }
 
-const resetProviders = ()=>{
-  resetEthereumProvider()
-  resetBscProvider()
-  resetPolygonProvider()
-  resetSolanaProvider()
-}
-
 export {
-  provider,
+  getProvider,
   setProvider,
   setProviderEndpoints,
-  resetProviders,
 }

@@ -14796,30 +14796,54 @@ class StaticJsonRpcBatchProvider extends JsonRpcBatchProvider {
   }
 }
 
-let provider$3;
-
-const getProvider$2 = ()=> {
-
-  if(provider$3) { return provider$3 }
-
-  setProviderEndpoints$3(['https://bsc-dataseed.binance.org']);
-
-  return provider$3
+let getWindow = () => {
+  if (typeof global == 'object') return global
+  return window
 };
 
-const setProviderEndpoints$3 = (endpoints)=> {
-  setProvider$3(
-    new StaticJsonRpcBatchProvider(
-      endpoints[0], 'bsc'
-    )
-  );
+const getProviders = ()=> {
+  if(getWindow()._clientProviders == undefined) {
+    getWindow()._clientProviders = {};
+  }
+  return getWindow()._clientProviders
 };
 
-const setProvider$3 = (givenProvider)=> {
-  provider$3 = givenProvider;
+const setProvider$4 = (blockchain)=> {
+  return (givenProvider)=>{
+    getProviders()[blockchain] = givenProvider;
+  }
 };
 
-const resetProvider$2 = ()=> { provider$3 = undefined; };
+const setProviderEndpoints$4 = (blockchain, setProvider)=> {
+  
+  return async (endpoints)=> {
+    setProvider(
+      new StaticJsonRpcBatchProvider(
+        endpoints[0], blockchain
+      )
+    );
+  }
+};
+
+const getProvider$4 = (blockchain, defaultEndpoints, setProviderEndpoints)=> {
+
+  return async()=> {
+    let providers = getProviders();
+    
+    if(!providers || !providers[blockchain]) {
+      await setProviderEndpoints(defaultEndpoints);
+    }
+
+    return getWindow()._clientProviders[blockchain]
+  }
+};
+
+const blockchain$2 = 'bsc';
+const endpoints$2 = ['https://bsc-dataseed.binance.org', 'https://bsc-dataseed1.ninicoin.io', 'https://bsc-dataseed3.defibit.io'];
+
+const setProvider$3 = setProvider$4(blockchain$2);
+const setProviderEndpoints$3 = setProviderEndpoints$4(blockchain$2, setProvider$3);
+const getProvider$3 = getProvider$4(blockchain$2, endpoints$2, setProviderEndpoints$3);
 
 const getContractArguments = ({ contract, method, params })=>{
   let fragment = contract.interface.fragments.find((fragment) => {
@@ -14847,7 +14871,7 @@ var estimate$1 = async ({ provider, from, to, value, method, api, params }) => {
 };
 
 var estimateBsc = async ({ from, to, value, method, api, params }) => {
-  let provider = getProvider$2();
+  let provider = await getProvider$3();
   return estimate$1({
     provider,
     from,
@@ -14859,33 +14883,16 @@ var estimateBsc = async ({ from, to, value, method, api, params }) => {
   })
 };
 
-let provider$2;
+const blockchain$1 = 'ethereum';
+const endpoints$1 = ['https://cloudflare-eth.com', 'https://eth-mainnet.public.blastapi.io', 'https://eth-rpc.gateway.pokt.network'];
 
-const getProvider$1 = ()=> {
-
-  if(provider$2) { return provider$2 }
-
-  setProviderEndpoints$2([['https://mainnet.infu', 'ra.io/v3/9aa3d95b3bc440fa8', '8ea12eaa4456161'].join('')]);
-
-  return provider$2
-};
-
-const setProviderEndpoints$2 = (endpoints)=> {
-  setProvider$2(
-    new StaticJsonRpcBatchProvider(
-      endpoints[0], 'ethereum'
-    )
-  );
-};
-
-const setProvider$2 = (givenProvider)=> {
-  provider$2 = givenProvider;
-};
-
-const resetProvider$1 = ()=> { provider$2 = undefined; };
+const setProvider$2 = setProvider$4(blockchain$1);
+const setProviderEndpoints$2 = setProviderEndpoints$4(blockchain$1, setProvider$2);
+const getProvider$2 = getProvider$4(blockchain$1, endpoints$1, setProviderEndpoints$2);
 
 var estimateEthereum = async ({ from, to, value, method, api, params }) => {
-  let provider = getProvider$1();
+  let provider = await getProvider$2();
+  
   return estimate$1({
     provider,
     from,
@@ -14897,33 +14904,16 @@ var estimateEthereum = async ({ from, to, value, method, api, params }) => {
   })
 };
 
-let provider$1;
+const blockchain = 'polygon';
+const endpoints = ['https://polygon-rpc.com', 'https://rpc-mainnet.matic.quiknode.pro', 'https://matic-mainnet.chainstacklabs.com'];
 
-const getProvider = ()=> {
-
-  if(provider$1) { return provider$1 }
-
-  setProviderEndpoints$1(['https://polygon-rpc.com']);
-
-  return provider$1
-};
-
-const setProviderEndpoints$1 = (endpoints)=> {
-  setProvider$1(
-    new StaticJsonRpcBatchProvider(
-      endpoints[0], 'polygon'
-    )
-  );
-};
-
-const setProvider$1 = (givenProvider)=> {
-  provider$1 = givenProvider;
-};
-
-const resetProvider = ()=> { provider$1 = undefined; };
+const setProvider$1 = setProvider$4(blockchain);
+const setProviderEndpoints$1 = setProviderEndpoints$4(blockchain, setProvider$1);
+const getProvider$1 = getProvider$4(blockchain, endpoints, setProviderEndpoints$1);
 
 var estimatePolygon = async ({ from, to, value, method, api, params }) => {
-  let provider = getProvider();
+  let provider = await getProvider$1();
+  
   return estimate$1({
     provider,
     from,
@@ -14933,74 +14923,9 @@ var estimatePolygon = async ({ from, to, value, method, api, params }) => {
     api,
     params
   })
-};
-
-const provider = (blockchain)=>{
-
-  switch (blockchain) {
-    
-    case 'ethereum':
-      return getProvider$1()
-
-    case 'bsc':
-      return getProvider$2()
-
-    case 'polygon':
-      return getProvider()
-
-    default:
-      throw 'Unknown blockchain: ' + blockchain
-  }
-};
-
-const setProvider = (blockchain, provider)=>{
-
-  switch (blockchain) {
-    
-    case 'ethereum':
-      return setProvider$2(provider)
-
-    case 'bsc':
-      return setProvider$3(provider)
-
-    case 'polygon':
-      return setProvider$1(provider)
-
-    default:
-      throw 'Unknown blockchain: ' + blockchain
-  }
-};
-
-const setProviderEndpoints = (blockchain, endpoints)=>{
-
-  switch (blockchain) {
-    
-    case 'ethereum':
-      return setProviderEndpoints$2(endpoints)
-
-    case 'bsc':
-      return setProviderEndpoints$3(endpoints)
-
-    case 'polygon':
-      return setProviderEndpoints$1(endpoints)
-
-    default:
-      throw 'Unknown blockchain: ' + blockchain
-  }
-};
-
-const resetProviders = ()=>{
-  resetProvider$1();
-  resetProvider$2();
-  resetProvider();
 };
 
 function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
-let getWindow = () => {
-  if (typeof global == 'object') return global
-  return window
-};
-
 let getCacheStore = () => {
   if (getWindow()._cacheStore == undefined) {
     resetCache();
@@ -15018,7 +14943,7 @@ let getPromiseStore = () => {
 let resetCache = () => {
   getWindow()._cacheStore = {};
   getWindow()._promiseStore = {};
-  resetProviders();
+  getWindow()._clientProviders = {};
 };
 
 let set = function ({ key, value, expires }) {
@@ -15191,7 +15116,7 @@ var request$1 = async ({ provider, address, api, method, params, block }) => {
 };
 
 var requestBsc = async ({ address, api, method, params, block }) => {
-  let provider = getProvider$2();
+  let provider = await getProvider$3();
 
   return request$1({
     provider,
@@ -15204,7 +15129,7 @@ var requestBsc = async ({ address, api, method, params, block }) => {
 };
 
 var requestEthereum = async ({ address, api, method, params, block }) => {
-  let provider = getProvider$1();
+  let provider = await getProvider$2();
 
   return request$1({
     provider,
@@ -15217,7 +15142,7 @@ var requestEthereum = async ({ address, api, method, params, block }) => {
 };
 
 var requestPolygon = async ({ address, api, method, params, block }) => {
-  let provider = getProvider();
+  let provider = await getProvider$1();
 
   return request$1({
     provider,
@@ -15258,4 +15183,58 @@ let request = async function (url, options) {
   return result
 };
 
-export { estimate, provider, request, resetCache, setProvider, setProviderEndpoints };
+const getProvider = (blockchain)=>{
+
+  switch (blockchain) {
+    
+    case 'ethereum':
+      return getProvider$2()
+
+    case 'bsc':
+      return getProvider$3()
+
+    case 'polygon':
+      return getProvider$1()
+
+    default:
+      throw 'Unknown blockchain: ' + blockchain
+  }
+};
+
+const setProvider = (blockchain, provider)=>{
+
+  switch (blockchain) {
+    
+    case 'ethereum':
+      return setProvider$2(provider)
+
+    case 'bsc':
+      return setProvider$3(provider)
+
+    case 'polygon':
+      return setProvider$1(provider)
+
+    default:
+      throw 'Unknown blockchain: ' + blockchain
+  }
+};
+
+const setProviderEndpoints = (blockchain, endpoints)=>{
+
+  switch (blockchain) {
+    
+    case 'ethereum':
+      return setProviderEndpoints$2(endpoints)
+
+    case 'bsc':
+      return setProviderEndpoints$3(endpoints)
+
+    case 'polygon':
+      return setProviderEndpoints$1(endpoints)
+
+    default:
+      throw 'Unknown blockchain: ' + blockchain
+  }
+};
+
+export { estimate, getProvider, request, resetCache, setProvider, setProviderEndpoints };
