@@ -1,5 +1,5 @@
 import { mock, resetMocks, increaseBlock } from '@depay/web3-mock'
-import { request, provider, resetCache } from 'src/'
+import { request, getProvider, resetCache } from 'src/'
 import { supported } from 'src/blockchains'
 
 describe('request', () => {
@@ -8,9 +8,14 @@ describe('request', () => {
 
     describe(blockchain, ()=> {
 
-      beforeEach(resetMocks)
-      beforeEach(resetCache)
-      beforeEach(()=>mock({ blockchain, provider: provider(blockchain)}))
+      let provider
+      
+      beforeEach(async()=>{
+        resetMocks()
+        resetCache()
+        provider = await getProvider(blockchain)
+        mock({ blockchain, provider})
+      })
 
       it('provides latest block number', async ()=> {
         let blockNumber = await request(`${blockchain}://latestBlockNumber`)

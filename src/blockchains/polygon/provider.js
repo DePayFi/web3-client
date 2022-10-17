@@ -1,33 +1,18 @@
-import StaticJsonRpcBatchProvider from '../../clients/ethers/provider'
+import {
+  getProvider as getProviderFactory,
+  setProviderEndpoints as setProviderEndpointsFactory,
+  setProvider as setProviderFactory,
+} from '../../platforms/evm/provider'
 
-let provider
+const blockchain = 'polygon'
+const endpoints = ['https://polygon-rpc.com', 'https://rpc-mainnet.matic.quiknode.pro', 'https://matic-mainnet.chainstacklabs.com']
 
-const getProvider = ()=> {
-
-  if(provider) { return provider }
-
-  setProviderEndpoints(['https://polygon-rpc.com'])
-
-  return provider
-}
-
-const setProviderEndpoints = (endpoints)=> {
-  setProvider(
-    new StaticJsonRpcBatchProvider(
-      endpoints[0], 'polygon'
-    )
-  )
-}
-
-const setProvider = (givenProvider)=> {
-  provider = givenProvider
-}
-
-const resetProvider = ()=> { provider = undefined }
+const setProvider = setProviderFactory(blockchain)
+const setProviderEndpoints = setProviderEndpointsFactory(blockchain, setProvider)
+const getProvider = getProviderFactory(blockchain, endpoints, setProviderEndpoints)
 
 export {
   getProvider,
   setProvider,
   setProviderEndpoints,
-  resetProvider,
 }

@@ -1,5 +1,5 @@
 import { mock, resetMocks } from '@depay/web3-mock'
-import { simulate, provider, resetCache } from 'src/'
+import { simulate, getProvider, resetCache } from 'src/'
 import { struct, u8 } from '@depay/solana-web3.js'
 import { supported } from 'src/blockchains'
 
@@ -9,10 +9,15 @@ describe('simulate', () => {
 
     describe(blockchain, ()=> {
 
+      let provider
       const accounts = ['2UgCJaHU5y8NC4uWQcZYeV9a5RyYLF7iKYCybCsdFFD1']
-      beforeEach(resetMocks)
-      beforeEach(resetCache)
-      beforeEach(()=>mock({ blockchain, provider: provider(blockchain), accounts: { return: accounts } }))
+
+      beforeEach(async ()=>{
+        resetMocks()
+        resetCache()
+        provider = await getProvider(blockchain)
+        mock({ blockchain, provider, accounts: { return: accounts } })
+      })
 
       it('simulates a transaction', async ()=> {
 
@@ -21,7 +26,7 @@ describe('simulate', () => {
 
         mock({
           blockchain,
-          provider: provider(blockchain),
+          provider,
           simulate: {
             from: 'RaydiumSimuLateTransaction11111111111111111',
             instructions: [{

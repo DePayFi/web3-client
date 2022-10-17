@@ -1,5 +1,5 @@
 import { mock, resetMocks } from '@depay/web3-mock'
-import { request, provider, resetCache } from 'src/'
+import { request, getProvider, resetCache } from 'src/'
 import { supported } from 'src/blockchains'
 
 describe('request balance', () => {
@@ -8,15 +8,20 @@ describe('request balance', () => {
 
     describe(blockchain, ()=> {
 
+      let provider
       const accounts = ['2UgCJaHU5y8NC4uWQcZYeV9a5RyYLF7iKYCybCsdFFD1']
-      beforeEach(resetMocks)
-      beforeEach(resetCache)
-      beforeEach(()=>mock({ blockchain, accounts: { return: accounts } }))
+
+      beforeEach(async ()=>{
+        resetMocks()
+        resetCache()
+        provider = await getProvider(blockchain)
+        mock({ blockchain, provider, accounts: { return: accounts } })
+      })
 
       it('should request account balance', async ()=> {
 
         mock({
-          provider: provider(blockchain),
+          provider,
           blockchain,
           balance: {
             for: '2UgCJaHU5y8NC4uWQcZYeV9a5RyYLF7iKYCybCsdFFD1',
@@ -31,7 +36,7 @@ describe('request balance', () => {
       it('allows to request account balance also with deconstructed URL', async ()=> {
 
         mock({
-          provider: provider(blockchain),
+          provider,
           blockchain,
           balance: {
             for: '2UgCJaHU5y8NC4uWQcZYeV9a5RyYLF7iKYCybCsdFFD1',

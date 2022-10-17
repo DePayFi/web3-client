@@ -1,5 +1,5 @@
 import { Buffer, TransactionInstruction, PublicKey, Transaction } from '@depay/solana-web3.js'
-import { provider } from '.'
+import { getProvider } from './provider'
 import { supported } from './blockchains'
 
 let simulate = async function ({ blockchain, from, to, keys, api, params }) {
@@ -25,7 +25,8 @@ let simulate = async function ({ blockchain, from, to, keys, api, params }) {
 
   let result
   try{
-    result = await provider('solana').simulateTransaction(transaction)
+    const provider = await getProvider('solana')
+    result = await provider.simulateTransaction(transaction)
   } catch (error) {
     console.log(error)
   }

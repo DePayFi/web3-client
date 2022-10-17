@@ -1,33 +1,18 @@
-import StaticJsonRpcBatchProvider from '../../clients/ethers/provider'
+import {
+  getProvider as getProviderFactory,
+  setProviderEndpoints as setProviderEndpointsFactory,
+  setProvider as setProviderFactory,
+} from '../../platforms/evm/provider'
 
-let provider
+const blockchain = 'bsc'
+const endpoints = ['https://bsc-dataseed.binance.org', 'https://bsc-dataseed1.ninicoin.io', 'https://bsc-dataseed3.defibit.io']
 
-const getProvider = ()=> {
-
-  if(provider) { return provider }
-
-  setProviderEndpoints(['https://bsc-dataseed.binance.org'])
-
-  return provider
-}
-
-const setProviderEndpoints = (endpoints)=> {
-  setProvider(
-    new StaticJsonRpcBatchProvider(
-      endpoints[0], 'bsc'
-    )
-  )
-}
-
-const setProvider = (givenProvider)=> {
-  provider = givenProvider
-}
-
-const resetProvider = ()=> { provider = undefined }
+const setProvider = setProviderFactory(blockchain)
+const setProviderEndpoints = setProviderEndpointsFactory(blockchain, setProvider)
+const getProvider = getProviderFactory(blockchain, endpoints, setProviderEndpoints)
 
 export {
   getProvider,
   setProvider,
   setProviderEndpoints,
-  resetProvider,
 }
