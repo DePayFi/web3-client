@@ -14817,9 +14817,32 @@ const setProvider$4 = (blockchain)=> {
 const setProviderEndpoints$4 = (blockchain, setProvider)=> {
   
   return async (endpoints)=> {
+    
+    let responseTimes = await Promise.all(endpoints.map((endpoint)=>{
+      return new Promise(async (resolve)=>{
+        let timeout = 900;
+        let before = new Date().getTime();
+        setTimeout(()=>resolve(timeout), timeout);
+        await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ method: 'net_version', id: 1, jsonrpc: '2.0' })
+        });
+        if(response != 'ok') { return resolve(999) }
+        let after = new Date().getTime();
+        resolve(after-before);
+      })
+    }));
+
+    const fastestResponse = Math.min(...responseTimes);
+    const fastestIndex = responseTimes.indexOf(fastestResponse);
+    
     setProvider(
       new StaticJsonRpcBatchProvider(
-        endpoints[0], blockchain
+        endpoints[fastestIndex], blockchain
       )
     );
   }

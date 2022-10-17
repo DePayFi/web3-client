@@ -14820,9 +14820,32 @@
     const setProviderEndpoints$6 = (blockchain, setProvider)=> {
       
       return async (endpoints)=> {
+        
+        let responseTimes = await Promise.all(endpoints.map((endpoint)=>{
+          return new Promise(async (resolve)=>{
+            let timeout = 900;
+            let before = new Date().getTime();
+            setTimeout(()=>resolve(timeout), timeout);
+            await fetch(endpoint, {
+              method: 'POST',
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ method: 'net_version', id: 1, jsonrpc: '2.0' })
+            });
+            if(response != 'ok') { return resolve(999) }
+            let after = new Date().getTime();
+            resolve(after-before);
+          })
+        }));
+
+        const fastestResponse = Math.min(...responseTimes);
+        const fastestIndex = responseTimes.indexOf(fastestResponse);
+        
         setProvider(
           new StaticJsonRpcBatchProvider(
-            endpoints[0], blockchain
+            endpoints[fastestIndex], blockchain
           )
         );
       }
@@ -15181,9 +15204,32 @@
     const setProviderEndpoints$2 = (blockchain, setProvider)=> {
       
       return async (endpoints)=> {
+        
+        let responseTimes = await Promise.all(endpoints.map((endpoint)=>{
+          return new Promise(async (resolve)=>{
+            let timeout = 900;
+            let before = new Date().getTime();
+            setTimeout(()=>resolve(timeout), timeout);
+            await fetch(endpoint, {
+              method: 'POST',
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ method: 'getIdentity', id: 1, jsonrpc: '2.0' })
+            });
+            if(response != 'ok') { return resolve(999) }
+            let after = new Date().getTime();
+            resolve(after-before);
+          })
+        }));
+
+        const fastestResponse = Math.min(...responseTimes);
+        const fastestIndex = responseTimes.indexOf(fastestResponse);
+        
         setProvider(
           new StaticJsonRpcSequentialProvider(
-            endpoints[0], blockchain
+            endpoints[fastestIndex], blockchain
           )
         );
       }
@@ -15225,9 +15271,7 @@
         }
         return accountInfo({ address, api, method, params, provider, block })
       } else if(method === 'getProgramAccounts') {
-        console.log("BEFORE ACCOUNTS!!!");
         return provider.getProgramAccounts(new solanaWeb3_js.PublicKey(address), params).then((accounts)=>{
-          console.log("AFTER ACCOUNTS!!!");
           if(api){
             return accounts.map((account)=>{
               account.data = api.decode(account.account.data);
