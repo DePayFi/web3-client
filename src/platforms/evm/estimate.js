@@ -16,7 +16,7 @@ const getContractArguments = ({ contract, method, params })=>{
   }
 }
 
-export default async ({ provider, from, to, value, method, api, params }) => {
+export default ({ provider, from, to, value, method, api, params }) => {
   if(typeof api == "undefined"){
     return provider.estimateGas({ from, to, value })
   } else {

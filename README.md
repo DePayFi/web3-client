@@ -79,7 +79,7 @@ Either pass `/getAccountInfo` as explicit method, or pass no method to a request
 ```javascript
 import { request } from '@depay/web3-client'
 
-await request('solana://EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v')
+await request('solana://TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA')
 ```
 
 ###### Solana: other methods

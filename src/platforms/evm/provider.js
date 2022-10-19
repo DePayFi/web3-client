@@ -1,6 +1,13 @@
 import StaticJsonRpcBatchProvider from '../../clients/ethers/provider'
 import { getWindow } from '../../window'
 
+const ENDPOINTS = {
+  ethereum: ['https://cloudflare-eth.com', 'https://eth-mainnet.public.blastapi.io', 'https://eth-rpc.gateway.pokt.network'],
+  bsc: ['https://bsc-dataseed.binance.org', 'https://bsc-dataseed1.ninicoin.io', 'https://bsc-dataseed3.defibit.io'],
+  polygon: ['https://polygon-rpc.com', 'https://rpc-mainnet.matic.quiknode.pro', 'https://matic-mainnet.chainstacklabs.com'],
+  velas: ['https://mainnet.velas.com/rpc', 'https://evmexplorer.velas.com/rpc', 'https://explorer.velas.com/rpc'],
+}
+
 const getProviders = ()=> {
   if(getWindow()._clientProviders == undefined) {
     getWindow()._clientProviders = {}
@@ -8,64 +15,58 @@ const getProviders = ()=> {
   return getWindow()._clientProviders
 }
 
-const setProvider = (blockchain)=> {
-  return (givenProvider)=>{
-    getProviders()[blockchain] = givenProvider
-  }
+const setProvider = (blockchain, provider)=> {
+  getProviders()[blockchain] = provider
 }
 
-const setProviderEndpoints = (blockchain, setProvider)=> {
+const setProviderEndpoints = async (blockchain, endpoints)=> {
   
-  return async (endpoints)=> {
-    
-    let endpoint
-    let window = getWindow()
+  let endpoint
+  let window = getWindow()
 
-    if(window.fetch != undefined) {
-      
-      let responseTimes = await Promise.all(endpoints.map((endpoint)=>{
-        return new Promise(async (resolve)=>{
-          let timeout = 900
-          let before = new Date().getTime()
-          setTimeout(()=>resolve(timeout), timeout)
-          let result = await fetch(endpoint, {
-            method: 'POST',
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ method: 'net_version', id: 1, jsonrpc: '2.0' })
-          })
-          if(response != 'ok') { return resolve(999) }
-          let after = new Date().getTime()
-          resolve(after-before)
+  if(window.fetch != undefined) {
+    
+    let responseTimes = await Promise.all(endpoints.map((endpoint)=>{
+      return new Promise(async (resolve)=>{
+        let timeout = 900
+        let before = new Date().getTime()
+        setTimeout(()=>resolve(timeout), timeout)
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ method: 'net_version', id: 1, jsonrpc: '2.0' })
         })
-      }))
+        if(!response.ok) { return resolve(999) }
+        let after = new Date().getTime()
+        resolve(after-before)
+      })
+    }))
 
-      const fastestResponse = Math.min(...responseTimes)
-      const fastestIndex = responseTimes.indexOf(fastestResponse)
-      endpoint = endpoints[fastestIndex]
-    } else {
-      endpoint = endpoints[0]
-    }
-    
-    setProvider(
-      new StaticJsonRpcBatchProvider(endpoint, blockchain)
-    )
+    const fastestResponse = Math.min(...responseTimes)
+    const fastestIndex = responseTimes.indexOf(fastestResponse)
+    endpoint = endpoints[fastestIndex]
+  } else {
+    endpoint = endpoints[0]
   }
+  
+  setProvider(
+    blockchain,
+    new StaticJsonRpcBatchProvider(endpoint, blockchain)
+  )
 }
 
-const getProvider = (blockchain, defaultEndpoints, setProviderEndpoints)=> {
+const getProvider = async (blockchain)=> {
 
-  return async()=> {
-    let providers = getProviders()
+  let providers = getProviders()
     
-    if(!providers || !providers[blockchain]) {
-      await setProviderEndpoints(defaultEndpoints)
-    }
-
-    return getWindow()._clientProviders[blockchain]
+  if(!providers || !providers[blockchain]) {
+    await setProviderEndpoints(blockchain, ENDPOINTS[blockchain])
   }
+
+  return getWindow()._clientProviders[blockchain]
 }
 
 export {
