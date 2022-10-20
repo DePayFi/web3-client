@@ -15214,7 +15214,9 @@
     let endpoint;
     let window = getWindow();
 
-    if(window.fetch != undefined) {
+    if(window.fetch == undefined || (process && process.env && "production" == 'test')) {
+      endpoint = endpoints[0];
+    } else {
       
       let responseTimes = await Promise.all(endpoints.map((endpoint)=>{
         return new Promise(async (resolve)=>{
@@ -15238,8 +15240,6 @@
       const fastestResponse = Math.min(...responseTimes);
       const fastestIndex = responseTimes.indexOf(fastestResponse);
       endpoint = endpoints[fastestIndex];
-    } else {
-      endpoint = endpoints[0];
     }
     
     setProvider$2(
@@ -15478,7 +15478,9 @@
     let endpoint;
     let window = getWindow();
 
-    if(window.fetch != undefined) {
+    if(window.fetch == undefined || (process && process.env && "production" == 'test')) {
+      endpoint = endpoints[0];
+    } else {
       
       let responseTimes = await Promise.all(endpoints.map((endpoint)=>{
         return new Promise(async (resolve)=>{
@@ -15502,8 +15504,6 @@
       const fastestResponse = Math.min(...responseTimes);
       const fastestIndex = responseTimes.indexOf(fastestResponse);
       endpoint = endpoints[fastestIndex];
-    } else {
-      endpoint = endpoints[0];
     }
     
     setProvider$1(
