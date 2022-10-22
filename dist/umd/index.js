@@ -15122,6 +15122,7 @@
   new Logger(version$3);
 
   const BATCH_INTERVAL = 10;
+  const CHUNK_SIZE = 99;
 
   class StaticJsonRpcBatchProvider extends JsonRpcBatchProvider {
 
@@ -15153,31 +15154,38 @@
         if (!this._pendingBatchAggregator) {
           // Schedule batch for next event loop + short duration
           this._pendingBatchAggregator = setTimeout(() => {
-            // Get teh current batch and clear it, so new requests
+            // Get the current batch and clear it, so new requests
             // go into the next batch
             const batch = this._pendingBatch;
             this._pendingBatch = null;
             this._pendingBatchAggregator = null;
-            // Get the request as an array of requests
-            const request = batch.map((inflight) => inflight.request);
-            return fetchJson(this.connection, JSON.stringify(request)).then((result) => {
-              // For each result, feed it to the correct Promise, depending
-              // on whether it was a success or error
-              batch.forEach((inflightRequest, index) => {
-                const payload = result[index];
-                if (payload.error) {
-                  const error = new Error(payload.error.message);
-                  error.code = payload.error.code;
-                  error.data = payload.error.data;
+            // Prepare Chunks of CHUNK_SIZE
+            const chunks = [];
+            for (let i = 0; i < Math.ceil(batch.length / CHUNK_SIZE); i++) {
+              chunks[i] = batch.slice(i*CHUNK_SIZE, (i+1)*CHUNK_SIZE);
+            }
+            chunks.forEach((chunk)=>{
+              // Get the request as an array of requests
+              const request = chunk.map((inflight) => inflight.request);
+              return fetchJson(this.connection, JSON.stringify(request)).then((result) => {
+                // For each result, feed it to the correct Promise, depending
+                // on whether it was a success or error
+                chunk.forEach((inflightRequest, index) => {
+                  const payload = result[index];
+                  if (payload.error) {
+                    const error = new Error(payload.error.message);
+                    error.code = payload.error.code;
+                    error.data = payload.error.data;
+                    inflightRequest.reject(error);
+                  }
+                  else {
+                    inflightRequest.resolve(payload.result);
+                  }
+                });
+              }, (error) => {
+                chunk.forEach((inflightRequest) => {
                   inflightRequest.reject(error);
-                }
-                else {
-                  inflightRequest.resolve(payload.result);
-                }
-              });
-            }, (error) => {
-              batch.forEach((inflightRequest) => {
-                inflightRequest.reject(error);
+                });
               });
             });
           }, BATCH_INTERVAL);
