@@ -15256,15 +15256,21 @@
     );
   };
 
-  const getProvider$3 = async (blockchain)=> {
+  const getProvider$3 = (blockchain)=> {
 
     let providers = getProviders$1();
-      
-    if(!providers || !providers[blockchain]) {
-      await setProviderEndpoints$2(blockchain, ENDPOINTS$1[blockchain]);
-    }
+    if(providers && providers[blockchain]){ return providers[blockchain] }
+    
+    let window = getWindow();
+    if(window._getProviderPromise && window._getProviderPromise[blockchain]) { return window._getProviderPromise[blockchain] }
 
-    return getWindow()._clientProviders[blockchain]
+    if(!window._getProviderPromise){ window._getProviderPromise = {}; }
+    window._getProviderPromise[blockchain] = new Promise(async(resolve)=> {
+      await setProviderEndpoints$2(blockchain, ENDPOINTS$1[blockchain]);
+      resolve(getWindow()._clientProviders[blockchain]);
+    });
+
+    return window._getProviderPromise[blockchain]
   };
 
   const getProvider$2 = (blockchain)=>{
@@ -15520,15 +15526,21 @@
     );
   };
 
-  const getProvider$1 = async (blockchain)=> {
+  const getProvider$1 = (blockchain)=> {
 
     let providers = getProviders();
-      
-    if(!providers || !providers[blockchain]) {
-      await setProviderEndpoints$1(blockchain, ENDPOINTS[blockchain]);
-    }
+    if(providers && providers[blockchain]){ return providers[blockchain] }
+    
+    let window = getWindow();
+    if(window._getProviderPromise && window._getProviderPromise[blockchain]) { return window._getProviderPromise[blockchain] }
 
-    return getWindow()._clientProviders[blockchain]
+    if(!window._getProviderPromise){ window._getProviderPromise = {}; }
+    window._getProviderPromise[blockchain] = new Promise(async(resolve)=> {
+      await setProviderEndpoints$1(blockchain, ENDPOINTS[blockchain]);
+      resolve(getWindow()._clientProviders[blockchain]);
+    });
+
+    return window._getProviderPromise[blockchain]
   };
 
   let accountInfo = async ({ address, api, method, params, provider, block }) => {
