@@ -43,10 +43,10 @@ This library supports the following blockchains:
 
 ## Platform specific packaging
 
-In case you want to use and package only specific platforms, use platform specific entrypoints:
+In case you want to use and package only specific platforms, use the platform-specific package:
 
 ```javascript
-import { request } from '@depay/web3-client/dist/umd/index.evm'
+import { request } from '@depay/web3-client-evm'
 ```
 
 ## Functionalities
