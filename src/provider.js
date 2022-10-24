@@ -12,12 +12,12 @@ import {
   setProvider as setProviderSolana,
 } from './platforms/solana/provider'
 
-const getProvider = (blockchain)=>{
+const getProvider = async (blockchain)=>{
 
   if(supported.evm.includes(blockchain)) {
-    return getProviderEVM(blockchain)
+    return await getProviderEVM(blockchain)
   } else if(supported.solana.includes(blockchain)) {
-    return getProviderSolana(blockchain)
+    return await getProviderSolana(blockchain)
   } else {
     throw 'Unknown blockchain: ' + blockchain
   }
