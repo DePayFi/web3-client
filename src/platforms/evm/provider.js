@@ -24,7 +24,11 @@ const setProviderEndpoints = async (blockchain, endpoints)=> {
   let endpoint
   let window = getWindow()
 
-  if(window.fetch == undefined || (typeof process != 'undefined' && process['env'] && process['env']['NODE_ENV'] == 'test')) {
+  if(
+    window.fetch == undefined ||
+    (typeof process != 'undefined' && process['env'] && process['env']['NODE_ENV'] == 'test') ||
+    (typeof window.cy != 'undefined')
+  ) {
     endpoint = endpoints[0]
   } else {
     
