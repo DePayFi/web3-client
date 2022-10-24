@@ -59,13 +59,13 @@ const setProviderEndpoints = async (blockchain, endpoints)=> {
   )
 }
 
-const getProvider = (blockchain)=> {
+const getProvider = async (blockchain)=> {
 
   let providers = getProviders()
-  if(providers && providers[blockchain]){ return Promise.resolve(providers[blockchain]) }
+  if(providers && providers[blockchain]){ return providers[blockchain] }
   
   let window = getWindow()
-  if(window._getProviderPromise && window._getProviderPromise[blockchain]) { return Promise.resolve(window._getProviderPromise[blockchain]) }
+  if(window._getProviderPromise && window._getProviderPromise[blockchain]) { return await window._getProviderPromise[blockchain] }
 
   if(!window._getProviderPromise){ window._getProviderPromise = {} }
   window._getProviderPromise[blockchain] = new Promise(async(resolve)=> {
@@ -73,7 +73,7 @@ const getProvider = (blockchain)=> {
     resolve(getWindow()._clientProviders[blockchain])
   })
 
-  return window._getProviderPromise[blockchain]
+  return await window._getProviderPromise[blockchain]
 }
 
 export {
