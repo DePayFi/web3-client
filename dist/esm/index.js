@@ -15261,10 +15261,10 @@ const setProviderEndpoints$2 = async (blockchain, endpoints)=> {
 const getProvider$3 = (blockchain)=> {
 
   let providers = getProviders$1();
-  if(providers && providers[blockchain]){ return providers[blockchain] }
+  if(providers && providers[blockchain]){ return Promise.resolve(providers[blockchain]) }
   
   let window = getWindow();
-  if(window._getProviderPromise && window._getProviderPromise[blockchain]) { return window._getProviderPromise[blockchain] }
+  if(window._getProviderPromise && window._getProviderPromise[blockchain]) { return Promise.resolve(window._getProviderPromise[blockchain]) }
 
   if(!window._getProviderPromise){ window._getProviderPromise = {}; }
   window._getProviderPromise[blockchain] = new Promise(async(resolve)=> {
@@ -15535,10 +15535,10 @@ const setProviderEndpoints$1 = async (blockchain, endpoints)=> {
 const getProvider$1 = (blockchain)=> {
 
   let providers = getProviders();
-  if(providers && providers[blockchain]){ return providers[blockchain] }
+  if(providers && providers[blockchain]){ return Promise.resolve(providers[blockchain]) }
   
   let window = getWindow();
-  if(window._getProviderPromise && window._getProviderPromise[blockchain]) { return window._getProviderPromise[blockchain] }
+  if(window._getProviderPromise && window._getProviderPromise[blockchain]) { return Promise.resolve(window._getProviderPromise[blockchain]) }
 
   if(!window._getProviderPromise){ window._getProviderPromise = {}; }
   window._getProviderPromise[blockchain] = new Promise(async(resolve)=> {
