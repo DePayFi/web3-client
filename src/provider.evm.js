@@ -1,17 +1,11 @@
-import { supported } from './blockchains.evm'
+import { supported } from './blockchains'
 
-import {
-  getProvider as getProviderEVM,
-  setProviderEndpoints as setProviderEndpointsEVM,
-  setProvider as setProviderEVM,
-} from './platforms/evm/provider'
+import EVM from './platforms/evm/provider'
 
-const getProvider = (blockchain)=>{
+const getProvider = async (blockchain)=>{
 
   if(supported.evm.includes(blockchain)) {
-    return getProviderEVM(blockchain)
-  } else if(supported.solana.includes(blockchain)) {
-    return getProviderSolana(blockchain)
+    return await EVM.getProvider(blockchain)
   } else {
     throw 'Unknown blockchain: ' + blockchain
   }
@@ -20,7 +14,7 @@ const getProvider = (blockchain)=>{
 const setProvider = (blockchain, provider)=>{
 
   if(supported.evm.includes(blockchain)) {
-    return setProviderEVM(blockchain, provider)
+    return EVM.setProvider(blockchain, provider)
   } else {
     throw 'Unknown blockchain: ' + blockchain
   }
@@ -29,7 +23,7 @@ const setProvider = (blockchain, provider)=>{
 const setProviderEndpoints = (blockchain, endpoints)=>{
 
   if(supported.evm.includes(blockchain)) {
-    return setProviderEndpointsEVM(blockchain, endpoints)
+    return EVM.setProviderEndpoints(blockchain, endpoints)
   } else {
     throw 'Unknown blockchain: ' + blockchain
   }

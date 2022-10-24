@@ -79,7 +79,7 @@ const getProvider = async (blockchain)=> {
   return await window._getProviderPromise[blockchain]
 }
 
-export {
+export default {
   getProvider,
   setProviderEndpoints,
   setProvider,

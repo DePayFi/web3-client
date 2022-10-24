@@ -1,5 +1,5 @@
 import { ethers } from 'ethers'
-import { getProvider } from './provider'
+import EVM from './provider'
 import { paramsToContractArgs } from './contract'
 
 let contractCall = ({ address, api, method, params, provider, block }) => {
@@ -13,7 +13,7 @@ let balance = ({ address, provider }) => {
 }
 
 export default async ({ blockchain, address, api, method, params, block }) => {
-  const provider = await getProvider(blockchain)
+  const provider = await EVM.getProvider(blockchain)
   
   if (api) {
     return contractCall({ address, api, method, params, provider, block })

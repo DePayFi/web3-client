@@ -29,9 +29,9 @@
     }
   };
 
-  let supported = ['ethereum', 'bsc', 'polygon', 'velas'];
-  supported.evm = ['ethereum', 'bsc', 'polygon', 'velas'];
-  supported.solana = [];
+  let supported$1 = ['ethereum', 'bsc', 'polygon', 'solana', 'velas'];
+  supported$1.evm = ['ethereum', 'bsc', 'polygon', 'velas'];
+  supported$1.solana = ['solana'];
 
   const version$f = "logger/5.7.0";
 
@@ -15277,12 +15277,16 @@
     return await window._getProviderPromise[blockchain]
   };
 
-  const getProvider = (blockchain)=>{
+  var EVM = {
+    getProvider: getProvider$1,
+    setProviderEndpoints: setProviderEndpoints$1,
+    setProvider: setProvider$1,
+  };
 
-    if(supported.evm.includes(blockchain)) {
-      return getProvider$1(blockchain)
-    } else if(supported.solana.includes(blockchain)) {
-      return getProviderSolana(blockchain)
+  const getProvider = async (blockchain)=>{
+
+    if(supported$1.evm.includes(blockchain)) {
+      return await EVM.getProvider(blockchain)
     } else {
       throw 'Unknown blockchain: ' + blockchain
     }
@@ -15290,8 +15294,8 @@
 
   const setProvider = (blockchain, provider)=>{
 
-    if(supported.evm.includes(blockchain)) {
-      return setProvider$1(blockchain, provider)
+    if(supported$1.evm.includes(blockchain)) {
+      return EVM.setProvider(blockchain, provider)
     } else {
       throw 'Unknown blockchain: ' + blockchain
     }
@@ -15299,8 +15303,8 @@
 
   const setProviderEndpoints = (blockchain, endpoints)=>{
 
-    if(supported.evm.includes(blockchain)) {
-      return setProviderEndpoints$1(blockchain, endpoints)
+    if(supported$1.evm.includes(blockchain)) {
+      return EVM.setProviderEndpoints(blockchain, endpoints)
     } else {
       throw 'Unknown blockchain: ' + blockchain
     }
@@ -15410,6 +15414,10 @@
     })
   };
 
+  let supported = ['ethereum', 'bsc', 'polygon', 'velas'];
+  supported.evm = ['ethereum', 'bsc', 'polygon', 'velas'];
+  supported.solana = [];
+
   let estimate = async function ({ blockchain, from, to, value, method, api, params, cache: cache$1 }) {
     if(!supported.includes(blockchain)) { throw 'Unknown blockchain: ' + blockchain }
     if(typeof value == 'undefined') { value = '0'; }
@@ -15475,7 +15483,7 @@
   };
 
   var requestEVM = async ({ blockchain, address, api, method, params, block }) => {
-    const provider = await getProvider$1(blockchain);
+    const provider = await EVM.getProvider(blockchain);
     
     if (api) {
       return contractCall({ address, api, method, params, provider, block })

@@ -1,4 +1,4 @@
-import { getProvider } from './provider'
+import Solana from './provider'
 import { PublicKey, ACCOUNT_LAYOUT } from '@depay/solana-web3.js'
 
 let accountInfo = async ({ address, api, method, params, provider, block }) => {
@@ -11,7 +11,7 @@ let balance = ({ address, provider }) => {
 }
 
 export default async ({ blockchain, address, api, method, params, block }) => {
-  const provider = await getProvider(blockchain)
+  const provider = await Solana.getProvider(blockchain)
 
   if(method == undefined || method === 'getAccountInfo') {
     if(api == undefined) { 
