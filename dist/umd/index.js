@@ -15611,12 +15611,12 @@
     })
   };
 
-  const getProvider = (blockchain)=>{
+  const getProvider = async (blockchain)=>{
 
     if(supported.evm.includes(blockchain)) {
-      return getProvider$3(blockchain)
+      return await getProvider$3(blockchain)
     } else if(supported.solana.includes(blockchain)) {
-      return getProvider$1(blockchain)
+      return await getProvider$1(blockchain)
     } else {
       throw 'Unknown blockchain: ' + blockchain
     }
