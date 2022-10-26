@@ -3,7 +3,7 @@ import { fetchJson } from "@ethersproject/web"
 import { JsonRpcBatchProvider } from '@ethersproject/providers'
 
 const BATCH_INTERVAL = 10
-const CHUNK_SIZE = 10
+const CHUNK_SIZE = 99
 
 class StaticJsonRpcBatchProvider extends JsonRpcBatchProvider {
 
