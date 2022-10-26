@@ -2,7 +2,7 @@ import StaticJsonRpcBatchProvider from '../../clients/ethers/provider'
 import { getWindow } from '../../window'
 
 const ENDPOINTS = {
-  ethereum: ['https://cloudflare-eth.com', 'https://eth-mainnet.public.blastapi.io', 'https://eth-rpc.gateway.pokt.network'],
+  ethereum: ['https://cloudflare-eth.com', 'https://eth-mainnet.public.blastapi.io', 'https://ethereum.publicnode.com'],
   bsc: ['https://bsc-dataseed.binance.org', 'https://bsc-dataseed1.ninicoin.io', 'https://bsc-dataseed3.defibit.io'],
   polygon: ['https://polygon-rpc.com', 'https://rpc-mainnet.matic.quiknode.pro', 'https://matic-mainnet.chainstacklabs.com'],
   velas: ['https://mainnet.velas.com/rpc', 'https://evmexplorer.velas.com/rpc', 'https://explorer.velas.com/rpc'],
