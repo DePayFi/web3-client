@@ -1,11 +1,10 @@
 import { Blockchain } from '@depay/web3-blockchains'
-import { fetchJson } from "@ethersproject/web"
-import { JsonRpcBatchProvider } from '@ethersproject/providers'
+import { ethers } from 'ethers'
 
 const BATCH_INTERVAL = 10
 const CHUNK_SIZE = 99
 
-class StaticJsonRpcBatchProvider extends JsonRpcBatchProvider {
+class StaticJsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
 
     constructor(url, network) {
       super(url)
@@ -48,7 +47,7 @@ class StaticJsonRpcBatchProvider extends JsonRpcBatchProvider {
           chunks.forEach((chunk)=>{
             // Get the request as an array of requests
             const request = chunk.map((inflight) => inflight.request);
-            return fetchJson(this.connection, JSON.stringify(request)).then((result) => {
+            return ethers.utils.fetchJson(this.connection, JSON.stringify(request)).then((result) => {
               // For each result, feed it to the correct Promise, depending
               // on whether it was a success or error
               chunk.forEach((inflightRequest, index) => {
