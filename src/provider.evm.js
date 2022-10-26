@@ -1,4 +1,4 @@
-import { supported } from './blockchains'
+import { supported } from './blockchains.evm'
 
 import EVM from './platforms/evm/provider'
 

@@ -29,9 +29,9 @@
     }
   };
 
-  let supported$1 = ['ethereum', 'bsc', 'polygon', 'solana', 'velas'];
+  let supported$1 = ['ethereum', 'bsc', 'polygon', 'velas'];
   supported$1.evm = ['ethereum', 'bsc', 'polygon', 'velas'];
-  supported$1.solana = ['solana'];
+  supported$1.solana = [];
 
   const version$f = "logger/5.7.0";
 
@@ -15397,12 +15397,8 @@
     })
   };
 
-  let supported = ['ethereum', 'bsc', 'polygon', 'velas'];
-  supported.evm = ['ethereum', 'bsc', 'polygon', 'velas'];
-  supported.solana = [];
-
   let estimate = async function ({ blockchain, from, to, value, method, api, params, cache: cache$1 }) {
-    if(!supported.includes(blockchain)) { throw 'Unknown blockchain: ' + blockchain }
+    if(!supported$1.includes(blockchain)) { throw 'Unknown blockchain: ' + blockchain }
     if(typeof value == 'undefined') { value = '0'; }
 
     const provider = await getProvider$2(blockchain);
@@ -15603,6 +15599,10 @@
     }
   };
 
+  let supported = ['ethereum', 'bsc', 'polygon', 'solana', 'velas'];
+  supported.evm = ['ethereum', 'bsc', 'polygon', 'velas'];
+  supported.solana = ['solana'];
+
   let request = async function (url, options) {
     let { blockchain, address, method } = parseUrl(url);
     let { api, params, cache: cache$1, block } = (typeof(url) == 'object' ? url : options) || {};
@@ -15611,9 +15611,9 @@
       expires: cache$1 || 0,
       key: [blockchain, address, method, params, block],
       call: async()=>{
-        if(supported$1.evm.includes(blockchain)) {
+        if(supported.evm.includes(blockchain)) {
           return requestEVM({ blockchain, address, api, method, params, block })
-        } else if(supported$1.solana.includes(blockchain)) {
+        } else if(supported.solana.includes(blockchain)) {
           return requestSolana({ blockchain, address, api, method, params, block })
         } else {
           throw 'Unknown blockchain: ' + blockchain
@@ -15624,9 +15624,9 @@
 
   const getProvider = async (blockchain)=>{
 
-    if(supported$1.evm.includes(blockchain)) {
+    if(supported.evm.includes(blockchain)) {
       return await EVM.getProvider(blockchain)
-    } else if(supported$1.solana.includes(blockchain)) {
+    } else if(supported.solana.includes(blockchain)) {
       return await Solana.getProvider(blockchain)
     } else {
       throw 'Unknown blockchain: ' + blockchain
@@ -15635,9 +15635,9 @@
 
   const setProvider = (blockchain, provider)=>{
 
-    if(supported$1.evm.includes(blockchain)) {
+    if(supported.evm.includes(blockchain)) {
       return EVM.setProvider(blockchain, provider)
-    } else if(supported$1.solana.includes(blockchain)) {
+    } else if(supported.solana.includes(blockchain)) {
       return Solana.setProvider(blockchain, provider)
     } else {
       throw 'Unknown blockchain: ' + blockchain
@@ -15646,9 +15646,9 @@
 
   const setProviderEndpoints = (blockchain, endpoints)=>{
 
-    if(supported$1.evm.includes(blockchain)) {
+    if(supported.evm.includes(blockchain)) {
       return EVM.setProviderEndpoints(blockchain, endpoints)
-    } else if(supported$1.solana.includes(blockchain)) {
+    } else if(supported.solana.includes(blockchain)) {
       return Solana.setProviderEndpoints(blockchain, endpoints)
     } else {
       throw 'Unknown blockchain: ' + blockchain
@@ -15657,7 +15657,7 @@
 
   function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
   let simulate = async function ({ blockchain, from, to, keys, api, params }) {
-    if(!supported$1.solana.includes(blockchain)) { throw `${blockchain} not supported for simulation!` }
+    if(!supported.solana.includes(blockchain)) { throw `${blockchain} not supported for simulation!` }
 
     const data = solanaWeb3_js.Buffer.alloc(api.span);
     api.encode(params, data);

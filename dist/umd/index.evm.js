@@ -29,9 +29,9 @@
     }
   };
 
-  let supported$1 = ['ethereum', 'bsc', 'polygon', 'solana', 'velas'];
-  supported$1.evm = ['ethereum', 'bsc', 'polygon', 'velas'];
-  supported$1.solana = ['solana'];
+  let supported = ['ethereum', 'bsc', 'polygon', 'velas'];
+  supported.evm = ['ethereum', 'bsc', 'polygon', 'velas'];
+  supported.solana = [];
 
   const version$f = "logger/5.7.0";
 
@@ -15286,7 +15286,7 @@
 
   const getProvider = async (blockchain)=>{
 
-    if(supported$1.evm.includes(blockchain)) {
+    if(supported.evm.includes(blockchain)) {
       return await EVM.getProvider(blockchain)
     } else {
       throw 'Unknown blockchain: ' + blockchain
@@ -15295,7 +15295,7 @@
 
   const setProvider = (blockchain, provider)=>{
 
-    if(supported$1.evm.includes(blockchain)) {
+    if(supported.evm.includes(blockchain)) {
       return EVM.setProvider(blockchain, provider)
     } else {
       throw 'Unknown blockchain: ' + blockchain
@@ -15304,7 +15304,7 @@
 
   const setProviderEndpoints = (blockchain, endpoints)=>{
 
-    if(supported$1.evm.includes(blockchain)) {
+    if(supported.evm.includes(blockchain)) {
       return EVM.setProviderEndpoints(blockchain, endpoints)
     } else {
       throw 'Unknown blockchain: ' + blockchain
@@ -15414,10 +15414,6 @@
       });
     })
   };
-
-  let supported = ['ethereum', 'bsc', 'polygon', 'velas'];
-  supported.evm = ['ethereum', 'bsc', 'polygon', 'velas'];
-  supported.solana = [];
 
   let estimate = async function ({ blockchain, from, to, value, method, api, params, cache: cache$1 }) {
     if(!supported.includes(blockchain)) { throw 'Unknown blockchain: ' + blockchain }
