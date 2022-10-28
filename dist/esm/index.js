@@ -37,9 +37,7 @@ const CHUNK_SIZE = 99;
 class StaticJsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
 
     constructor(url, network) {
-      console.log('BEFORE SUPER');
       super(url);
-      console.log('AFTER SUPER');
       this._network = network;
     }
 

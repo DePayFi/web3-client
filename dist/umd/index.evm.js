@@ -39,9 +39,7 @@
   class StaticJsonRpcBatchProvider extends ethers.ethers.providers.JsonRpcProvider {
 
       constructor(url, network) {
-        console.log('BEFORE SUPER');
         super(url);
-        console.log('AFTER SUPER');
         this._network = network;
       }
 
