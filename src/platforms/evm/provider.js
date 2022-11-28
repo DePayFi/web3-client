@@ -59,7 +59,7 @@ const setProviderEndpoints = async (blockchain, endpoints)=> {
   
   setProvider(
     blockchain,
-    new StaticJsonRpcBatchProvider(endpoint, blockchain)
+    new StaticJsonRpcBatchProvider(endpoint, blockchain, endpoints)
   )
 }
 
