@@ -13,8 +13,6 @@ const getContractArguments = ({ contract, method, params })=>{
     return fragment.inputs.map((input) => {
       return params[input.name]
     })
-  } else {
-    throw 'Contract params have wrong type!'
   }
 };
 
@@ -23,7 +21,13 @@ var estimateEVM = ({ provider, from, to, value, method, api, params }) => {
     return provider.estimateGas({ from, to, value })
   } else {
     let contract = new ethers.Contract(to, api, provider);
-    return contract.estimateGas[method](...getContractArguments({ contract, method, params }), { from, value })
+    let contractMethod = contract.estimateGas[method];
+    let contractArguments = getContractArguments({ contract, method, params });
+    if(contractArguments) {
+      return contractMethod(...contractArguments, { from, value })
+    } else {
+      return contractMethod({ from, value })
+    }
   }
 };
 

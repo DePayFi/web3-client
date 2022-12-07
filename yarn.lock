@@ -911,7 +911,7 @@
   resolved "https://registry.yarnpkg.com/@depay/web3-constants/-/web3-constants-6.3.2.tgz#13a6066f20baee3ea94b373eebc69bd2c4c9773b"
   integrity sha512-It2ygcxIrSXMB3ilHmgtq0EMfBGf42sgnaCFbF9Lz80gPjC7O2NifNv8h3gRd/8Fy3XwzCLkjDqbVIgn7kV9tQ==
 
-"@depay/web3-mock@^13.22.10":
+"@depay/web3-mock@^13.22.11":
   version "13.22.11"
   resolved "https://registry.yarnpkg.com/@depay/web3-mock/-/web3-mock-13.22.11.tgz#36f13c444448284061c73b078fb8f7b388bfeaec"
   integrity sha512-I5cGu9G6f75fmEJtwQEMRj9zrbLLquOAM31ldTwRrOYpYYLIS2K4DLqZINAdGn+jW8z0dOvSscgMVI/OJ4l2RQ==
