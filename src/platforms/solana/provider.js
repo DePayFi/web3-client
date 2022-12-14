@@ -2,7 +2,7 @@ import StaticJsonRpcBatchProvider from '../../clients/solana/provider'
 import { getWindow } from '../../window'
 
 const ENDPOINTS = {
-  solana: ['https://solana-mainnet.phantom.tech', 'https://solana-api.projectserum.com', 'https://ssc-dao.genesysgo.net']
+  solana: ['https://solana-mainnet.phantom.app/YBPpkkN4g91xDiAnTE9r0RcMkjg0sKUIWvAfoFVJ', 'https://mainnet-beta.solflare.network', 'https://us-solana1.twnodes.com']
 }
 
 const getProviders = ()=> {

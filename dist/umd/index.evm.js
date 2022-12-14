@@ -419,6 +419,10 @@
     return provider.getBalance(address)
   };
 
+  let transactionCount = ({ address, provider }) => {
+    return provider.getTransactionCount(address)
+  };
+
   var requestEVM = async ({ blockchain, address, api, method, params, block }) => {
     const provider = await EVM.getProvider(blockchain);
     
@@ -428,6 +432,8 @@
       return provider.getBlockNumber()
     } else if (method === 'balance') {
       return balance({ address, provider })
+    } else if (method === 'transactionCount') {
+      return transactionCount({ address, provider })
     }
   };
 

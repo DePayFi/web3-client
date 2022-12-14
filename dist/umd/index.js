@@ -401,6 +401,10 @@
     return provider.getBalance(address)
   };
 
+  let transactionCount = ({ address, provider }) => {
+    return provider.getTransactionCount(address)
+  };
+
   var requestEVM = async ({ blockchain, address, api, method, params, block }) => {
     const provider = await EVM.getProvider(blockchain);
     
@@ -410,6 +414,8 @@
       return provider.getBlockNumber()
     } else if (method === 'balance') {
       return balance$1({ address, provider })
+    } else if (method === 'transactionCount') {
+      return transactionCount({ address, provider })
     }
   };
 
@@ -424,7 +430,7 @@
   }
 
   const ENDPOINTS = {
-    solana: ['https://solana-mainnet.phantom.tech', 'https://solana-api.projectserum.com', 'https://ssc-dao.genesysgo.net']
+    solana: ['https://solana-mainnet.phantom.app/YBPpkkN4g91xDiAnTE9r0RcMkjg0sKUIWvAfoFVJ', 'https://mainnet-beta.solflare.network', 'https://us-solana1.twnodes.com']
   };
 
   const getProviders = ()=> {

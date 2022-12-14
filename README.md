@@ -129,6 +129,26 @@ import { request } from '@depay/web3-client'
 request('solana://2UgCJaHU5y8NC4uWQcZYeV9a5RyYLF7iKYCybCsdFFD1/balance').then((balance)=>console.log(balance))
 ```
 
+#### request account transactionCount
+
+##### EVM: request account transactionCount
+
+```javascript
+import { request } from '@depay/web3-client'
+
+await request('ethereum://0x5Af489c8786A018EC4814194dC8048be1007e390/transactionCount')
+// 212 (transaction count, starts at 0)
+```
+
+##### Solana: request transactionCount
+
+```javascript
+import { request } from '@depay/web3-client'
+
+await request('solana://2UgCJaHU5y8NC4uWQcZYeV9a5RyYLF7iKYCybCsdFFD1/transactionCount')
+// undefined (as solana does not implement transaction count for address neither nonce)
+```
+
 #### request latestBlockNumber
 
 ##### EVM: request latestBlockNumber
