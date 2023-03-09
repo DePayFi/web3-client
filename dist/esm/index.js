@@ -31,8 +31,8 @@ var estimateEVM = ({ provider, from, to, value, method, api, params }) => {
   }
 };
 
-let supported$1 = ['ethereum', 'bsc', 'polygon', 'velas'];
-supported$1.evm = ['ethereum', 'bsc', 'polygon', 'velas'];
+let supported$1 = ['ethereum', 'bsc', 'polygon', 'fantom', 'velas'];
+supported$1.evm = ['ethereum', 'bsc', 'polygon', 'fantom', 'velas'];
 supported$1.solana = [];
 
 const BATCH_INTERVAL = 10;
@@ -142,6 +142,7 @@ const ENDPOINTS$1 = {
   ethereum: ['https://rpc.ankr.com/eth', 'https://eth.llamarpc.com', 'https://ethereum.publicnode.com'],
   bsc: ['https://bsc-dataseed.binance.org', 'https://bsc-dataseed1.ninicoin.io', 'https://bsc-dataseed3.defibit.io'],
   polygon: ['https://polygon-rpc.com', 'https://poly-rpc.gateway.pokt.network', 'https://matic-mainnet.chainstacklabs.com'],
+  fantom: ['https://fantom.blockpi.network/v1/rpc/public', 'https://rpcapi.fantom.network', 'https://rpc.ftm.tools'],
   velas: ['https://mainnet.velas.com/rpc', 'https://evmexplorer.velas.com/rpc', 'https://explorer.velas.com/rpc'],
 };
 
@@ -545,8 +546,8 @@ var requestSolana = async ({ blockchain, address, api, method, params, block }) 
   }
 };
 
-let supported = ['ethereum', 'bsc', 'polygon', 'solana', 'velas'];
-supported.evm = ['ethereum', 'bsc', 'polygon', 'velas'];
+let supported = ['ethereum', 'bsc', 'polygon', 'solana', 'fantom', 'velas'];
+supported.evm = ['ethereum', 'bsc', 'polygon', 'fantom', 'velas'];
 supported.solana = ['solana'];
 
 let request = async function (url, options) {
