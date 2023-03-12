@@ -431,7 +431,7 @@
   }
 
   const ENDPOINTS = {
-    solana: ['https://solana-mainnet.phantom.app/YBPpkkN4g91xDiAnTE9r0RcMkjg0sKUIWvAfoFVJ', 'https://mainnet-beta.solflare.network', 'https://us-solana1.twnodes.com']
+    solana: ['https://solana-mainnet.phantom.app/YBPpkkN4g91xDiAnTE9r0RcMkjg0sKUIWvAfoFVJ', 'https://mainnet-beta.solflare.network', 'https://solana-mainnet.rpc.extrnode.com']
   };
 
   const getProviders = ()=> {
