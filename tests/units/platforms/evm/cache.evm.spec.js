@@ -1,7 +1,7 @@
 import { ethers } from 'ethers'
 import { mock, resetMocks } from '@depay/web3-mock'
-import { request, resetCache, getProvider } from 'src/index.evm'
-import { supported } from 'src/blockchains.evm'
+import { request, resetCache, getProvider } from 'dist/esm/index.evm'
+import { supported } from 'src/blockchains'
 
 describe('cache (evm)', ()=>{
 

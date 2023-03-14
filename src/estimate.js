@@ -1,7 +1,7 @@
 import estimateEVM from './platforms/evm/estimate'
-import { getProvider } from './provider.evm'
+import { getProvider } from './provider'
 import { cache as cacheRequest } from './cache'
-import { supported } from './blockchains.evm'
+import { supported } from './blockchains'
 
 let estimate = async function ({ blockchain, from, to, value, method, api, params, cache }) {
   if(!supported.includes(blockchain)) { throw 'Unknown blockchain: ' + blockchain }

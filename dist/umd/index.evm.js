@@ -33,10 +33,6 @@
     }
   };
 
-  let supported = ['ethereum', 'bsc', 'polygon', 'fantom', 'velas'];
-  supported.evm = ['ethereum', 'bsc', 'polygon', 'fantom', 'velas'];
-  supported.solana = [];
-
   const BATCH_INTERVAL = 10;
   const CHUNK_SIZE = 99;
 
@@ -225,10 +221,24 @@
     setProvider: setProvider$1,
   };
 
+  let supported = ['ethereum', 'bsc', 'polygon', 'fantom', 'velas'];
+  supported.evm = ['ethereum', 'bsc', 'polygon', 'fantom', 'velas'];
+  supported.solana = [];
+
   const getProvider = async (blockchain)=>{
 
     if(supported.evm.includes(blockchain)) {
+
+
       return await EVM.getProvider(blockchain)
+
+
+    } else if(supported.solana.includes(blockchain)) {
+
+
+      return await Solana.getProvider(blockchain)
+
+
     } else {
       throw 'Unknown blockchain: ' + blockchain
     }
@@ -237,7 +247,17 @@
   const setProvider = (blockchain, provider)=>{
 
     if(supported.evm.includes(blockchain)) {
+
+
       return EVM.setProvider(blockchain, provider)
+
+
+    } else if(supported.solana.includes(blockchain)) {
+
+
+      return Solana.setProvider(blockchain, provider)
+
+
     } else {
       throw 'Unknown blockchain: ' + blockchain
     }
@@ -246,7 +266,17 @@
   const setProviderEndpoints = (blockchain, endpoints)=>{
 
     if(supported.evm.includes(blockchain)) {
+
+
       return EVM.setProviderEndpoints(blockchain, endpoints)
+
+
+    } else if(supported.solana.includes(blockchain)) {
+
+
+      return Solana.setProviderEndpoints(blockchain, endpoints)
+
+
     } else {
       throw 'Unknown blockchain: ' + blockchain
     }
@@ -369,33 +399,6 @@
     })
   };
 
-  var parseUrl = (url) => {
-    if (typeof url == 'object') {
-      return url
-    }
-    let deconstructed = url.match(/(?<blockchain>\w+):\/\/(?<part1>[\w\d]+)(\/(?<part2>[\w\d]+)*)?/);
-
-    if(deconstructed.groups.part2 == undefined) {
-      if(deconstructed.groups.part1.match(/\d/)) {
-        return {
-          blockchain: deconstructed.groups.blockchain,
-          address: deconstructed.groups.part1
-        }
-      } else {
-        return {
-          blockchain: deconstructed.groups.blockchain,
-          method: deconstructed.groups.part1
-        }
-      }
-    } else {
-      return {
-        blockchain: deconstructed.groups.blockchain,
-        address: deconstructed.groups.part1,
-        method: deconstructed.groups.part2
-      }
-    }
-  };
-
   let paramsToContractArgs = ({ contract, method, params }) => {
     let fragment = contract.interface.fragments.find((fragment) => {
       return fragment.name == method
@@ -438,6 +441,33 @@
     }
   };
 
+  var parseUrl = (url) => {
+    if (typeof url == 'object') {
+      return url
+    }
+    let deconstructed = url.match(/(?<blockchain>\w+):\/\/(?<part1>[\w\d]+)(\/(?<part2>[\w\d]+)*)?/);
+
+    if(deconstructed.groups.part2 == undefined) {
+      if(deconstructed.groups.part1.match(/\d/)) {
+        return {
+          blockchain: deconstructed.groups.blockchain,
+          address: deconstructed.groups.part1
+        }
+      } else {
+        return {
+          blockchain: deconstructed.groups.blockchain,
+          method: deconstructed.groups.part1
+        }
+      }
+    } else {
+      return {
+        blockchain: deconstructed.groups.blockchain,
+        address: deconstructed.groups.part1,
+        method: deconstructed.groups.part2
+      }
+    }
+  };
+
   let request = async function (url, options) {
     let { blockchain, address, method } = parseUrl(url);
     let { api, params, cache: cache$1, block } = (typeof(url) == 'object' ? url : options) || {};
@@ -447,13 +477,19 @@
       key: [blockchain, address, method, params, block],
       call: async()=>{
         if(supported.evm.includes(blockchain)) {
+
+
           return requestEVM({ blockchain, address, api, method, params, block })
-        } else {
+
+
+        } else if(supported.solana.includes(blockchain)) ; else {
           throw 'Unknown blockchain: ' + blockchain
         }  
       }
     })
   };
+
+  const simulate = undefined;
 
   exports.estimate = estimate;
   exports.getProvider = getProvider;
@@ -461,6 +497,7 @@
   exports.resetCache = resetCache;
   exports.setProvider = setProvider;
   exports.setProviderEndpoints = setProviderEndpoints;
+  exports.simulate = simulate;
 
   Object.defineProperty(exports, '__esModule', { value: true });
 

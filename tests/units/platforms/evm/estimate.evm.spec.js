@@ -1,6 +1,6 @@
-import { estimate, getProvider, resetCache } from 'src/index.evm'
+import { estimate, getProvider, resetCache } from 'dist/esm/index.evm'
 import { mock, resetMocks } from '@depay/web3-mock'
-import { supported } from 'src/blockchains.evm'
+import { supported } from 'src/blockchains'
 
 describe('estimate (evm)', () => {
 

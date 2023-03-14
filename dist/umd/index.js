@@ -1,41 +1,8 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('ethers'), require('@depay/web3-blockchains'), require('@depay/solana-web3.js')) :
-  typeof define === 'function' && define.amd ? define(['exports', 'ethers', '@depay/web3-blockchains', '@depay/solana-web3.js'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.Web3Client = {}, global.ethers, global.Web3Blockchains, global.SolanaWeb3js));
-})(this, (function (exports, ethers, web3Blockchains, solanaWeb3_js) { 'use strict';
-
-  const getContractArguments = ({ contract, method, params })=>{
-    let fragment = contract.interface.fragments.find((fragment) => {
-      return fragment.name == method
-    });
-
-    if(params instanceof Array) {
-      return params
-    } else if (params instanceof Object) {
-      return fragment.inputs.map((input) => {
-        return params[input.name]
-      })
-    }
-  };
-
-  var estimateEVM = ({ provider, from, to, value, method, api, params }) => {
-    if(typeof api == "undefined"){
-      return provider.estimateGas({ from, to, value })
-    } else {
-      let contract = new ethers.ethers.Contract(to, api, provider);
-      let contractMethod = contract.estimateGas[method];
-      let contractArguments = getContractArguments({ contract, method, params });
-      if(contractArguments) {
-        return contractMethod(...contractArguments, { from, value })
-      } else {
-        return contractMethod({ from, value })
-      }
-    }
-  };
-
-  let supported$1 = ['ethereum', 'bsc', 'polygon', 'fantom', 'velas'];
-  supported$1.evm = ['ethereum', 'bsc', 'polygon', 'fantom', 'velas'];
-  supported$1.solana = [];
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@depay/solana-web3.js'), require('@depay/web3-blockchains'), require('ethers')) :
+  typeof define === 'function' && define.amd ? define(['exports', '@depay/solana-web3.js', '@depay/web3-blockchains', 'ethers'], factory) :
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.Web3Client = {}, global.SolanaWeb3js, global.Web3Blockchains, global.ethers));
+})(this, (function (exports, solanaWeb3_js, web3Blockchains, ethers) { 'use strict';
 
   const BATCH_INTERVAL = 10;
   const CHUNK_SIZE = 99;
@@ -202,7 +169,7 @@
     );
   };
 
-  const getProvider$3 = async (blockchain)=> {
+  const getProvider$2 = async (blockchain)=> {
 
     let providers = getProviders$1();
     if(providers && providers[blockchain]){ return providers[blockchain] }
@@ -220,204 +187,9 @@
   };
 
   var EVM = {
-    getProvider: getProvider$3,
+    getProvider: getProvider$2,
     setProviderEndpoints: setProviderEndpoints$2,
     setProvider: setProvider$2,
-  };
-
-  const getProvider$2 = async (blockchain)=>{
-
-    if(supported$1.evm.includes(blockchain)) {
-      return await EVM.getProvider(blockchain)
-    } else {
-      throw 'Unknown blockchain: ' + blockchain
-    }
-  };
-
-  function _optionalChain$1(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
-  let getCacheStore = () => {
-    if (getWindow()._cacheStore == undefined) {
-      resetCache();
-    }
-    return getWindow()._cacheStore
-  };
-
-  let getPromiseStore = () => {
-    if (getWindow()._promiseStore == undefined) {
-      resetCache();
-    }
-    return getWindow()._promiseStore
-  };
-
-  let resetCache = () => {
-    getWindow()._cacheStore = {};
-    getWindow()._promiseStore = {};
-    getWindow()._clientProviders = {};
-  };
-
-  let set = function ({ key, value, expires }) {
-    getCacheStore()[key] = {
-      expiresAt: Date.now() + expires,
-      value,
-    };
-  };
-
-  let get = function ({ key, expires }) {
-    let cachedEntry = getCacheStore()[key];
-    if (_optionalChain$1([cachedEntry, 'optionalAccess', _ => _.expiresAt]) > Date.now()) {
-      return cachedEntry.value
-    }
-  };
-
-  let getPromise = function({ key }) {
-    return getPromiseStore()[key]
-  };
-
-  let setPromise = function({ key, promise }) {
-    getPromiseStore()[key] = promise;
-    return promise
-  };
-
-  let deletePromise = function({ key }) {
-    getPromiseStore()[key] = undefined; 
-  };
-
-  let cache = function ({ call, key, expires = 0 }) {
-    return new Promise((resolve, reject)=>{
-      let value;
-      key = JSON.stringify(key);
-      
-      // get existing promise (of a previous pending request asking for the exact same thing)
-      let existingPromise = getPromise({ key });
-      if(existingPromise) { 
-        return existingPromise
-          .then(resolve)
-          .catch(reject)
-      }
-
-      setPromise({ key, promise: new Promise((resolveQueue, rejectQueue)=>{
-        if (expires === 0) {
-          return call()
-            .then((value)=>{
-              resolve(value);
-              resolveQueue(value);
-            })
-            .catch((error)=>{
-              reject(error);
-              rejectQueue(error);
-            })
-        }
-        
-        // get cached value
-        value = get({ key, expires });
-        if (value) {
-          resolve(value);
-          resolveQueue(value);
-          return value
-        }
-
-        // set new cache value
-        call()
-          .then((value)=>{
-            if (value) {
-              set({ key, value, expires });
-            }
-            resolve(value);
-            resolveQueue(value);
-          })
-          .catch((error)=>{
-            reject(error);
-            rejectQueue(error);
-          });
-        })
-      }).then(()=>{
-        deletePromise({ key });
-      }).catch(()=>{
-        deletePromise({ key });
-      });
-    })
-  };
-
-  let estimate = async function ({ blockchain, from, to, value, method, api, params, cache: cache$1 }) {
-    if(!supported$1.includes(blockchain)) { throw 'Unknown blockchain: ' + blockchain }
-    if(typeof value == 'undefined') { value = '0'; }
-
-    const provider = await getProvider$2(blockchain);
-    
-    return await cache({
-      expires: cache$1 || 0,
-      key: [blockchain, from, to, value, method, params],
-      call: async()=>estimateEVM({ provider, from, to, value, method, api, params })
-    })
-  };
-
-  var parseUrl = (url) => {
-    if (typeof url == 'object') {
-      return url
-    }
-    let deconstructed = url.match(/(?<blockchain>\w+):\/\/(?<part1>[\w\d]+)(\/(?<part2>[\w\d]+)*)?/);
-
-    if(deconstructed.groups.part2 == undefined) {
-      if(deconstructed.groups.part1.match(/\d/)) {
-        return {
-          blockchain: deconstructed.groups.blockchain,
-          address: deconstructed.groups.part1
-        }
-      } else {
-        return {
-          blockchain: deconstructed.groups.blockchain,
-          method: deconstructed.groups.part1
-        }
-      }
-    } else {
-      return {
-        blockchain: deconstructed.groups.blockchain,
-        address: deconstructed.groups.part1,
-        method: deconstructed.groups.part2
-      }
-    }
-  };
-
-  let paramsToContractArgs = ({ contract, method, params }) => {
-    let fragment = contract.interface.fragments.find((fragment) => {
-      return fragment.name == method
-    });
-
-    return fragment.inputs.map((input, index) => {
-      if (Array.isArray(params)) {
-        return params[index]
-      } else {
-        return params[input.name]
-      }
-    })
-  };
-
-  let contractCall = ({ address, api, method, params, provider, block }) => {
-    let contract = new ethers.ethers.Contract(address, api, provider);
-    let args = paramsToContractArgs({ contract, method, params });
-    return contract[method](...args, { blockTag: block })
-  };
-
-  let balance$1 = ({ address, provider }) => {
-    return provider.getBalance(address)
-  };
-
-  let transactionCount = ({ address, provider }) => {
-    return provider.getTransactionCount(address)
-  };
-
-  var requestEVM = async ({ blockchain, address, api, method, params, block }) => {
-    const provider = await EVM.getProvider(blockchain);
-    
-    if (api) {
-      return contractCall({ address, api, method, params, provider, block })
-    } else if (method === 'latestBlockNumber') {
-      return provider.getBlockNumber()
-    } else if (method === 'balance') {
-      return balance$1({ address, provider })
-    } else if (method === 'transactionCount') {
-      return transactionCount({ address, provider })
-    }
   };
 
   class StaticJsonRpcSequentialProvider extends solanaWeb3_js.Connection {
@@ -511,6 +283,362 @@
     setProvider: setProvider$1,
   };
 
+  /*#if _EVM
+
+  let supported = ['ethereum', 'bsc', 'polygon', 'fantom', 'velas']
+  supported.evm = ['ethereum', 'bsc', 'polygon', 'fantom', 'velas']
+  supported.solana = []
+
+  /*#elif _SOLANA
+
+  let supported = ['solana']
+  supported.evm = []
+  supported.solana = ['solana']
+
+  //#else */
+
+  let supported = ['ethereum', 'bsc', 'polygon', 'solana', 'fantom', 'velas'];
+  supported.evm = ['ethereum', 'bsc', 'polygon', 'fantom', 'velas'];
+  supported.solana = ['solana'];
+
+  /*#if _EVM
+
+  import EVM from './platforms/evm/provider'
+
+  /*#elif _SOLANA
+
+  import Solana from './platforms/solana/provider'
+
+  //#else */
+
+  const getProvider = async (blockchain)=>{
+
+    if(supported.evm.includes(blockchain)) {
+
+      /*#if _EVM
+
+      return await EVM.getProvider(blockchain)
+
+      /*#elif _SOLANA
+
+      //#else */
+
+      return await EVM.getProvider(blockchain)
+
+      //#endif
+
+    } else if(supported.solana.includes(blockchain)) {
+
+      /*#if _EVM
+
+      return await Solana.getProvider(blockchain)
+
+      /*#elif _SOLANA
+
+      //#else */
+
+      return await Solana.getProvider(blockchain)
+
+      //#endif
+
+    } else {
+      throw 'Unknown blockchain: ' + blockchain
+    }
+  };
+
+  const setProvider = (blockchain, provider)=>{
+
+    if(supported.evm.includes(blockchain)) {
+
+      /*#if _EVM
+
+      return EVM.setProvider(blockchain, provider)
+
+      /*#elif _SOLANA
+
+      //#else */
+
+      return EVM.setProvider(blockchain, provider)
+
+      //#endif
+
+    } else if(supported.solana.includes(blockchain)) {
+
+      /*#if _EVM
+
+      return Solana.setProvider(blockchain, provider)
+
+      /*#elif _SOLANA
+
+      //#else */
+
+      return Solana.setProvider(blockchain, provider)
+
+      //#endif
+
+    } else {
+      throw 'Unknown blockchain: ' + blockchain
+    }
+  };
+
+  const setProviderEndpoints = (blockchain, endpoints)=>{
+
+    if(supported.evm.includes(blockchain)) {
+
+      /*#if _EVM
+
+      return EVM.setProviderEndpoints(blockchain, endpoints)
+
+      /*#elif _SOLANA
+
+      //#else */
+
+      return EVM.setProviderEndpoints(blockchain, endpoints)
+
+      //#endif
+
+    } else if(supported.solana.includes(blockchain)) {
+
+      /*#if _EVM
+
+      return Solana.setProviderEndpoints(blockchain, endpoints)
+
+      /*#elif _SOLANA
+
+      //#else */
+
+      return Solana.setProviderEndpoints(blockchain, endpoints)
+
+      //#endif
+
+    } else {
+      throw 'Unknown blockchain: ' + blockchain
+    }
+  };
+
+  function _optionalChain$1(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
+  let simulate = async function ({ blockchain, from, to, keys, api, params }) {
+    if(!supported.solana.includes(blockchain)) { throw `${blockchain} not supported for simulation!` }
+
+    const data = solanaWeb3_js.Buffer.alloc(api.span);
+    api.encode(params, data);
+
+    keys = keys.map((key)=>{
+      return({...key,
+        pubkey: new solanaWeb3_js.PublicKey(key.pubkey)
+      })
+    });
+
+    const instruction = new solanaWeb3_js.TransactionInstruction({
+      programId: new solanaWeb3_js.PublicKey(to),
+      keys,
+      data
+    });
+
+    let transaction = new solanaWeb3_js.Transaction({ feePayer: new solanaWeb3_js.PublicKey(from) });
+    transaction.add(instruction);
+
+    let result;
+    try{
+      const provider = await getProvider('solana');
+      result = await provider.simulateTransaction(transaction);
+    } catch (error) {
+      console.log(error);
+    }
+
+    return({
+      logs: _optionalChain$1([result, 'optionalAccess', _ => _.value, 'optionalAccess', _2 => _2.logs])
+    })
+  };
+
+  const getContractArguments = ({ contract, method, params })=>{
+    let fragment = contract.interface.fragments.find((fragment) => {
+      return fragment.name == method
+    });
+
+    if(params instanceof Array) {
+      return params
+    } else if (params instanceof Object) {
+      return fragment.inputs.map((input) => {
+        return params[input.name]
+      })
+    }
+  };
+
+  var estimateEVM = ({ provider, from, to, value, method, api, params }) => {
+    if(typeof api == "undefined"){
+      return provider.estimateGas({ from, to, value })
+    } else {
+      let contract = new ethers.ethers.Contract(to, api, provider);
+      let contractMethod = contract.estimateGas[method];
+      let contractArguments = getContractArguments({ contract, method, params });
+      if(contractArguments) {
+        return contractMethod(...contractArguments, { from, value })
+      } else {
+        return contractMethod({ from, value })
+      }
+    }
+  };
+
+  function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
+  let getCacheStore = () => {
+    if (getWindow()._cacheStore == undefined) {
+      resetCache();
+    }
+    return getWindow()._cacheStore
+  };
+
+  let getPromiseStore = () => {
+    if (getWindow()._promiseStore == undefined) {
+      resetCache();
+    }
+    return getWindow()._promiseStore
+  };
+
+  let resetCache = () => {
+    getWindow()._cacheStore = {};
+    getWindow()._promiseStore = {};
+    getWindow()._clientProviders = {};
+  };
+
+  let set = function ({ key, value, expires }) {
+    getCacheStore()[key] = {
+      expiresAt: Date.now() + expires,
+      value,
+    };
+  };
+
+  let get = function ({ key, expires }) {
+    let cachedEntry = getCacheStore()[key];
+    if (_optionalChain([cachedEntry, 'optionalAccess', _ => _.expiresAt]) > Date.now()) {
+      return cachedEntry.value
+    }
+  };
+
+  let getPromise = function({ key }) {
+    return getPromiseStore()[key]
+  };
+
+  let setPromise = function({ key, promise }) {
+    getPromiseStore()[key] = promise;
+    return promise
+  };
+
+  let deletePromise = function({ key }) {
+    getPromiseStore()[key] = undefined; 
+  };
+
+  let cache = function ({ call, key, expires = 0 }) {
+    return new Promise((resolve, reject)=>{
+      let value;
+      key = JSON.stringify(key);
+      
+      // get existing promise (of a previous pending request asking for the exact same thing)
+      let existingPromise = getPromise({ key });
+      if(existingPromise) { 
+        return existingPromise
+          .then(resolve)
+          .catch(reject)
+      }
+
+      setPromise({ key, promise: new Promise((resolveQueue, rejectQueue)=>{
+        if (expires === 0) {
+          return call()
+            .then((value)=>{
+              resolve(value);
+              resolveQueue(value);
+            })
+            .catch((error)=>{
+              reject(error);
+              rejectQueue(error);
+            })
+        }
+        
+        // get cached value
+        value = get({ key, expires });
+        if (value) {
+          resolve(value);
+          resolveQueue(value);
+          return value
+        }
+
+        // set new cache value
+        call()
+          .then((value)=>{
+            if (value) {
+              set({ key, value, expires });
+            }
+            resolve(value);
+            resolveQueue(value);
+          })
+          .catch((error)=>{
+            reject(error);
+            rejectQueue(error);
+          });
+        })
+      }).then(()=>{
+        deletePromise({ key });
+      }).catch(()=>{
+        deletePromise({ key });
+      });
+    })
+  };
+
+  let estimate = async function ({ blockchain, from, to, value, method, api, params, cache: cache$1 }) {
+    if(!supported.includes(blockchain)) { throw 'Unknown blockchain: ' + blockchain }
+    if(typeof value == 'undefined') { value = '0'; }
+
+    const provider = await getProvider(blockchain);
+    
+    return await cache({
+      expires: cache$1 || 0,
+      key: [blockchain, from, to, value, method, params],
+      call: async()=>estimateEVM({ provider, from, to, value, method, api, params })
+    })
+  };
+
+  let paramsToContractArgs = ({ contract, method, params }) => {
+    let fragment = contract.interface.fragments.find((fragment) => {
+      return fragment.name == method
+    });
+
+    return fragment.inputs.map((input, index) => {
+      if (Array.isArray(params)) {
+        return params[index]
+      } else {
+        return params[input.name]
+      }
+    })
+  };
+
+  let contractCall = ({ address, api, method, params, provider, block }) => {
+    let contract = new ethers.ethers.Contract(address, api, provider);
+    let args = paramsToContractArgs({ contract, method, params });
+    return contract[method](...args, { blockTag: block })
+  };
+
+  let balance$1 = ({ address, provider }) => {
+    return provider.getBalance(address)
+  };
+
+  let transactionCount = ({ address, provider }) => {
+    return provider.getTransactionCount(address)
+  };
+
+  var requestEVM = async ({ blockchain, address, api, method, params, block }) => {
+    const provider = await EVM.getProvider(blockchain);
+    
+    if (api) {
+      return contractCall({ address, api, method, params, provider, block })
+    } else if (method === 'latestBlockNumber') {
+      return provider.getBlockNumber()
+    } else if (method === 'balance') {
+      return balance$1({ address, provider })
+    } else if (method === 'transactionCount') {
+      return transactionCount({ address, provider })
+    }
+  };
+
   let accountInfo = async ({ address, api, method, params, provider, block }) => {
     const info = await provider.getAccountInfo(new solanaWeb3_js.PublicKey(address));
     return api.decode(info.data)
@@ -548,9 +676,42 @@
     }
   };
 
-  let supported = ['ethereum', 'bsc', 'polygon', 'solana', 'fantom', 'velas'];
-  supported.evm = ['ethereum', 'bsc', 'polygon', 'fantom', 'velas'];
-  supported.solana = ['solana'];
+  var parseUrl = (url) => {
+    if (typeof url == 'object') {
+      return url
+    }
+    let deconstructed = url.match(/(?<blockchain>\w+):\/\/(?<part1>[\w\d]+)(\/(?<part2>[\w\d]+)*)?/);
+
+    if(deconstructed.groups.part2 == undefined) {
+      if(deconstructed.groups.part1.match(/\d/)) {
+        return {
+          blockchain: deconstructed.groups.blockchain,
+          address: deconstructed.groups.part1
+        }
+      } else {
+        return {
+          blockchain: deconstructed.groups.blockchain,
+          method: deconstructed.groups.part1
+        }
+      }
+    } else {
+      return {
+        blockchain: deconstructed.groups.blockchain,
+        address: deconstructed.groups.part1,
+        method: deconstructed.groups.part2
+      }
+    }
+  };
+
+  /*#if _EVM
+
+  import requestEVM from './platforms/evm/request'
+
+  /*#elif _SOLANA
+
+  import requestSolana from './platforms/solana/request'
+
+  //#else */
 
   let request = async function (url, options) {
     let { blockchain, address, method } = parseUrl(url);
@@ -561,81 +722,37 @@
       key: [blockchain, address, method, params, block],
       call: async()=>{
         if(supported.evm.includes(blockchain)) {
+
+          /*#if _EVM
+
           return requestEVM({ blockchain, address, api, method, params, block })
+
+          /*#elif _SOLANA
+
+          //#else */
+
+          return requestEVM({ blockchain, address, api, method, params, block })
+
+          //#endif
+
         } else if(supported.solana.includes(blockchain)) {
+
+          /*#if _EVM
+
+          /*#elif _SOLANA
+
           return requestSolana({ blockchain, address, api, method, params, block })
+
+          //#else */
+
+          return requestSolana({ blockchain, address, api, method, params, block })
+
+          //#endif
+
         } else {
           throw 'Unknown blockchain: ' + blockchain
         }  
       }
-    })
-  };
-
-  const getProvider = async (blockchain)=>{
-
-    if(supported.evm.includes(blockchain)) {
-      return await EVM.getProvider(blockchain)
-    } else if(supported.solana.includes(blockchain)) {
-      return await Solana.getProvider(blockchain)
-    } else {
-      throw 'Unknown blockchain: ' + blockchain
-    }
-  };
-
-  const setProvider = (blockchain, provider)=>{
-
-    if(supported.evm.includes(blockchain)) {
-      return EVM.setProvider(blockchain, provider)
-    } else if(supported.solana.includes(blockchain)) {
-      return Solana.setProvider(blockchain, provider)
-    } else {
-      throw 'Unknown blockchain: ' + blockchain
-    }
-  };
-
-  const setProviderEndpoints = (blockchain, endpoints)=>{
-
-    if(supported.evm.includes(blockchain)) {
-      return EVM.setProviderEndpoints(blockchain, endpoints)
-    } else if(supported.solana.includes(blockchain)) {
-      return Solana.setProviderEndpoints(blockchain, endpoints)
-    } else {
-      throw 'Unknown blockchain: ' + blockchain
-    }
-  };
-
-  function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
-  let simulate = async function ({ blockchain, from, to, keys, api, params }) {
-    if(!supported.solana.includes(blockchain)) { throw `${blockchain} not supported for simulation!` }
-
-    const data = solanaWeb3_js.Buffer.alloc(api.span);
-    api.encode(params, data);
-
-    keys = keys.map((key)=>{
-      return({...key,
-        pubkey: new solanaWeb3_js.PublicKey(key.pubkey)
-      })
-    });
-
-    const instruction = new solanaWeb3_js.TransactionInstruction({
-      programId: new solanaWeb3_js.PublicKey(to),
-      keys,
-      data
-    });
-
-    let transaction = new solanaWeb3_js.Transaction({ feePayer: new solanaWeb3_js.PublicKey(from) });
-    transaction.add(instruction);
-
-    let result;
-    try{
-      const provider = await getProvider('solana');
-      result = await provider.simulateTransaction(transaction);
-    } catch (error) {
-      console.log(error);
-    }
-
-    return({
-      logs: _optionalChain([result, 'optionalAccess', _ => _.value, 'optionalAccess', _2 => _2.logs])
     })
   };
 

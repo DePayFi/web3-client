@@ -1,6 +1,6 @@
 import { mock, resetMocks, increaseBlock } from '@depay/web3-mock'
-import { request, getProvider, resetCache } from 'src/index.evm'
-import { supported } from 'src/blockchains.evm'
+import { request, getProvider, resetCache } from 'dist/esm/index.evm'
+import { supported } from 'src/blockchains'
 
 describe('blocks (evm)', ()=>{
 

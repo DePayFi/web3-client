@@ -1,10 +1,10 @@
 {
-  "name": "@depay/web3-client-evm",
+  "name": "@depay/web3-client-solana",
   "moduleName": "Web3Client",
   "version": "10.5.0",
   "description": "A web3 client to fetch blockchain data just like you are used to with HTTP clients.",
-  "main": "dist/umd/index.evm.js",
-  "module": "dist/esm/index.evm.js",
+  "main": "dist/umd/index.solana.js",
+  "module": "dist/esm/index.solana.js",
   "files": [
     "dist"
   ],
@@ -24,7 +24,6 @@
   "private": false,
   "peerDependencies": {
     "@depay/web3-blockchains": "^6.5.1",
-    "ethers": "^5.7.1"
   },
   "engines": {
     "node": ">=16"
