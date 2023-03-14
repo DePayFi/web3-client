@@ -46,8 +46,16 @@ This library supports the following blockchains:
 
 In case you want to use and package only specific platforms, use the platform-specific package:
 
+### EVM platform specific packaging
+
 ```javascript
 import { request } from '@depay/web3-client-evm'
+```
+
+### Solana platform specific packaging
+
+```javascript
+import { request } from '@depay/web3-client-solana'
 ```
 
 ## Functionalities
