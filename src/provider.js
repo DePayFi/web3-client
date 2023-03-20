@@ -35,9 +35,9 @@ const getProvider = async (blockchain)=>{
 
     /*#if _EVM
 
-    return await Solana.getProvider(blockchain)
-
     /*#elif _SOLANA
+
+    return await Solana.getProvider(blockchain)
 
     //#else */
 
@@ -70,9 +70,9 @@ const setProvider = (blockchain, provider)=>{
 
     /*#if _EVM
 
-    return Solana.setProvider(blockchain, provider)
-
     /*#elif _SOLANA
+
+    return Solana.setProvider(blockchain, provider)
 
     //#else */
 
@@ -105,9 +105,10 @@ const setProviderEndpoints = (blockchain, endpoints)=>{
 
     /*#if _EVM
 
-    return Solana.setProviderEndpoints(blockchain, endpoints)
 
     /*#elif _SOLANA
+
+    return Solana.setProviderEndpoints(blockchain, endpoints)
 
     //#else */
 

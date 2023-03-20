@@ -101,9 +101,16 @@
 
   }
 
+  let _window;
+
   let getWindow = () => {
-    if (typeof global == 'object') return global
-    return window
+    if(_window) { return _window }
+    if (typeof global == 'object') {
+      _window = global;
+    } else {
+      _window = window;
+    }
+    return _window
   };
 
   // MAKE SURE PROVIDER SUPPORT BATCH SIZE OF 99 BATCH REQUESTS!
@@ -283,63 +290,23 @@
     setProvider: setProvider$1,
   };
 
-  /*#if _EVM
-
-  let supported = ['ethereum', 'bsc', 'polygon', 'fantom', 'velas']
-  supported.evm = ['ethereum', 'bsc', 'polygon', 'fantom', 'velas']
-  supported.solana = []
-
-  /*#elif _SOLANA
-
-  let supported = ['solana']
-  supported.evm = []
-  supported.solana = ['solana']
-
-  //#else */
-
   let supported = ['ethereum', 'bsc', 'polygon', 'solana', 'fantom', 'velas'];
   supported.evm = ['ethereum', 'bsc', 'polygon', 'fantom', 'velas'];
   supported.solana = ['solana'];
-
-  /*#if _EVM
-
-  import EVM from './platforms/evm/provider'
-
-  /*#elif _SOLANA
-
-  import Solana from './platforms/solana/provider'
-
-  //#else */
 
   const getProvider = async (blockchain)=>{
 
     if(supported.evm.includes(blockchain)) {
 
-      /*#if _EVM
 
       return await EVM.getProvider(blockchain)
 
-      /*#elif _SOLANA
-
-      //#else */
-
-      return await EVM.getProvider(blockchain)
-
-      //#endif
 
     } else if(supported.solana.includes(blockchain)) {
 
-      /*#if _EVM
 
       return await Solana.getProvider(blockchain)
 
-      /*#elif _SOLANA
-
-      //#else */
-
-      return await Solana.getProvider(blockchain)
-
-      //#endif
 
     } else {
       throw 'Unknown blockchain: ' + blockchain
@@ -350,31 +317,15 @@
 
     if(supported.evm.includes(blockchain)) {
 
-      /*#if _EVM
 
       return EVM.setProvider(blockchain, provider)
 
-      /*#elif _SOLANA
-
-      //#else */
-
-      return EVM.setProvider(blockchain, provider)
-
-      //#endif
 
     } else if(supported.solana.includes(blockchain)) {
 
-      /*#if _EVM
 
       return Solana.setProvider(blockchain, provider)
 
-      /*#elif _SOLANA
-
-      //#else */
-
-      return Solana.setProvider(blockchain, provider)
-
-      //#endif
 
     } else {
       throw 'Unknown blockchain: ' + blockchain
@@ -385,31 +336,15 @@
 
     if(supported.evm.includes(blockchain)) {
 
-      /*#if _EVM
 
       return EVM.setProviderEndpoints(blockchain, endpoints)
 
-      /*#elif _SOLANA
-
-      //#else */
-
-      return EVM.setProviderEndpoints(blockchain, endpoints)
-
-      //#endif
 
     } else if(supported.solana.includes(blockchain)) {
 
-      /*#if _EVM
 
       return Solana.setProviderEndpoints(blockchain, endpoints)
 
-      /*#elif _SOLANA
-
-      //#else */
-
-      return Solana.setProviderEndpoints(blockchain, endpoints)
-
-      //#endif
 
     } else {
       throw 'Unknown blockchain: ' + blockchain
@@ -703,16 +638,6 @@
     }
   };
 
-  /*#if _EVM
-
-  import requestEVM from './platforms/evm/request'
-
-  /*#elif _SOLANA
-
-  import requestSolana from './platforms/solana/request'
-
-  //#else */
-
   let request = async function (url, options) {
     let { blockchain, address, method } = parseUrl(url);
     let { api, params, cache: cache$1, block } = (typeof(url) == 'object' ? url : options) || {};
@@ -723,31 +648,15 @@
       call: async()=>{
         if(supported.evm.includes(blockchain)) {
 
-          /*#if _EVM
 
           return requestEVM({ blockchain, address, api, method, params, block })
 
-          /*#elif _SOLANA
-
-          //#else */
-
-          return requestEVM({ blockchain, address, api, method, params, block })
-
-          //#endif
 
         } else if(supported.solana.includes(blockchain)) {
 
-          /*#if _EVM
-
-          /*#elif _SOLANA
 
           return requestSolana({ blockchain, address, api, method, params, block })
 
-          //#else */
-
-          return requestSolana({ blockchain, address, api, method, params, block })
-
-          //#endif
 
         } else {
           throw 'Unknown blockchain: ' + blockchain

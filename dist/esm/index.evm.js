@@ -127,9 +127,16 @@ class StaticJsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
 
 }
 
+let _window;
+
 let getWindow = () => {
-  if (typeof global == 'object') return global
-  return window
+  if(_window) { return _window }
+  if (typeof global == 'object') {
+    _window = global;
+  } else {
+    _window = window;
+  }
+  return _window
 };
 
 // MAKE SURE PROVIDER SUPPORT BATCH SIZE OF 99 BATCH REQUESTS!
@@ -230,13 +237,7 @@ const getProvider = async (blockchain)=>{
     return await EVM.getProvider(blockchain)
 
 
-  } else if(supported.solana.includes(blockchain)) {
-
-
-    return await Solana.getProvider(blockchain)
-
-
-  } else {
+  } else if(supported.solana.includes(blockchain)) ; else {
     throw 'Unknown blockchain: ' + blockchain
   }
 };
@@ -249,13 +250,7 @@ const setProvider = (blockchain, provider)=>{
     return EVM.setProvider(blockchain, provider)
 
 
-  } else if(supported.solana.includes(blockchain)) {
-
-
-    return Solana.setProvider(blockchain, provider)
-
-
-  } else {
+  } else if(supported.solana.includes(blockchain)) ; else {
     throw 'Unknown blockchain: ' + blockchain
   }
 };
@@ -268,13 +263,7 @@ const setProviderEndpoints = (blockchain, endpoints)=>{
     return EVM.setProviderEndpoints(blockchain, endpoints)
 
 
-  } else if(supported.solana.includes(blockchain)) {
-
-
-    return Solana.setProviderEndpoints(blockchain, endpoints)
-
-
-  } else {
+  } else if(supported.solana.includes(blockchain)) ; else {
     throw 'Unknown blockchain: ' + blockchain
   }
 };

@@ -130,9 +130,16 @@
 
   }
 
+  let _window;
+
   let getWindow = () => {
-    if (typeof global == 'object') return global
-    return window
+    if(_window) { return _window }
+    if (typeof global == 'object') {
+      _window = global;
+    } else {
+      _window = window;
+    }
+    return _window
   };
 
   // MAKE SURE PROVIDER SUPPORT BATCH SIZE OF 99 BATCH REQUESTS!
@@ -233,13 +240,7 @@
       return await EVM.getProvider(blockchain)
 
 
-    } else if(supported.solana.includes(blockchain)) {
-
-
-      return await Solana.getProvider(blockchain)
-
-
-    } else {
+    } else if(supported.solana.includes(blockchain)) ; else {
       throw 'Unknown blockchain: ' + blockchain
     }
   };
@@ -252,13 +253,7 @@
       return EVM.setProvider(blockchain, provider)
 
 
-    } else if(supported.solana.includes(blockchain)) {
-
-
-      return Solana.setProvider(blockchain, provider)
-
-
-    } else {
+    } else if(supported.solana.includes(blockchain)) ; else {
       throw 'Unknown blockchain: ' + blockchain
     }
   };
@@ -271,13 +266,7 @@
       return EVM.setProviderEndpoints(blockchain, endpoints)
 
 
-    } else if(supported.solana.includes(blockchain)) {
-
-
-      return Solana.setProviderEndpoints(blockchain, endpoints)
-
-
-    } else {
+    } else if(supported.solana.includes(blockchain)) ; else {
       throw 'Unknown blockchain: ' + blockchain
     }
   };
