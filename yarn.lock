@@ -896,10 +896,12 @@
     "@babel/helper-validator-identifier" "^7.14.9"
     to-fast-properties "^2.0.0"
 
-"@depay/solana-web3.js@^1.19.3":
-  version "1.19.3"
-  resolved "https://registry.yarnpkg.com/@depay/solana-web3.js/-/solana-web3.js-1.19.3.tgz#30985a6291f8b3dd6a3e513c7b8ed2576f325ec9"
-  integrity sha512-dn2K2qhKgQHhg40WDzzynkY0JoiuSnaxkofkucGKrzUW6xHmW+4rHekYdog45DN6L5tOVpJn4V/XAs4+atg+7w==
+"@depay/solana-web3.js@^1.20.11":
+  version "1.20.11"
+  resolved "https://registry.yarnpkg.com/@depay/solana-web3.js/-/solana-web3.js-1.20.11.tgz#5a3bb127d0d3f8f514bc303e405ba592a2cd722d"
+  integrity sha512-yQCxehhyCAiBUo4lwyeO8JxAPALcmIjYEuuYbSwFFeddAZUyjsu3yDkl6DeAn+7LaE3ahwBadsAhzee/kEU6zw==
+  dependencies:
+    cross-fetch "^3.1.5"
 
 "@depay/web3-blockchains@^6.5.1":
   version "6.5.1"
@@ -911,16 +913,15 @@
   resolved "https://registry.yarnpkg.com/@depay/web3-constants/-/web3-constants-6.4.0.tgz#58aae0c953ed5ebad3731ae8b791ba1f9e18585b"
   integrity sha512-asBMISqtjLZwyJlhppNZ/q46Fga2PzxRtjYNgcSkpSN6Qf0YJ3wpDt3nVPQel5ggRbleCNQOsrBI5Jzsu7xGYg==
 
-"@depay/web3-mock@^13.24.1":
-  version "13.24.1"
-  resolved "https://registry.yarnpkg.com/@depay/web3-mock/-/web3-mock-13.24.1.tgz#ec5fd6e52ff150aecba13b7e2843ba8024505aa2"
-  integrity sha512-P+atvy2Afcw0V0sLvTeBUkxiOKQcrTu3RYBdtjnRfJ92S4qPmjNXW6rxk8UqDtW0VlzYlHEnpyQ4iHtxvBhxSQ==
+"@depay/web3-mock@^13.25.0":
+  version "13.25.0"
+  resolved "https://registry.yarnpkg.com/@depay/web3-mock/-/web3-mock-13.25.0.tgz#e206a1d75edebbaa56f291bcdec616eeb2d6f820"
+  integrity sha512-uTK7safzHIYPum9FtkuyNcARCNry6JFxsTnSqqieCEKm+7UP3K/2PBDdbcX5q6VHdqW9vLzm6QFizGyOL4XauA==
   dependencies:
-    "@depay/solana-web3.js" "^1.19.3"
+    "@depay/solana-web3.js" "^1.20.11"
     "@depay/web3-blockchains" "^6.5.1"
     "@depay/web3-constants" "^6.4.0"
     ethers "^5.7.1"
-    xhr2 "^0.2.1"
 
 "@eslint/eslintrc@^0.4.3":
   version "0.4.3"
@@ -2676,6 +2677,13 @@ core-js@^2.4.0:
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.12.tgz#d9333dfa7b065e347cc5682219d6f690859cc2ec"
   integrity sha512-Kb2wC0fvsWfQrgk8HU5lW6U/Lcs8+9aaYcy4ZFc6DDlo4nZ7n70dEgE5rtR0oG6ufKDUnrwfWL1mXR5ljDatrQ==
 
+cross-fetch@^3.1.5:
+  version "3.1.5"
+  resolved "https://registry.yarnpkg.com/cross-fetch/-/cross-fetch-3.1.5.tgz#e1389f44d9e7ba767907f7af8454787952ab534f"
+  integrity sha512-lvb1SBsI0Z7GDwmuid+mU3kWVBwTVUbe7S0H52yaaAdQOXq2YktTCZdlAcNKFzE6QtRz0snpw9bNiPeOIkkQvw==
+  dependencies:
+    node-fetch "2.6.7"
+
 cross-spawn@^7.0.2:
   version "7.0.3"
   resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-7.0.3.tgz#f73a85b9d5d41d045551c177e2882d4ac85728a6"
@@ -4076,6 +4084,13 @@ neo-async@^2.6.2:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
+node-fetch@2.6.7:
+  version "2.6.7"
+  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.7.tgz#24de9fba827e3b4ae44dc8b20256a379160052ad"
+  integrity sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ==
+  dependencies:
+    whatwg-url "^5.0.0"
+
 node-modules-regexp@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/node-modules-regexp/-/node-modules-regexp-1.0.0.tgz#8d9dbe28964a4ac5712e9131642107c71e90ec40"
@@ -4949,6 +4964,11 @@ tr46@^3.0.0:
   dependencies:
     punycode "^2.1.1"
 
+tr46@~0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/tr46/-/tr46-0.0.3.tgz#8184fd347dac9cdc185992f3a6622e14b9d9ab6a"
+  integrity sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==
+
 ts-interface-checker@^0.1.9:
   version "0.1.13"
   resolved "https://registry.yarnpkg.com/ts-interface-checker/-/ts-interface-checker-0.1.13.tgz#784fd3d679722bc103b1b4b8030bcddb5db2a699"
@@ -5076,6 +5096,11 @@ watchpack@^2.3.1:
     glob-to-regexp "^0.4.1"
     graceful-fs "^4.1.2"
 
+webidl-conversions@^3.0.0:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/webidl-conversions/-/webidl-conversions-3.0.1.tgz#24534275e2a7bc6be7bc86611cc16ae0a5654871"
+  integrity sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==
+
 webidl-conversions@^7.0.0:
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/webidl-conversions/-/webidl-conversions-7.0.0.tgz#256b4e1882be7debbf01d05f0aa2039778ea080a"
@@ -5144,6 +5169,14 @@ whatwg-url@^11.0.0:
     tr46 "^3.0.0"
     webidl-conversions "^7.0.0"
 
+whatwg-url@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/whatwg-url/-/whatwg-url-5.0.0.tgz#966454e8765462e37644d3626f6742ce8b70965d"
+  integrity sha512-saE57nupxk6v3HY35+jzBwYa0rKSy0XR8JSxZPwgLr7ys0IBzhGviA1/TUGJLmSVqs8pb9AnvICXEuOHLprYTw==
+  dependencies:
+    tr46 "~0.0.3"
+    webidl-conversions "^3.0.0"
+
 which-boxed-primitive@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/which-boxed-primitive/-/which-boxed-primitive-1.0.2.tgz#13757bc89b209b049fe5d86430e21cf40a89a8e6"
@@ -5186,11 +5219,6 @@ ws@^8.2.3:
   version "8.6.0"
   resolved "https://registry.yarnpkg.com/ws/-/ws-8.6.0.tgz#e5e9f1d9e7ff88083d0c0dd8281ea662a42c9c23"
   integrity sha512-AzmM3aH3gk0aX7/rZLYvjdvZooofDu3fFOzGqcSnQ1tOcTWwhM/o+q++E8mAyVVIyUdajrkzWUGftaVSDLn1bw==
-
-xhr2@^0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/xhr2/-/xhr2-0.2.1.tgz#4e73adc4f9cfec9cbd2157f73efdce3a5f108a93"
-  integrity sha512-sID0rrVCqkVNUn8t6xuv9+6FViXjUVXq8H5rWOH2rz9fDNQEd4g0EA2XlcEdJXRz5BMEn4O1pJFdT+z4YHhoWw==
 
 xml-name-validator@^4.0.0:
   version "4.0.0"
