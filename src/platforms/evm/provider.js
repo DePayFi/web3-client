@@ -18,6 +18,10 @@ const getProviders = ()=> {
 }
 
 const setProvider = (blockchain, provider)=> {
+  let window = getWindow()
+  if(window._getProviderPromise && window._getProviderPromise[blockchain]) {
+    window._getProviderPromise[blockchain] = undefined
+  }
   getProviders()[blockchain] = provider
 }
 
@@ -25,6 +29,9 @@ const setProviderEndpoints = async (blockchain, endpoints)=> {
   
   let endpoint
   let window = getWindow()
+  if(window._getProviderPromise && window._getProviderPromise[blockchain]) {
+    window._getProviderPromise[blockchain] = undefined
+  }
 
   if(
     window.fetch == undefined ||
