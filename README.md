@@ -318,7 +318,7 @@ In order to set RPC provider endpoints you can use `setProviderEndpoints`:
 ```javascript
 import { setProviderEndpoints } from '@depay/web3-client'
 
-setProviderEndpoints('ethereum', ['http://localhost:8545'])
+await setProviderEndpoints('ethereum', ['http://localhost:8545'])
 ```
 
 Make sure you pass an array of endpoints to setProvider.
