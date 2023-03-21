@@ -14,6 +14,7 @@ import Solana from './platforms/solana/provider'
 //#endif
 
 import { supported } from './blockchains'
+import { resetCache } from './cache'
 
 const getProvider = async (blockchain)=>{
 
@@ -52,6 +53,8 @@ const getProvider = async (blockchain)=>{
 
 const setProvider = (blockchain, provider)=>{
 
+  resetCache()
+
   if(supported.evm.includes(blockchain)) {
 
     /*#if _EVM
@@ -86,6 +89,8 @@ const setProvider = (blockchain, provider)=>{
 }
 
 const setProviderEndpoints = (blockchain, endpoints)=>{
+
+  resetCache()
 
   if(supported.evm.includes(blockchain)) {
 

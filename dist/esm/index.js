@@ -292,128 +292,7 @@ let supported = ['ethereum', 'bsc', 'polygon', 'solana', 'fantom', 'velas'];
 supported.evm = ['ethereum', 'bsc', 'polygon', 'fantom', 'velas'];
 supported.solana = ['solana'];
 
-const getProvider = async (blockchain)=>{
-
-  if(supported.evm.includes(blockchain)) {
-
-
-    return await EVM.getProvider(blockchain)
-
-
-  } else if(supported.solana.includes(blockchain)) {
-
-
-    return await Solana.getProvider(blockchain)
-
-
-  } else {
-    throw 'Unknown blockchain: ' + blockchain
-  }
-};
-
-const setProvider = (blockchain, provider)=>{
-
-  if(supported.evm.includes(blockchain)) {
-
-
-    return EVM.setProvider(blockchain, provider)
-
-
-  } else if(supported.solana.includes(blockchain)) {
-
-
-    return Solana.setProvider(blockchain, provider)
-
-
-  } else {
-    throw 'Unknown blockchain: ' + blockchain
-  }
-};
-
-const setProviderEndpoints = (blockchain, endpoints)=>{
-
-  if(supported.evm.includes(blockchain)) {
-
-
-    return EVM.setProviderEndpoints(blockchain, endpoints)
-
-
-  } else if(supported.solana.includes(blockchain)) {
-
-
-    return Solana.setProviderEndpoints(blockchain, endpoints)
-
-
-  } else {
-    throw 'Unknown blockchain: ' + blockchain
-  }
-};
-
 function _optionalChain$1(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
-let simulate = async function ({ blockchain, from, to, keys, api, params }) {
-  if(!supported.solana.includes(blockchain)) { throw `${blockchain} not supported for simulation!` }
-
-  const data = Buffer.alloc(api.span);
-  api.encode(params, data);
-
-  keys = keys.map((key)=>{
-    return({...key,
-      pubkey: new PublicKey(key.pubkey)
-    })
-  });
-
-  const instruction = new TransactionInstruction({
-    programId: new PublicKey(to),
-    keys,
-    data
-  });
-
-  let transaction = new Transaction({ feePayer: new PublicKey(from) });
-  transaction.add(instruction);
-
-  let result;
-  try{
-    const provider = await getProvider('solana');
-    result = await provider.simulateTransaction(transaction);
-  } catch (error) {
-    console.log(error);
-  }
-
-  return({
-    logs: _optionalChain$1([result, 'optionalAccess', _ => _.value, 'optionalAccess', _2 => _2.logs])
-  })
-};
-
-const getContractArguments = ({ contract, method, params })=>{
-  let fragment = contract.interface.fragments.find((fragment) => {
-    return fragment.name == method
-  });
-
-  if(params instanceof Array) {
-    return params
-  } else if (params instanceof Object) {
-    return fragment.inputs.map((input) => {
-      return params[input.name]
-    })
-  }
-};
-
-var estimateEVM = ({ provider, from, to, value, method, api, params }) => {
-  if(typeof api == "undefined"){
-    return provider.estimateGas({ from, to, value })
-  } else {
-    let contract = new ethers.Contract(to, api, provider);
-    let contractMethod = contract.estimateGas[method];
-    let contractArguments = getContractArguments({ contract, method, params });
-    if(contractArguments) {
-      return contractMethod(...contractArguments, { from, value })
-    } else {
-      return contractMethod({ from, value })
-    }
-  }
-};
-
-function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 let getCacheStore = () => {
   if (getWindow()._cacheStore == undefined) {
     resetCache();
@@ -443,7 +322,7 @@ let set = function ({ key, value, expires }) {
 
 let get = function ({ key, expires }) {
   let cachedEntry = getCacheStore()[key];
-  if (_optionalChain([cachedEntry, 'optionalAccess', _ => _.expiresAt]) > Date.now()) {
+  if (_optionalChain$1([cachedEntry, 'optionalAccess', _ => _.expiresAt]) > Date.now()) {
     return cachedEntry.value
   }
 };
@@ -515,6 +394,131 @@ let cache = function ({ call, key, expires = 0 }) {
       deletePromise({ key });
     });
   })
+};
+
+const getProvider = async (blockchain)=>{
+
+  if(supported.evm.includes(blockchain)) {
+
+
+    return await EVM.getProvider(blockchain)
+
+
+  } else if(supported.solana.includes(blockchain)) {
+
+
+    return await Solana.getProvider(blockchain)
+
+
+  } else {
+    throw 'Unknown blockchain: ' + blockchain
+  }
+};
+
+const setProvider = (blockchain, provider)=>{
+
+  resetCache();
+
+  if(supported.evm.includes(blockchain)) {
+
+
+    return EVM.setProvider(blockchain, provider)
+
+
+  } else if(supported.solana.includes(blockchain)) {
+
+
+    return Solana.setProvider(blockchain, provider)
+
+
+  } else {
+    throw 'Unknown blockchain: ' + blockchain
+  }
+};
+
+const setProviderEndpoints = (blockchain, endpoints)=>{
+
+  resetCache();
+
+  if(supported.evm.includes(blockchain)) {
+
+
+    return EVM.setProviderEndpoints(blockchain, endpoints)
+
+
+  } else if(supported.solana.includes(blockchain)) {
+
+
+    return Solana.setProviderEndpoints(blockchain, endpoints)
+
+
+  } else {
+    throw 'Unknown blockchain: ' + blockchain
+  }
+};
+
+function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
+let simulate = async function ({ blockchain, from, to, keys, api, params }) {
+  if(!supported.solana.includes(blockchain)) { throw `${blockchain} not supported for simulation!` }
+
+  const data = Buffer.alloc(api.span);
+  api.encode(params, data);
+
+  keys = keys.map((key)=>{
+    return({...key,
+      pubkey: new PublicKey(key.pubkey)
+    })
+  });
+
+  const instruction = new TransactionInstruction({
+    programId: new PublicKey(to),
+    keys,
+    data
+  });
+
+  let transaction = new Transaction({ feePayer: new PublicKey(from) });
+  transaction.add(instruction);
+
+  let result;
+  try{
+    const provider = await getProvider('solana');
+    result = await provider.simulateTransaction(transaction);
+  } catch (error) {
+    console.log(error);
+  }
+
+  return({
+    logs: _optionalChain([result, 'optionalAccess', _ => _.value, 'optionalAccess', _2 => _2.logs])
+  })
+};
+
+const getContractArguments = ({ contract, method, params })=>{
+  let fragment = contract.interface.fragments.find((fragment) => {
+    return fragment.name == method
+  });
+
+  if(params instanceof Array) {
+    return params
+  } else if (params instanceof Object) {
+    return fragment.inputs.map((input) => {
+      return params[input.name]
+    })
+  }
+};
+
+var estimateEVM = ({ provider, from, to, value, method, api, params }) => {
+  if(typeof api == "undefined"){
+    return provider.estimateGas({ from, to, value })
+  } else {
+    let contract = new ethers.Contract(to, api, provider);
+    let contractMethod = contract.estimateGas[method];
+    let contractArguments = getContractArguments({ contract, method, params });
+    if(contractArguments) {
+      return contractMethod(...contractArguments, { from, value })
+    } else {
+      return contractMethod({ from, value })
+    }
+  }
 };
 
 let estimate = async function ({ blockchain, from, to, value, method, api, params, cache: cache$1 }) {

@@ -232,45 +232,6 @@
   supported.evm = ['ethereum', 'bsc', 'polygon', 'fantom', 'velas'];
   supported.solana = [];
 
-  const getProvider = async (blockchain)=>{
-
-    if(supported.evm.includes(blockchain)) {
-
-
-      return await EVM.getProvider(blockchain)
-
-
-    } else if(supported.solana.includes(blockchain)) ; else {
-      throw 'Unknown blockchain: ' + blockchain
-    }
-  };
-
-  const setProvider = (blockchain, provider)=>{
-
-    if(supported.evm.includes(blockchain)) {
-
-
-      return EVM.setProvider(blockchain, provider)
-
-
-    } else if(supported.solana.includes(blockchain)) ; else {
-      throw 'Unknown blockchain: ' + blockchain
-    }
-  };
-
-  const setProviderEndpoints = (blockchain, endpoints)=>{
-
-    if(supported.evm.includes(blockchain)) {
-
-
-      return EVM.setProviderEndpoints(blockchain, endpoints)
-
-
-    } else if(supported.solana.includes(blockchain)) ; else {
-      throw 'Unknown blockchain: ' + blockchain
-    }
-  };
-
   function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
   let getCacheStore = () => {
     if (getWindow()._cacheStore == undefined) {
@@ -373,6 +334,49 @@
         deletePromise({ key });
       });
     })
+  };
+
+  const getProvider = async (blockchain)=>{
+
+    if(supported.evm.includes(blockchain)) {
+
+
+      return await EVM.getProvider(blockchain)
+
+
+    } else if(supported.solana.includes(blockchain)) ; else {
+      throw 'Unknown blockchain: ' + blockchain
+    }
+  };
+
+  const setProvider = (blockchain, provider)=>{
+
+    resetCache();
+
+    if(supported.evm.includes(blockchain)) {
+
+
+      return EVM.setProvider(blockchain, provider)
+
+
+    } else if(supported.solana.includes(blockchain)) ; else {
+      throw 'Unknown blockchain: ' + blockchain
+    }
+  };
+
+  const setProviderEndpoints = (blockchain, endpoints)=>{
+
+    resetCache();
+
+    if(supported.evm.includes(blockchain)) {
+
+
+      return EVM.setProviderEndpoints(blockchain, endpoints)
+
+
+    } else if(supported.solana.includes(blockchain)) ; else {
+      throw 'Unknown blockchain: ' + blockchain
+    }
   };
 
   let estimate = async function ({ blockchain, from, to, value, method, api, params, cache: cache$1 }) {

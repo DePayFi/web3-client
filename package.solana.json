@@ -1,7 +1,7 @@
 {
   "name": "@depay/web3-client-solana",
   "moduleName": "Web3Client",
-  "version": "10.6.4",
+  "version": "10.6.5",
   "description": "A web3 client to fetch blockchain data just like you are used to with HTTP clients.",
   "main": "dist/umd/index.solana.js",
   "module": "dist/esm/index.solana.js",
