@@ -1,4 +1,4 @@
-import { Blockchain } from '@depay/web3-blockchains'
+import Blockchains from '@depay/web3-blockchains'
 import { ethers } from 'ethers'
 
 const BATCH_INTERVAL = 10
@@ -14,7 +14,7 @@ class StaticJsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
   }
 
   detectNetwork() {
-    return Promise.resolve(Blockchain.findByName(this._network).id)
+    return Promise.resolve(Blockchains.findByName(this._network).id)
   }
 
   requestChunk(chunk, endpoint) {

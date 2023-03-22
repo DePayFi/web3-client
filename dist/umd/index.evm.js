@@ -2,7 +2,11 @@
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('ethers'), require('@depay/web3-blockchains')) :
   typeof define === 'function' && define.amd ? define(['exports', 'ethers', '@depay/web3-blockchains'], factory) :
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.Web3Client = {}, global.ethers, global.Web3Blockchains));
-})(this, (function (exports, ethers, web3Blockchains) { 'use strict';
+})(this, (function (exports, ethers, Blockchains) { 'use strict';
+
+  function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+  var Blockchains__default = /*#__PURE__*/_interopDefaultLegacy(Blockchains);
 
   const getContractArguments = ({ contract, method, params })=>{
     let fragment = contract.interface.fragments.find((fragment) => {
@@ -46,7 +50,7 @@
     }
 
     detectNetwork() {
-      return Promise.resolve(web3Blockchains.Blockchain.findByName(this._network).id)
+      return Promise.resolve(Blockchains__default["default"].findByName(this._network).id)
     }
 
     requestChunk(chunk, endpoint) {

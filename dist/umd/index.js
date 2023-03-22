@@ -2,7 +2,11 @@
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@depay/solana-web3.js'), require('@depay/web3-blockchains'), require('ethers')) :
   typeof define === 'function' && define.amd ? define(['exports', '@depay/solana-web3.js', '@depay/web3-blockchains', 'ethers'], factory) :
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.Web3Client = {}, global.SolanaWeb3js, global.Web3Blockchains, global.ethers));
-})(this, (function (exports, solanaWeb3_js, web3Blockchains, ethers) { 'use strict';
+})(this, (function (exports, solanaWeb3_js, Blockchains, ethers) { 'use strict';
+
+  function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+  var Blockchains__default = /*#__PURE__*/_interopDefaultLegacy(Blockchains);
 
   const BATCH_INTERVAL = 10;
   const CHUNK_SIZE = 99;
@@ -17,7 +21,7 @@
     }
 
     detectNetwork() {
-      return Promise.resolve(web3Blockchains.Blockchain.findByName(this._network).id)
+      return Promise.resolve(Blockchains__default["default"].findByName(this._network).id)
     }
 
     requestChunk(chunk, endpoint) {
