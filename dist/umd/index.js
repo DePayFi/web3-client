@@ -123,7 +123,7 @@
     bsc: ['https://bsc-dataseed.binance.org', 'https://bsc-dataseed1.ninicoin.io', 'https://bsc-dataseed3.defibit.io'],
     polygon: ['https://polygon-rpc.com', 'https://poly-rpc.gateway.pokt.network', 'https://matic-mainnet.chainstacklabs.com'],
     fantom: ['https://fantom.blockpi.network/v1/rpc/public', 'https://rpcapi.fantom.network', 'https://rpc.ftm.tools'],
-    velas: ['https://mainnet.velas.com/rpc', 'https://evmexplorer.velas.com/rpc', 'https://explorer.velas.com/rpc'],
+    velas: ['https://velas-mainnet.rpcfast.com/?api_key=xbhWBI1Wkguk8SNMu1bvvLurPGLXmgwYeC4S6g2H7WdwFigZSmPWVZRxrskEQwIf', 'https://evmexplorer.velas.com/rpc', 'https://explorer.velas.com/rpc'],
   };
 
   const getProviders$1 = ()=> {
@@ -657,13 +657,13 @@
         if(supported.evm.includes(blockchain)) {
 
 
-          return requestEVM({ blockchain, address, api, method, params, block })
+          return await requestEVM({ blockchain, address, api, method, params, block })
 
 
         } else if(supported.solana.includes(blockchain)) {
 
 
-          return requestSolana({ blockchain, address, api, method, params, block })
+          return await requestSolana({ blockchain, address, api, method, params, block })
 
 
         } else {

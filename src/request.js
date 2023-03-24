@@ -29,13 +29,13 @@ let request = async function (url, options) {
 
         /*#if _EVM
 
-        return requestEVM({ blockchain, address, api, method, params, block })
+        return await requestEVM({ blockchain, address, api, method, params, block })
 
         /*#elif _SOLANA
 
         //#else */
 
-        return requestEVM({ blockchain, address, api, method, params, block })
+        return await requestEVM({ blockchain, address, api, method, params, block })
 
         //#endif
 
@@ -49,7 +49,7 @@ let request = async function (url, options) {
 
         //#else */
 
-        return requestSolana({ blockchain, address, api, method, params, block })
+        return await requestSolana({ blockchain, address, api, method, params, block })
 
         //#endif
 
