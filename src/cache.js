@@ -1,23 +1,23 @@
 import { getWindow } from './window'
 
 let getCacheStore = () => {
-  if (getWindow()._cacheStore == undefined) {
+  if (getWindow()._Web3ClientCacheStore == undefined) {
     resetCache()
   }
-  return getWindow()._cacheStore
+  return getWindow()._Web3ClientCacheStore
 }
 
 let getPromiseStore = () => {
-  if (getWindow()._promiseStore == undefined) {
+  if (getWindow()._Web3ClientPromiseStore == undefined) {
     resetCache()
   }
-  return getWindow()._promiseStore
+  return getWindow()._Web3ClientPromiseStore
 }
 
 let resetCache = () => {
-  getWindow()._cacheStore = {}
-  getWindow()._promiseStore = {}
-  getWindow()._clientProviders = {}
+  getWindow()._Web3ClientCacheStore = {}
+  getWindow()._Web3ClientPromiseStore = {}
+  getWindow()._Web3ClientProviders = {}
 }
 
 let set = function ({ key, value, expires }) {

@@ -1,24 +1,23 @@
+import Blockchains from '@depay/web3-blockchains'
 import StaticJsonRpcBatchProvider from '../../clients/solana/provider'
 import { getWindow } from '../../window'
 
-const ENDPOINTS = {
-  solana: ['https://solana-mainnet.phantom.app/YBPpkkN4g91xDiAnTE9r0RcMkjg0sKUIWvAfoFVJ', 'https://mainnet-beta.solflare.network', 'https://solana-mainnet.rpc.extrnode.com']
-}
-
-const getProviders = ()=> {
-  if(getWindow()._clientProviders == undefined) {
-    getWindow()._clientProviders = {}
+const getAllProviders = ()=> {
+  if(getWindow()._Web3ClientProviders == undefined) {
+    getWindow()._Web3ClientProviders = {}
   }
-  return getWindow()._clientProviders
+  return getWindow()._Web3ClientProviders
 }
 
 const setProvider = (blockchain, provider)=> {
-  getProviders()[blockchain] = provider
+  if(getAllProviders()[blockchain] === undefined) { getAllProviders()[blockchain] = [] }
+  getAllProviders()[blockchain][0] = provider
 }
 
 const setProviderEndpoints = async (blockchain, endpoints)=> {
-  
-  let endpoint
+  getAllProviders()[blockchain] = endpoints.map((endpoint)=>new StaticJsonRpcBatchProvider(endpoint, blockchain, endpoints))
+
+  let provider
   let window = getWindow()
 
   if(
@@ -26,7 +25,7 @@ const setProviderEndpoints = async (blockchain, endpoints)=> {
     (typeof process != 'undefined' && process['env'] && process['env']['NODE_ENV'] == 'test') ||
     (typeof window.cy != 'undefined')
   ) {
-    endpoint = endpoints[0]
+    provider = getAllProviders()[blockchain][0]
   } else {
     
     let responseTimes = await Promise.all(endpoints.map((endpoint)=>{
@@ -50,34 +49,49 @@ const setProviderEndpoints = async (blockchain, endpoints)=> {
 
     const fastestResponse = Math.min(...responseTimes)
     const fastestIndex = responseTimes.indexOf(fastestResponse)
-    endpoint = endpoints[fastestIndex]
+    provider = getAllProviders()[blockchain][fastestIndex]
   }
   
-  setProvider(
-    blockchain,
-    new StaticJsonRpcBatchProvider(endpoint, blockchain, endpoints)
-  )
+  setProvider(blockchain, provider)
 }
 
 const getProvider = async (blockchain)=> {
 
-  let providers = getProviders()
+  let providers = getAllProviders()
+  if(providers && providers[blockchain]){ return providers[blockchain][0] }
+  
+  let window = getWindow()
+  if(window._Web3ClientGetProviderPromise && window._Web3ClientGetProviderPromise[blockchain]) { return await window._Web3ClientGetProviderPromise[blockchain] }
+
+  if(!window._Web3ClientGetProviderPromise){ window._Web3ClientGetProviderPromise = {} }
+  window._Web3ClientGetProviderPromise[blockchain] = new Promise(async(resolve)=> {
+    await setProviderEndpoints(blockchain, Blockchains[blockchain].endpoints)
+    resolve(getWindow()._Web3ClientProviders[blockchain][0])
+  })
+
+  return await window._Web3ClientGetProviderPromise[blockchain]
+}
+
+const getProviders = async(blockchain)=>{
+
+  let providers = getAllProviders()
   if(providers && providers[blockchain]){ return providers[blockchain] }
   
   let window = getWindow()
-  if(window._getProviderPromise && window._getProviderPromise[blockchain]) { return await window._getProviderPromise[blockchain] }
+  if(window._Web3ClientGetProvidersPromise && window._Web3ClientGetProvidersPromise[blockchain]) { return await window._Web3ClientGetProvidersPromise[blockchain] }
 
-  if(!window._getProviderPromise){ window._getProviderPromise = {} }
-  window._getProviderPromise[blockchain] = new Promise(async(resolve)=> {
-    await setProviderEndpoints(blockchain, ENDPOINTS[blockchain])
-    resolve(getWindow()._clientProviders[blockchain])
+  if(!window._Web3ClientGetProvidersPromise){ window._Web3ClientGetProvidersPromise = {} }
+  window._Web3ClientGetProvidersPromise[blockchain] = new Promise(async(resolve)=> {
+    await setProviderEndpoints(blockchain, Blockchains[blockchain].endpoints)
+    resolve(getWindow()._Web3ClientProviders[blockchain])
   })
 
-  return await window._getProviderPromise[blockchain]
+  return await window._Web3ClientGetProvidersPromise[blockchain]
 }
 
 export default {
   getProvider,
+  getProviders,
   setProviderEndpoints,
   setProvider,
 }

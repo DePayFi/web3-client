@@ -231,6 +231,41 @@ describe('resetCache', ()=>{
 })
 ```
 
+#### request strategy
+
+Web3Client supports 2 different request strategies, `failover` (default) and `fastest`.
+
+You can pick one or the other by providing the `stategy` option to `request`:
+
+```javascript
+import { request } from '@depay/web3-client'
+
+let data = await request('ethereum://0x7a250d5630b4cf539739df2c5dacb4c659f2488d/getAmountsOut', { strategy: 'fastest' })
+```
+
+##### failover request strategy
+
+(DEFAULT).
+
+The `failover` request strategy picks the fastest RPC endpoint upon initailization (`setProviderEndpoints`) and sticks with the fastest RPC endpoint for the entire session (until window is reloaded).
+
+If the chosen endpoint starts failing, it fails over to the next endpoint in the list and so on.
+
+##### fastest request strategy
+
+The `fastest` request startegy sends a request to all configured endpoints and returns a result as soon as one of the configured endpoints responds to the request.
+
+#### request timeout
+
+You can provide a request timeout in milli seconds to the request method:
+
+```javascript
+import { request } from '@depay/web3-client'
+
+let data = await request('ethereum://0x7a250d5630b4cf539739df2c5dacb4c659f2488d/getAmountsOut', { timeout: 2000 })
+// raises Web3ClientTimeout
+```
+
 ### estimate
 
 Estimates a transaction and returns gasLimit as BigNumber:
@@ -322,8 +357,6 @@ await setProviderEndpoints('ethereum', ['http://localhost:8545'])
 ```
 
 Make sure you pass an array of endpoints to setProvider.
-
-Currently we only connect to the first provider of that array, but for future reasons we might introduce RPC endpoint fallbacks eventually.
 
 If you want to provide your own initalized providers, you can use `setProvider`:
 

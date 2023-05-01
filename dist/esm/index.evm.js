@@ -139,29 +139,22 @@ let getWindow = () => {
   return _window
 };
 
-// MAKE SURE PROVIDER SUPPORT BATCH SIZE OF 99 BATCH REQUESTS!
-const ENDPOINTS = {
-  ethereum: ['https://rpc.ankr.com/eth', 'https://eth.llamarpc.com', 'https://ethereum.publicnode.com'],
-  bsc: ['https://bsc-dataseed.binance.org', 'https://bsc-dataseed1.ninicoin.io', 'https://bsc-dataseed3.defibit.io'],
-  polygon: ['https://polygon-rpc.com', 'https://poly-rpc.gateway.pokt.network', 'https://matic-mainnet.chainstacklabs.com'],
-  fantom: ['https://fantom.blockpi.network/v1/rpc/public', 'https://rpcapi.fantom.network', 'https://rpc.ftm.tools'],
-  velas: ['https://velas-mainnet.rpcfast.com/?api_key=xbhWBI1Wkguk8SNMu1bvvLurPGLXmgwYeC4S6g2H7WdwFigZSmPWVZRxrskEQwIf', 'https://evmexplorer.velas.com/rpc', 'https://explorer.velas.com/rpc'],
-};
-
-const getProviders = ()=> {
-  if(getWindow()._clientProviders == undefined) {
-    getWindow()._clientProviders = {};
+const getAllProviders = ()=> {
+  if(getWindow()._Web3ClientProviders == undefined) {
+    getWindow()._Web3ClientProviders = {};
   }
-  return getWindow()._clientProviders
+  return getWindow()._Web3ClientProviders
 };
 
 const setProvider$1 = (blockchain, provider)=> {
-  getProviders()[blockchain] = provider;
+  if(getAllProviders()[blockchain] === undefined) { getAllProviders()[blockchain] = []; }
+  getAllProviders()[blockchain][0] = provider;
 };
 
 const setProviderEndpoints$1 = async (blockchain, endpoints)=> {
+  getAllProviders()[blockchain] = endpoints.map((endpoint)=>new StaticJsonRpcBatchProvider(endpoint, blockchain, endpoints));
   
-  let endpoint;
+  let provider;
   let window = getWindow();
 
   if(
@@ -169,7 +162,7 @@ const setProviderEndpoints$1 = async (blockchain, endpoints)=> {
     (typeof process != 'undefined' && process['env'] && process['env']['NODE_ENV'] == 'test') ||
     (typeof window.cy != 'undefined')
   ) {
-    endpoint = endpoints[0];
+    provider = getAllProviders()[blockchain][0];
   } else {
     
     let responseTimes = await Promise.all(endpoints.map((endpoint)=>{
@@ -193,34 +186,49 @@ const setProviderEndpoints$1 = async (blockchain, endpoints)=> {
 
     const fastestResponse = Math.min(...responseTimes);
     const fastestIndex = responseTimes.indexOf(fastestResponse);
-    endpoint = endpoints[fastestIndex];
+    provider = getAllProviders()[blockchain][fastestIndex];
   }
   
-  setProvider$1(
-    blockchain,
-    new StaticJsonRpcBatchProvider(endpoint, blockchain, endpoints)
-  );
+  setProvider$1(blockchain, provider);
 };
 
 const getProvider$1 = async (blockchain)=> {
 
-  let providers = getProviders();
+  let providers = getAllProviders();
+  if(providers && providers[blockchain]){ return providers[blockchain][0] }
+  
+  let window = getWindow();
+  if(window._Web3ClientGetProviderPromise && window._Web3ClientGetProviderPromise[blockchain]) { return await window._Web3ClientGetProviderPromise[blockchain] }
+
+  if(!window._Web3ClientGetProviderPromise){ window._Web3ClientGetProviderPromise = {}; }
+  window._Web3ClientGetProviderPromise[blockchain] = new Promise(async(resolve)=> {
+    await setProviderEndpoints$1(blockchain, Blockchains[blockchain].endpoints);
+    resolve(getWindow()._Web3ClientProviders[blockchain][0]);
+  });
+
+  return await window._Web3ClientGetProviderPromise[blockchain]
+};
+
+const getProviders = async(blockchain)=>{
+
+  let providers = getAllProviders();
   if(providers && providers[blockchain]){ return providers[blockchain] }
   
   let window = getWindow();
-  if(window._getProviderPromise && window._getProviderPromise[blockchain]) { return await window._getProviderPromise[blockchain] }
+  if(window._Web3ClientGetProvidersPromise && window._Web3ClientGetProvidersPromise[blockchain]) { return await window._Web3ClientGetProvidersPromise[blockchain] }
 
-  if(!window._getProviderPromise){ window._getProviderPromise = {}; }
-  window._getProviderPromise[blockchain] = new Promise(async(resolve)=> {
-    await setProviderEndpoints$1(blockchain, ENDPOINTS[blockchain]);
-    resolve(getWindow()._clientProviders[blockchain]);
+  if(!window._Web3ClientGetProvidersPromise){ window._Web3ClientGetProvidersPromise = {}; }
+  window._Web3ClientGetProvidersPromise[blockchain] = new Promise(async(resolve)=> {
+    await setProviderEndpoints$1(blockchain, Blockchains[blockchain].endpoints);
+    resolve(getWindow()._Web3ClientProviders[blockchain]);
   });
 
-  return await window._getProviderPromise[blockchain]
+  return await window._Web3ClientGetProvidersPromise[blockchain]
 };
 
 var EVM = {
   getProvider: getProvider$1,
+  getProviders,
   setProviderEndpoints: setProviderEndpoints$1,
   setProvider: setProvider$1,
 };
@@ -231,23 +239,23 @@ supported.solana = [];
 
 function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 let getCacheStore = () => {
-  if (getWindow()._cacheStore == undefined) {
+  if (getWindow()._Web3ClientCacheStore == undefined) {
     resetCache();
   }
-  return getWindow()._cacheStore
+  return getWindow()._Web3ClientCacheStore
 };
 
 let getPromiseStore = () => {
-  if (getWindow()._promiseStore == undefined) {
+  if (getWindow()._Web3ClientPromiseStore == undefined) {
     resetCache();
   }
-  return getWindow()._promiseStore
+  return getWindow()._Web3ClientPromiseStore
 };
 
 let resetCache = () => {
-  getWindow()._cacheStore = {};
-  getWindow()._promiseStore = {};
-  getWindow()._clientProviders = {};
+  getWindow()._Web3ClientCacheStore = {};
+  getWindow()._Web3ClientPromiseStore = {};
+  getWindow()._Web3ClientProviders = {};
 };
 
 let set = function ({ key, value, expires }) {
@@ -403,23 +411,21 @@ let paramsToContractArgs = ({ contract, method, params }) => {
   })
 };
 
-let contractCall = ({ address, api, method, params, provider, block }) => {
+const contractCall = ({ address, api, method, params, provider, block }) => {
   let contract = new ethers.Contract(address, api, provider);
   let args = paramsToContractArgs({ contract, method, params });
   return contract[method](...args, { blockTag: block })
 };
 
-let balance = ({ address, provider }) => {
+const balance = ({ address, provider }) => {
   return provider.getBalance(address)
 };
 
-let transactionCount = ({ address, provider }) => {
+const transactionCount = ({ address, provider }) => {
   return provider.getTransactionCount(address)
 };
 
-var requestEVM = async ({ blockchain, address, api, method, params, block }) => {
-  const provider = await EVM.getProvider(blockchain);
-  
+const singleRequest = ({ blockchain, address, api, method, params, block, provider }) =>{
   if (api) {
     return contractCall({ address, api, method, params, provider, block })
   } else if (method === 'latestBlockNumber') {
@@ -428,6 +434,22 @@ var requestEVM = async ({ blockchain, address, api, method, params, block }) => 
     return balance({ address, provider })
   } else if (method === 'transactionCount') {
     return transactionCount({ address, provider })
+  }
+};
+
+var requestEVM = async ({ blockchain, address, api, method, params, block, timeout, strategy = 'fallback' }) => {
+
+  if(strategy === 'fastest') ; else {
+
+    const provider = await EVM.getProvider(blockchain);
+    const request = singleRequest({ blockchain, address, api, method, params, block, provider });
+    
+    if(timeout) {
+      timeout = new Promise((_, reject)=>setTimeout(()=>reject(new Error("Web3ClientTimeout")), timeout));
+      return Promise.race([request, timeout])
+    } else {
+      return request
+    }
   }
 };
 
@@ -460,7 +482,7 @@ var parseUrl = (url) => {
 
 let request = async function (url, options) {
   let { blockchain, address, method } = parseUrl(url);
-  let { api, params, cache: cache$1, block } = (typeof(url) == 'object' ? url : options) || {};
+  let { api, params, cache: cache$1, block, timeout } = (typeof(url) == 'object' ? url : options) || {};
 
   return await cache({
     expires: cache$1 || 0,
@@ -469,7 +491,7 @@ let request = async function (url, options) {
       if(supported.evm.includes(blockchain)) {
 
 
-        return await requestEVM({ blockchain, address, api, method, params, block })
+        return await requestEVM({ blockchain, address, api, method, params, block, timeout })
 
 
       } else if(supported.solana.includes(blockchain)) ; else {
