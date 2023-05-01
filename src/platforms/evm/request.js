@@ -32,13 +32,25 @@ export default async ({ blockchain, address, api, method, params, block, timeout
 
   if(strategy === 'fastest') {
 
-  } else {
+    return Promise.race((await EVM.getProviders(blockchain)).map((provider)=>{
+
+      const request = singleRequest({ blockchain, address, api, method, params, block, provider })
+    
+      if(timeout) {
+        const timeoutPromise = new Promise((_, reject)=>setTimeout(()=>{ reject(new Error("Web3ClientTimeout")) }, timeout))
+        return Promise.race([request, timeoutPromise])
+      } else {
+        return request
+      }
+    }))
+
+  } else { // failover
 
     const provider = await EVM.getProvider(blockchain)
     const request = singleRequest({ blockchain, address, api, method, params, block, provider })
     
     if(timeout) {
-      timeout = new Promise((_, reject)=>setTimeout(()=>reject(new Error("Web3ClientTimeout")), timeout))
+      timeout = new Promise((_, reject)=>setTimeout(()=>{ reject(new Error("Web3ClientTimeout")) }, timeout))
       return Promise.race([request, timeout])
     } else {
       return request

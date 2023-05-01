@@ -6,11 +6,12 @@ const CHUNK_SIZE = 99
 
 class StaticJsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
 
-  constructor(url, network, endpoints) {
+  constructor(url, network, endpoints, failover) {
     super(url)
     this._network = network
     this._endpoint = url
     this._endpoints = endpoints
+    this._failover = failover
   }
 
   detectNetwork() {
@@ -40,6 +41,7 @@ class StaticJsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
       }).catch((error) => {
         if(error && error.code == 'SERVER_ERROR') {
           const index = this._endpoints.indexOf(this._endpoint)+1
+          this._failover()
           this._endpoint = index >= this._endpoints.length ? this._endpoints[0] : this._endpoints[index]
           this.requestChunk(chunk, this._endpoint)
         } else {

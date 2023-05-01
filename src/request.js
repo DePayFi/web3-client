@@ -17,9 +17,10 @@ import parseUrl from './parseUrl'
 import { cache as cacheRequest } from './cache'
 import { supported } from './blockchains'
 
-let request = async function (url, options) {
-  let { blockchain, address, method } = parseUrl(url)
-  let { api, params, cache, block, timeout } = (typeof(url) == 'object' ? url : options) || {}
+const request = async function (url, options) {
+  
+  const { blockchain, address, method } = parseUrl(url)
+  const { api, params, cache, block, timeout, strategy } = (typeof(url) == 'object' ? url : options) || {}
 
   return await cacheRequest({
     expires: cache || 0,
@@ -29,13 +30,13 @@ let request = async function (url, options) {
 
         /*#if _EVM
 
-        return await requestEVM({ blockchain, address, api, method, params, block, timeout })
+        return await requestEVM({ blockchain, address, api, method, params, block, strategy, timeout })
 
         /*#elif _SOLANA
 
         //#else */
 
-        return await requestEVM({ blockchain, address, api, method, params, block, timeout })
+        return await requestEVM({ blockchain, address, api, method, params, block, strategy, timeout })
 
         //#endif
 
@@ -45,11 +46,11 @@ let request = async function (url, options) {
 
         /*#elif _SOLANA
 
-        return requestSolana({ blockchain, address, api, method, params, block, timeout })
+        return requestSolana({ blockchain, address, api, method, params, block, strategy, timeout })
 
         //#else */
 
-        return await requestSolana({ blockchain, address, api, method, params, block, timeout })
+        return await requestSolana({ blockchain, address, api, method, params, block, strategy, timeout })
 
         //#endif
 

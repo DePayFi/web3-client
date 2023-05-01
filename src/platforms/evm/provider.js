@@ -11,11 +11,20 @@ const getAllProviders = ()=> {
 
 const setProvider = (blockchain, provider)=> {
   if(getAllProviders()[blockchain] === undefined) { getAllProviders()[blockchain] = [] }
-  getAllProviders()[blockchain][0] = provider
+  const index = getAllProviders()[blockchain].indexOf(provider)
+  if(index > -1) {
+    getAllProviders()[blockchain].splice(index, 1)
+  }
+  getAllProviders()[blockchain].unshift(provider)
 }
 
 const setProviderEndpoints = async (blockchain, endpoints)=> {
-  getAllProviders()[blockchain] = endpoints.map((endpoint)=>new StaticJsonRpcBatchProvider(endpoint, blockchain, endpoints))
+  
+  getAllProviders()[blockchain] = endpoints.map((endpoint, index)=>
+    new StaticJsonRpcBatchProvider(endpoint, blockchain, endpoints, ()=>{
+      getAllProviders()[blockchain].splice(index, 1)
+    })
+  )
   
   let provider
   let window = getWindow()

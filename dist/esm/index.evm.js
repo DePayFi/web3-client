@@ -35,11 +35,12 @@ const CHUNK_SIZE = 99;
 
 class StaticJsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
 
-  constructor(url, network, endpoints) {
+  constructor(url, network, endpoints, failover) {
     super(url);
     this._network = network;
     this._endpoint = url;
     this._endpoints = endpoints;
+    this._failover = failover;
   }
 
   detectNetwork() {
@@ -69,6 +70,7 @@ class StaticJsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
       }).catch((error) => {
         if(error && error.code == 'SERVER_ERROR') {
           const index = this._endpoints.indexOf(this._endpoint)+1;
+          this._failover();
           this._endpoint = index >= this._endpoints.length ? this._endpoints[0] : this._endpoints[index];
           this.requestChunk(chunk, this._endpoint);
         } else {
@@ -148,11 +150,20 @@ const getAllProviders = ()=> {
 
 const setProvider$1 = (blockchain, provider)=> {
   if(getAllProviders()[blockchain] === undefined) { getAllProviders()[blockchain] = []; }
-  getAllProviders()[blockchain][0] = provider;
+  const index = getAllProviders()[blockchain].indexOf(provider);
+  if(index > -1) {
+    getAllProviders()[blockchain].splice(index, 1);
+  }
+  getAllProviders()[blockchain].unshift(provider);
 };
 
 const setProviderEndpoints$1 = async (blockchain, endpoints)=> {
-  getAllProviders()[blockchain] = endpoints.map((endpoint)=>new StaticJsonRpcBatchProvider(endpoint, blockchain, endpoints));
+  
+  getAllProviders()[blockchain] = endpoints.map((endpoint, index)=>
+    new StaticJsonRpcBatchProvider(endpoint, blockchain, endpoints, ()=>{
+      getAllProviders()[blockchain].splice(index, 1);
+    })
+  );
   
   let provider;
   let window = getWindow();
@@ -439,13 +450,27 @@ const singleRequest = ({ blockchain, address, api, method, params, block, provid
 
 var requestEVM = async ({ blockchain, address, api, method, params, block, timeout, strategy = 'fallback' }) => {
 
-  if(strategy === 'fastest') ; else {
+  if(strategy === 'fastest') {
+
+    return Promise.race((await EVM.getProviders(blockchain)).map((provider)=>{
+
+      const request = singleRequest({ blockchain, address, api, method, params, block, provider });
+    
+      if(timeout) {
+        const timeoutPromise = new Promise((_, reject)=>setTimeout(()=>{ reject(new Error("Web3ClientTimeout")); }, timeout));
+        return Promise.race([request, timeoutPromise])
+      } else {
+        return request
+      }
+    }))
+
+  } else { // failover
 
     const provider = await EVM.getProvider(blockchain);
     const request = singleRequest({ blockchain, address, api, method, params, block, provider });
     
     if(timeout) {
-      timeout = new Promise((_, reject)=>setTimeout(()=>reject(new Error("Web3ClientTimeout")), timeout));
+      timeout = new Promise((_, reject)=>setTimeout(()=>{ reject(new Error("Web3ClientTimeout")); }, timeout));
       return Promise.race([request, timeout])
     } else {
       return request
@@ -480,9 +505,10 @@ var parseUrl = (url) => {
   }
 };
 
-let request = async function (url, options) {
-  let { blockchain, address, method } = parseUrl(url);
-  let { api, params, cache: cache$1, block, timeout } = (typeof(url) == 'object' ? url : options) || {};
+const request = async function (url, options) {
+  
+  const { blockchain, address, method } = parseUrl(url);
+  const { api, params, cache: cache$1, block, timeout, strategy } = (typeof(url) == 'object' ? url : options) || {};
 
   return await cache({
     expires: cache$1 || 0,
@@ -491,7 +517,7 @@ let request = async function (url, options) {
       if(supported.evm.includes(blockchain)) {
 
 
-        return await requestEVM({ blockchain, address, api, method, params, block, timeout })
+        return await requestEVM({ blockchain, address, api, method, params, block, strategy, timeout })
 
 
       } else if(supported.solana.includes(blockchain)) ; else {

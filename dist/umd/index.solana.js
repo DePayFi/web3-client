@@ -10,11 +10,12 @@
 
   class StaticJsonRpcSequentialProvider extends solanaWeb3_js.Connection {
 
-    constructor(url, network, endpoints) {
+    constructor(url, network, endpoints, failover) {
       super(url);
       this._network = network;
       this._endpoint = url;
       this._endpoints = endpoints;
+      this._failover = failover;
     }
   }
 
@@ -39,11 +40,20 @@
 
   const setProvider$1 = (blockchain, provider)=> {
     if(getAllProviders()[blockchain] === undefined) { getAllProviders()[blockchain] = []; }
-    getAllProviders()[blockchain][0] = provider;
+    const index = getAllProviders()[blockchain].indexOf(provider);
+    if(index > -1) {
+      getAllProviders()[blockchain].splice(index, 1);
+    }
+    getAllProviders()[blockchain].unshift(provider);
   };
 
   const setProviderEndpoints$1 = async (blockchain, endpoints)=> {
-    getAllProviders()[blockchain] = endpoints.map((endpoint)=>new StaticJsonRpcSequentialProvider(endpoint, blockchain, endpoints));
+    
+    getAllProviders()[blockchain] = endpoints.map((endpoint, index)=>
+      new StaticJsonRpcSequentialProvider(endpoint, blockchain, endpoints, ()=>{
+        getAllProviders()[blockchain].splice(index, 1);
+      })
+    );
 
     let provider;
     let window = getWindow();
@@ -392,15 +402,26 @@
   var requestSolana = async ({ blockchain, address, api, method, params, block, timeout, strategy = 'fallback' }) => {
 
     if(strategy === 'fastest') {
-      timeout = new Promise((resolve)=>setTimeout(()=>reject("Web3ClientTimeout"), timeout));
-      return Promise.race([request, timeout])
-    } else {
+
+      return Promise.race((await Solana.getProviders(blockchain)).map((provider)=>{
+
+        const request = singleRequest({ blockchain, address, api, method, params, block, provider });
+      
+        if(timeout) {
+          const timeoutPromise = new Promise((_, reject)=>setTimeout(()=>{ reject(new Error("Web3ClientTimeout")); }, timeout));
+          return Promise.race([request, timeoutPromise])
+        } else {
+          return request
+        }
+      }))
+      
+    } else { // failover
 
       const provider = await Solana.getProvider(blockchain);
       const request = singleRequest({ blockchain, address, api, method, params, block, provider });
 
       if(timeout) {
-        timeout = new Promise((_, reject)=>setTimeout(()=>reject(new Error("Web3ClientTimeout")), timeout));
+        timeout = new Promise((_, reject)=>setTimeout(()=>{ reject(new Error("Web3ClientTimeout")); }, timeout));
         return Promise.race([request, timeout])
       } else {
         return request
@@ -435,9 +456,10 @@
     }
   };
 
-  let request$1 = async function (url, options) {
-    let { blockchain, address, method } = parseUrl(url);
-    let { api, params, cache: cache$1, block, timeout } = (typeof(url) == 'object' ? url : options) || {};
+  const request = async function (url, options) {
+    
+    const { blockchain, address, method } = parseUrl(url);
+    const { api, params, cache: cache$1, block, timeout, strategy } = (typeof(url) == 'object' ? url : options) || {};
 
     return await cache({
       expires: cache$1 || 0,
@@ -446,7 +468,7 @@
         if(supported.evm.includes(blockchain)) ; else if(supported.solana.includes(blockchain)) {
 
 
-          return requestSolana({ blockchain, address, api, method, params, block, timeout })
+          return requestSolana({ blockchain, address, api, method, params, block, strategy, timeout })
 
 
         } else {
@@ -458,7 +480,7 @@
 
   exports.estimate = estimate;
   exports.getProvider = getProvider;
-  exports.request = request$1;
+  exports.request = request;
   exports.resetCache = resetCache;
   exports.setProvider = setProvider;
   exports.setProviderEndpoints = setProviderEndpoints;

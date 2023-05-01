@@ -41,15 +41,26 @@ const singleRequest = ({ blockchain, address, api, method, params, block, provid
 export default async ({ blockchain, address, api, method, params, block, timeout, strategy = 'fallback' }) => {
 
   if(strategy === 'fastest') {
-    timeout = new Promise((resolve)=>setTimeout(()=>reject("Web3ClientTimeout"), timeout))
-    return Promise.race([request, timeout])
-  } else {
+
+    return Promise.race((await Solana.getProviders(blockchain)).map((provider)=>{
+
+      const request = singleRequest({ blockchain, address, api, method, params, block, provider })
+    
+      if(timeout) {
+        const timeoutPromise = new Promise((_, reject)=>setTimeout(()=>{ reject(new Error("Web3ClientTimeout")) }, timeout))
+        return Promise.race([request, timeoutPromise])
+      } else {
+        return request
+      }
+    }))
+    
+  } else { // failover
 
     const provider = await Solana.getProvider(blockchain)
     const request = singleRequest({ blockchain, address, api, method, params, block, provider })
 
     if(timeout) {
-      timeout = new Promise((_, reject)=>setTimeout(()=>reject(new Error("Web3ClientTimeout")), timeout))
+      timeout = new Promise((_, reject)=>setTimeout(()=>{ reject(new Error("Web3ClientTimeout")) }, timeout))
       return Promise.race([request, timeout])
     } else {
       return request
