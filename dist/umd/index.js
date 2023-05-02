@@ -609,6 +609,18 @@
     })
   };
 
+  const getConfiguration = () =>{
+    if(getWindow()._Web3ClientConfiguration === undefined) {
+      getWindow()._Web3ClientConfiguration = {};
+    }
+    return getWindow()._Web3ClientConfiguration
+  };
+
+  const setConfiguration = (configuration) =>{
+    getWindow()._Web3ClientConfiguration = !!configuration ? configuration : {};
+    return getWindow()._Web3ClientConfiguration
+  };
+
   let paramsToContractArgs = ({ contract, method, params }) => {
     let fragment = contract.interface.fragments.find((fragment) => {
       return fragment.name == method
@@ -649,7 +661,10 @@
     }
   };
 
-  var requestEVM = async ({ blockchain, address, api, method, params, block, timeout, strategy = 'fallback' }) => {
+  var requestEVM = async ({ blockchain, address, api, method, params, block, timeout, strategy }) => {
+
+    strategy = strategy ? strategy : (getConfiguration().strategy || 'failover');
+    timeout = timeout ? timeout : (getConfiguration().timeout || undefined);
 
     if(strategy === 'fastest') {
 
@@ -728,7 +743,10 @@
     }
   };
 
-  var requestSolana = async ({ blockchain, address, api, method, params, block, timeout, strategy = 'fallback' }) => {
+  var requestSolana = async ({ blockchain, address, api, method, params, block, timeout, strategy }) => {
+
+    strategy = strategy ? strategy : (getConfiguration().strategy || 'failover');
+    timeout = timeout ? timeout : (getConfiguration().timeout || undefined);
 
     const providers = await Solana.getProviders(blockchain);
 
@@ -819,6 +837,7 @@
   exports.getProviders = getProviders;
   exports.request = request;
   exports.resetCache = resetCache;
+  exports.setConfiguration = setConfiguration;
   exports.setProvider = setProvider;
   exports.setProviderEndpoints = setProviderEndpoints;
   exports.simulate = simulate;

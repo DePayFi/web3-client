@@ -301,6 +301,18 @@ The number passed to `cache` is the amount of ms the cached result should stay v
 
 If nothing or `0` is passed to `cache`, the request is not cached.
 
+### configuration
+
+#### setConfiguration
+
+Sets global configuration:
+
+```javascript
+import { setConfiguration } from '@depay/web3-client'
+
+setConfiguration({ strategy: 'fastest', timeout: 1000 })
+```
+
 ### simulate
 
 #### Solana: simulate

@@ -423,6 +423,18 @@ let estimate = async function ({ blockchain, from, to, value, method, api, param
   })
 };
 
+const getConfiguration = () =>{
+  if(getWindow()._Web3ClientConfiguration === undefined) {
+    getWindow()._Web3ClientConfiguration = {};
+  }
+  return getWindow()._Web3ClientConfiguration
+};
+
+const setConfiguration = (configuration) =>{
+  getWindow()._Web3ClientConfiguration = !!configuration ? configuration : {};
+  return getWindow()._Web3ClientConfiguration
+};
+
 let paramsToContractArgs = ({ contract, method, params }) => {
   let fragment = contract.interface.fragments.find((fragment) => {
     return fragment.name == method
@@ -463,7 +475,10 @@ const singleRequest = ({ blockchain, address, api, method, params, block, provid
   }
 };
 
-var requestEVM = async ({ blockchain, address, api, method, params, block, timeout, strategy = 'fallback' }) => {
+var requestEVM = async ({ blockchain, address, api, method, params, block, timeout, strategy }) => {
+
+  strategy = strategy ? strategy : (getConfiguration().strategy || 'failover');
+  timeout = timeout ? timeout : (getConfiguration().timeout || undefined);
 
   if(strategy === 'fastest') {
 
@@ -544,4 +559,4 @@ const request = async function (url, options) {
 
 const simulate = undefined;
 
-export { estimate, getProvider, getProviders, request, resetCache, setProvider, setProviderEndpoints, simulate };
+export { estimate, getProvider, getProviders, request, resetCache, setConfiguration, setProvider, setProviderEndpoints, simulate };

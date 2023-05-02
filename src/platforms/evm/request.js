@@ -1,5 +1,6 @@
-import { ethers } from 'ethers'
 import EVM from './provider'
+import { ethers } from 'ethers'
+import { getConfiguration } from '../../configuration'
 import { paramsToContractArgs } from './contract'
 
 const contractCall = ({ address, api, method, params, provider, block }) => {
@@ -28,7 +29,10 @@ const singleRequest = ({ blockchain, address, api, method, params, block, provid
   }
 }
 
-export default async ({ blockchain, address, api, method, params, block, timeout, strategy = 'fallback' }) => {
+export default async ({ blockchain, address, api, method, params, block, timeout, strategy }) => {
+
+  strategy = strategy ? strategy : (getConfiguration().strategy || 'failover')
+  timeout = timeout ? timeout : (getConfiguration().timeout || undefined)
 
   if(strategy === 'fastest') {
 

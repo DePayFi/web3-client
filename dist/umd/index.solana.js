@@ -378,6 +378,18 @@
     })
   };
 
+  const getConfiguration = () =>{
+    if(getWindow()._Web3ClientConfiguration === undefined) {
+      getWindow()._Web3ClientConfiguration = {};
+    }
+    return getWindow()._Web3ClientConfiguration
+  };
+
+  const setConfiguration = (configuration) =>{
+    getWindow()._Web3ClientConfiguration = !!configuration ? configuration : {};
+    return getWindow()._Web3ClientConfiguration
+  };
+
   const accountInfo = async ({ address, api, method, params, provider, block }) => {
     const info = await provider.getAccountInfo(new solanaWeb3_js.PublicKey(address));
     return api.decode(info.data)
@@ -427,7 +439,10 @@
     }
   };
 
-  var requestSolana = async ({ blockchain, address, api, method, params, block, timeout, strategy = 'fallback' }) => {
+  var requestSolana = async ({ blockchain, address, api, method, params, block, timeout, strategy }) => {
+
+    strategy = strategy ? strategy : (getConfiguration().strategy || 'failover');
+    timeout = timeout ? timeout : (getConfiguration().timeout || undefined);
 
     const providers = await Solana.getProviders(blockchain);
 
@@ -512,6 +527,7 @@
   exports.getProviders = getProviders;
   exports.request = request;
   exports.resetCache = resetCache;
+  exports.setConfiguration = setConfiguration;
   exports.setProvider = setProvider;
   exports.setProviderEndpoints = setProviderEndpoints;
   exports.simulate = simulate;

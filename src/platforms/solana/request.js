@@ -1,4 +1,5 @@
 import Solana from './provider'
+import { getConfiguration } from '../../configuration'
 import { PublicKey, ACCOUNT_LAYOUT } from '@depay/solana-web3.js'
 
 const accountInfo = async ({ address, api, method, params, provider, block }) => {
@@ -50,7 +51,10 @@ const singleRequest = async({ blockchain, address, api, method, params, block, p
   }
 }
 
-export default async ({ blockchain, address, api, method, params, block, timeout, strategy = 'fallback' }) => {
+export default async ({ blockchain, address, api, method, params, block, timeout, strategy }) => {
+
+  strategy = strategy ? strategy : (getConfiguration().strategy || 'failover')
+  timeout = timeout ? timeout : (getConfiguration().timeout || undefined)
 
   const providers = await Solana.getProviders(blockchain)
 

@@ -372,6 +372,18 @@ let estimate = async function ({ blockchain, from, to, value, method, api, param
   })
 };
 
+const getConfiguration = () =>{
+  if(getWindow()._Web3ClientConfiguration === undefined) {
+    getWindow()._Web3ClientConfiguration = {};
+  }
+  return getWindow()._Web3ClientConfiguration
+};
+
+const setConfiguration = (configuration) =>{
+  getWindow()._Web3ClientConfiguration = !!configuration ? configuration : {};
+  return getWindow()._Web3ClientConfiguration
+};
+
 const accountInfo = async ({ address, api, method, params, provider, block }) => {
   const info = await provider.getAccountInfo(new PublicKey(address));
   return api.decode(info.data)
@@ -421,7 +433,10 @@ const singleRequest = async({ blockchain, address, api, method, params, block, p
   }
 };
 
-var requestSolana = async ({ blockchain, address, api, method, params, block, timeout, strategy = 'fallback' }) => {
+var requestSolana = async ({ blockchain, address, api, method, params, block, timeout, strategy }) => {
+
+  strategy = strategy ? strategy : (getConfiguration().strategy || 'failover');
+  timeout = timeout ? timeout : (getConfiguration().timeout || undefined);
 
   const providers = await Solana.getProviders(blockchain);
 
@@ -501,4 +516,4 @@ const request = async function (url, options) {
   })
 };
 
-export { estimate, getProvider, getProviders, request, resetCache, setProvider, setProviderEndpoints, simulate };
+export { estimate, getProvider, getProviders, request, resetCache, setConfiguration, setProvider, setProviderEndpoints, simulate };
