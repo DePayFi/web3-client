@@ -18,6 +18,7 @@ let resetCache = () => {
   getWindow()._Web3ClientCacheStore = {}
   getWindow()._Web3ClientPromiseStore = {}
   getWindow()._Web3ClientProviders = {}
+  getWindow()._Web3ClientGetProviderPromise = undefined
 }
 
 let set = function ({ key, value, expires }) {
