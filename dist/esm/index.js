@@ -318,7 +318,7 @@ const getProviders$1 = async(blockchain)=>{
 
   if(!window._Web3ClientGetProvidersPromise){ window._Web3ClientGetProvidersPromise = {}; }
   window._Web3ClientGetProvidersPromise[blockchain] = new Promise(async(resolve)=> {
-    await setProviderEndpoints$1(blockchain, ['https://httpstat.us/504', Blockchains[blockchain].endpoints[1], Blockchains[blockchain].endpoints[2]]);
+    await setProviderEndpoints$1(blockchain, Blockchains[blockchain].endpoints);
     resolve(getWindow()._Web3ClientProviders[blockchain]);
   });
 
