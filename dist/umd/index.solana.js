@@ -270,8 +270,6 @@
 
   const setProvider = (blockchain, provider)=>{
 
-    resetCache();
-
     if(supported.evm.includes(blockchain)) ; else if(supported.solana.includes(blockchain)) {
 
 
@@ -284,8 +282,6 @@
   };
 
   const setProviderEndpoints = (blockchain, endpoints, detectFastest)=>{
-
-    resetCache();
 
     if(supported.evm.includes(blockchain)) ; else if(supported.solana.includes(blockchain)) {
 

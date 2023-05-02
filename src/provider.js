@@ -88,8 +88,6 @@ const getProviders = async (blockchain)=>{
 
 const setProvider = (blockchain, provider)=>{
 
-  resetCache()
-
   if(supported.evm.includes(blockchain)) {
 
     /*#if _EVM
@@ -124,8 +122,6 @@ const setProvider = (blockchain, provider)=>{
 }
 
 const setProviderEndpoints = (blockchain, endpoints, detectFastest)=>{
-
-  resetCache()
 
   if(supported.evm.includes(blockchain)) {
 

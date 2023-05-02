@@ -386,8 +386,6 @@ const getProviders = async (blockchain)=>{
 
 const setProvider = (blockchain, provider)=>{
 
-  resetCache();
-
   if(supported.evm.includes(blockchain)) {
 
 
@@ -400,8 +398,6 @@ const setProvider = (blockchain, provider)=>{
 };
 
 const setProviderEndpoints = (blockchain, endpoints, detectFastest)=>{
-
-  resetCache();
 
   if(supported.evm.includes(blockchain)) {
 
