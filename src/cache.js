@@ -2,14 +2,14 @@ import { getWindow } from './window'
 
 let getCacheStore = () => {
   if (getWindow()._Web3ClientCacheStore == undefined) {
-    resetCache()
+    getWindow()._Web3ClientCacheStore = {}
   }
   return getWindow()._Web3ClientCacheStore
 }
 
 let getPromiseStore = () => {
   if (getWindow()._Web3ClientPromiseStore == undefined) {
-    resetCache()
+    getWindow()._Web3ClientPromiseStore = {}
   }
   return getWindow()._Web3ClientPromiseStore
 }
