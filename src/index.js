@@ -14,7 +14,7 @@ import simulate from './simulate'
 
 import estimate from './estimate'
 import request from './request'
-import { getProvider, setProviderEndpoints, setProvider } from './provider'
+import { getProvider, getProviders, setProviderEndpoints, setProvider } from './provider'
 import { resetCache } from './cache'
 
 export { 
@@ -22,6 +22,7 @@ export {
   estimate,
   simulate,
   getProvider,
+  getProviders,
   setProviderEndpoints,
   setProvider,
   resetCache

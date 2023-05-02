@@ -53,7 +53,7 @@ describe('request getProgramAccounts', () => {
         })
 
         let accounts = await request('solana://TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA/getProgramAccounts', {
-          params: { filters } 
+          params: { filters }
         })
         
         expect(accounts.map((account)=>account.pubkey.toString())).toEqual([

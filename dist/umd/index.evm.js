@@ -168,7 +168,11 @@
     
     getAllProviders()[blockchain] = endpoints.map((endpoint, index)=>
       new StaticJsonRpcBatchProvider(endpoint, blockchain, endpoints, ()=>{
-        getAllProviders()[blockchain].splice(index, 1);
+        if(getAllProviders()[blockchain].length === 1) {
+          setProviderEndpoints$1(blockchain, endpoints);
+        } else {
+          getAllProviders()[blockchain].splice(index, 1);
+        }
       })
     );
     
@@ -227,7 +231,7 @@
     return await window._Web3ClientGetProviderPromise[blockchain]
   };
 
-  const getProviders = async(blockchain)=>{
+  const getProviders$1 = async(blockchain)=>{
 
     let providers = getAllProviders();
     if(providers && providers[blockchain]){ return providers[blockchain] }
@@ -246,7 +250,7 @@
 
   var EVM = {
     getProvider: getProvider$1,
-    getProviders,
+    getProviders: getProviders$1,
     setProviderEndpoints: setProviderEndpoints$1,
     setProvider: setProvider$1,
   };
@@ -365,6 +369,19 @@
 
 
       return await EVM.getProvider(blockchain)
+
+
+    } else if(supported.solana.includes(blockchain)) ; else {
+      throw 'Unknown blockchain: ' + blockchain
+    }
+  };
+
+  const getProviders = async (blockchain)=>{
+
+    if(supported.evm.includes(blockchain)) {
+
+
+      return await EVM.getProviders(blockchain)
 
 
     } else if(supported.solana.includes(blockchain)) ; else {
@@ -538,6 +555,7 @@
 
   exports.estimate = estimate;
   exports.getProvider = getProvider;
+  exports.getProviders = getProviders;
   exports.request = request;
   exports.resetCache = resetCache;
   exports.setProvider = setProvider;

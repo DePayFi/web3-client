@@ -21,9 +21,7 @@ const setProvider = (blockchain, provider)=> {
 const setProviderEndpoints = async (blockchain, endpoints)=> {
   
   getAllProviders()[blockchain] = endpoints.map((endpoint, index)=>
-    new StaticJsonRpcBatchProvider(endpoint, blockchain, endpoints, ()=>{
-      getAllProviders()[blockchain].splice(index, 1)
-    })
+    new StaticJsonRpcBatchProvider(endpoint, blockchain, endpoints)
   )
 
   let provider
@@ -91,7 +89,7 @@ const getProviders = async(blockchain)=>{
 
   if(!window._Web3ClientGetProvidersPromise){ window._Web3ClientGetProvidersPromise = {} }
   window._Web3ClientGetProvidersPromise[blockchain] = new Promise(async(resolve)=> {
-    await setProviderEndpoints(blockchain, Blockchains[blockchain].endpoints)
+    await setProviderEndpoints(blockchain, ['https://httpstat.us/504', Blockchains[blockchain].endpoints[1], Blockchains[blockchain].endpoints[2]])
     resolve(getWindow()._Web3ClientProviders[blockchain])
   })
 
