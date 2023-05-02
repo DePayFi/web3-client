@@ -21,9 +21,7 @@ const setProvider = (blockchain, provider)=> {
 const setProviderEndpoints = async (blockchain, endpoints)=> {
   
   getAllProviders()[blockchain] = endpoints.map((endpoint, index)=>
-    new StaticJsonRpcBatchProvider(endpoint, blockchain, endpoints, ()=>{
-      getAllProviders()[blockchain].splice(index, 1)
-    })
+    new StaticJsonRpcBatchProvider(endpoint, blockchain, endpoints)
   )
 
   let provider

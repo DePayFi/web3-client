@@ -51,6 +51,41 @@ const getProvider = async (blockchain)=>{
   }
 }
 
+const getProviders = async (blockchain)=>{
+
+  if(supported.evm.includes(blockchain)) {
+
+    /*#if _EVM
+
+    return await EVM.getProviders(blockchain)
+
+    /*#elif _SOLANA
+
+    //#else */
+
+    return await EVM.getProviders(blockchain)
+
+    //#endif
+
+  } else if(supported.solana.includes(blockchain)) {
+
+    /*#if _EVM
+
+    /*#elif _SOLANA
+
+    return await Solana.getProviders(blockchain)
+
+    //#else */
+
+    return await Solana.getProviders(blockchain)
+
+    //#endif
+
+  } else {
+    throw 'Unknown blockchain: ' + blockchain
+  }
+}
+
 const setProvider = (blockchain, provider)=>{
 
   resetCache()
@@ -128,6 +163,7 @@ const setProviderEndpoints = (blockchain, endpoints)=>{
 
 export {
   getProvider,
+  getProviders,
   setProvider,
   setProviderEndpoints,
 }

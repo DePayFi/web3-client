@@ -387,6 +387,25 @@ mock({
 // ...
 ```
 
+If you use the `fastest` request strategy, make sure to mock all providers:
+
+
+```javascript
+import { getProviders } from '@depay/web3-client'
+import { mock } from '@depay/web3-mock'
+
+const providers = await getProviders('ethereum')
+
+providers.forEach((provider)=>{
+  mock({
+    provider,
+    blockchain: 'ethereum'
+  })
+})
+
+// ...
+```
+
 ## URL
 
 You can either use a URL like `<blockchain>://<address>/<method>` that gets deconstructed internally or you pass a deconstructed object directly:
