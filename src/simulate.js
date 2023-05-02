@@ -1,4 +1,4 @@
-import { Buffer, TransactionInstruction, PublicKey, Transaction } from '@depay/solana-web3.js'
+import { Buffer, TransactionInstruction, TransactionMessage, PublicKey, VersionedTransaction } from '@depay/solana-web3.js'
 import { getProvider } from './provider'
 import { supported } from './blockchains'
 
@@ -20,13 +20,20 @@ let simulate = async function ({ blockchain, from, to, keys, api, params }) {
     data
   })
 
-  let transaction = new Transaction({ feePayer: new PublicKey(from) })
-  transaction.add(instruction)
+  const instructions = []
+  instructions.push(instruction)
+
+  const messageV0 = new TransactionMessage({
+    payerKey: new PublicKey(from),
+    instructions,
+  }).compileToV0Message()
+
+  const transactionV0 = new VersionedTransaction(messageV0)
 
   let result
   try{
     const provider = await getProvider('solana')
-    result = await provider.simulateTransaction(transaction)
+    result = await provider.simulateTransaction(transactionV0)
   } catch (error) {
     console.log(error)
   }

@@ -315,13 +315,20 @@
       data
     });
 
-    let transaction = new solanaWeb3_js.Transaction({ feePayer: new solanaWeb3_js.PublicKey(from) });
-    transaction.add(instruction);
+    const instructions = [];
+    instructions.push(instruction);
+
+    const messageV0 = new solanaWeb3_js.TransactionMessage({
+      payerKey: new solanaWeb3_js.PublicKey(from),
+      instructions,
+    }).compileToV0Message();
+
+    const transactionV0 = new solanaWeb3_js.VersionedTransaction(messageV0);
 
     let result;
     try{
       const provider = await getProvider('solana');
-      result = await provider.simulateTransaction(transaction);
+      result = await provider.simulateTransaction(transactionV0);
     } catch (error) {
       console.log(error);
     }
