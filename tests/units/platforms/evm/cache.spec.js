@@ -120,7 +120,7 @@ describe('cache', ()=>{
 
         expect(callMock).toHaveBeenCalledTimes(1)
 
-        await new Promise((r) => setTimeout(r, 1000))
+        await new Promise((r) => setTimeout(r, 2000))
 
         value = await doRequestWithCache()
         expect(value).toEqual([ethers.BigNumber.from('1000000000000000000'), ethers.BigNumber.from('1310652554072266033285')])
