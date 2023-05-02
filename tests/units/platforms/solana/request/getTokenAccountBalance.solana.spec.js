@@ -42,8 +42,6 @@ describe('request getTokenAccountBalance', () => {
 
         let balance = await request(`solana://${tokenAccount}/getTokenAccountBalance`)
 
-        console.log('balance', balance.value)
-        
         expect(balance.value).toEqual(returnedBalance)
       })
     })
