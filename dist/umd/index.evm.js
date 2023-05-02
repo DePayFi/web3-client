@@ -169,7 +169,7 @@
     getAllProviders()[blockchain] = endpoints.map((endpoint, index)=>
       new StaticJsonRpcBatchProvider(endpoint, blockchain, endpoints, ()=>{
         if(getAllProviders()[blockchain].length === 1) {
-          setProviderEndpoints$1(blockchain, endpoints);
+          setProviderEndpoints$1(blockchain, endpoints, detectFastest);
         } else {
           getAllProviders()[blockchain].splice(index, 1);
         }
@@ -406,14 +406,14 @@
     }
   };
 
-  const setProviderEndpoints = (blockchain, endpoints)=>{
+  const setProviderEndpoints = (blockchain, endpoints, detectFastest)=>{
 
     resetCache();
 
     if(supported.evm.includes(blockchain)) {
 
 
-      return EVM.setProviderEndpoints(blockchain, endpoints)
+      return EVM.setProviderEndpoints(blockchain, endpoints, detectFastest)
 
 
     } else if(supported.solana.includes(blockchain)) ; else {

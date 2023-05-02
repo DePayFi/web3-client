@@ -283,14 +283,14 @@
     }
   };
 
-  const setProviderEndpoints = (blockchain, endpoints)=>{
+  const setProviderEndpoints = (blockchain, endpoints, detectFastest)=>{
 
     resetCache();
 
     if(supported.evm.includes(blockchain)) ; else if(supported.solana.includes(blockchain)) {
 
 
-      return Solana.setProviderEndpoints(blockchain, endpoints)
+      return Solana.setProviderEndpoints(blockchain, endpoints, detectFastest)
 
 
     } else {

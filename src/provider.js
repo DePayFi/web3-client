@@ -123,7 +123,7 @@ const setProvider = (blockchain, provider)=>{
   }
 }
 
-const setProviderEndpoints = (blockchain, endpoints)=>{
+const setProviderEndpoints = (blockchain, endpoints, detectFastest)=>{
 
   resetCache()
 
@@ -131,13 +131,13 @@ const setProviderEndpoints = (blockchain, endpoints)=>{
 
     /*#if _EVM
 
-    return EVM.setProviderEndpoints(blockchain, endpoints)
+    return EVM.setProviderEndpoints(blockchain, endpoints, detectFastest)
 
     /*#elif _SOLANA
 
     //#else */
 
-    return EVM.setProviderEndpoints(blockchain, endpoints)
+    return EVM.setProviderEndpoints(blockchain, endpoints, detectFastest)
 
     //#endif
 
@@ -148,11 +148,11 @@ const setProviderEndpoints = (blockchain, endpoints)=>{
 
     /*#elif _SOLANA
 
-    return Solana.setProviderEndpoints(blockchain, endpoints)
+    return Solana.setProviderEndpoints(blockchain, endpoints, detectFastest)
 
     //#else */
 
-    return Solana.setProviderEndpoints(blockchain, endpoints)
+    return Solana.setProviderEndpoints(blockchain, endpoints, detectFastest)
 
     //#endif
 

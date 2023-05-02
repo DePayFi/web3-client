@@ -134,7 +134,7 @@ const setProviderEndpoints$2 = async (blockchain, endpoints, detectFastest = tru
   getAllProviders$1()[blockchain] = endpoints.map((endpoint, index)=>
     new StaticJsonRpcBatchProvider(endpoint, blockchain, endpoints, ()=>{
       if(getAllProviders$1()[blockchain].length === 1) {
-        setProviderEndpoints$2(blockchain, endpoints);
+        setProviderEndpoints$2(blockchain, endpoints, detectFastest);
       } else {
         getAllProviders$1()[blockchain].splice(index, 1);
       }
@@ -502,20 +502,20 @@ const setProvider = (blockchain, provider)=>{
   }
 };
 
-const setProviderEndpoints = (blockchain, endpoints)=>{
+const setProviderEndpoints = (blockchain, endpoints, detectFastest)=>{
 
   resetCache();
 
   if(supported.evm.includes(blockchain)) {
 
 
-    return EVM.setProviderEndpoints(blockchain, endpoints)
+    return EVM.setProviderEndpoints(blockchain, endpoints, detectFastest)
 
 
   } else if(supported.solana.includes(blockchain)) {
 
 
-    return Solana.setProviderEndpoints(blockchain, endpoints)
+    return Solana.setProviderEndpoints(blockchain, endpoints, detectFastest)
 
 
   } else {
