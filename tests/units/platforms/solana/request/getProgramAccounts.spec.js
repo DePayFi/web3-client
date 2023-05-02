@@ -19,7 +19,7 @@ describe('request getProgramAccounts', () => {
         mock({ blockchain, provider, accounts: { return: accounts } })
       })
 
-      it.only('requests getProgramAccounts with given filters', async ()=> {
+      it('requests getProgramAccounts with given filters', async ()=> {
 
         let wallet = '2wmVCSfPxGPjrnMMn7rchp4uaeoTqN39mXFC2zhPdri9'
         let mint = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'

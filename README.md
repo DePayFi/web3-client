@@ -356,6 +356,12 @@ import { setProviderEndpoints } from '@depay/web3-client'
 await setProviderEndpoints('ethereum', ['http://localhost:8545'])
 ```
 
+You can prevent setProviderEndpoints to detect the fastest passed endpoint by passing a 3rd argument:
+
+```javascript
+await setProviderEndpoints('ethereum', ['http://localhost:8545', 'http://anotherhost:8545'], false) // does not detect fastest upon call
+```
+
 Make sure you pass an array of endpoints to setProvider.
 
 If you want to provide your own initalized providers, you can use `setProvider`:

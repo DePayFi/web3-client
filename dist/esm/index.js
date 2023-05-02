@@ -129,7 +129,7 @@ const setProvider$2 = (blockchain, provider)=> {
   getAllProviders$1()[blockchain].unshift(provider);
 };
 
-const setProviderEndpoints$2 = async (blockchain, endpoints)=> {
+const setProviderEndpoints$2 = async (blockchain, endpoints, detectFastest = true)=> {
   
   getAllProviders$1()[blockchain] = endpoints.map((endpoint, index)=>
     new StaticJsonRpcBatchProvider(endpoint, blockchain, endpoints, ()=>{
@@ -147,7 +147,8 @@ const setProviderEndpoints$2 = async (blockchain, endpoints)=> {
   if(
     window.fetch == undefined ||
     (typeof process != 'undefined' && process['env'] && process['env']['NODE_ENV'] == 'test') ||
-    (typeof window.cy != 'undefined')
+    (typeof window.cy != 'undefined') ||
+    detectFastest === false
   ) {
     provider = getAllProviders$1()[blockchain][0];
   } else {
@@ -247,7 +248,7 @@ const setProvider$1 = (blockchain, provider)=> {
   getAllProviders()[blockchain].unshift(provider);
 };
 
-const setProviderEndpoints$1 = async (blockchain, endpoints)=> {
+const setProviderEndpoints$1 = async (blockchain, endpoints, detectFastest = true)=> {
   
   getAllProviders()[blockchain] = endpoints.map((endpoint, index)=>
     new StaticJsonRpcSequentialProvider(endpoint, blockchain, endpoints)
@@ -259,7 +260,8 @@ const setProviderEndpoints$1 = async (blockchain, endpoints)=> {
   if(
     window.fetch == undefined ||
     (typeof process != 'undefined' && process['env'] && process['env']['NODE_ENV'] == 'test') ||
-    (typeof window.cy != 'undefined')
+    (typeof window.cy != 'undefined') ||
+    detectFastest === false
   ) {
     provider = getAllProviders()[blockchain][0];
   } else {

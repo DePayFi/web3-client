@@ -18,7 +18,7 @@ const setProvider = (blockchain, provider)=> {
   getAllProviders()[blockchain].unshift(provider)
 }
 
-const setProviderEndpoints = async (blockchain, endpoints)=> {
+const setProviderEndpoints = async (blockchain, endpoints, detectFastest = true)=> {
   
   getAllProviders()[blockchain] = endpoints.map((endpoint, index)=>
     new StaticJsonRpcBatchProvider(endpoint, blockchain, endpoints, ()=>{
@@ -36,7 +36,8 @@ const setProviderEndpoints = async (blockchain, endpoints)=> {
   if(
     window.fetch == undefined ||
     (typeof process != 'undefined' && process['env'] && process['env']['NODE_ENV'] == 'test') ||
-    (typeof window.cy != 'undefined')
+    (typeof window.cy != 'undefined') ||
+    detectFastest === false
   ) {
     provider = getAllProviders()[blockchain][0]
   } else {

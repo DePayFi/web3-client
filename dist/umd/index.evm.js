@@ -164,7 +164,7 @@
     getAllProviders()[blockchain].unshift(provider);
   };
 
-  const setProviderEndpoints$1 = async (blockchain, endpoints)=> {
+  const setProviderEndpoints$1 = async (blockchain, endpoints, detectFastest = true)=> {
     
     getAllProviders()[blockchain] = endpoints.map((endpoint, index)=>
       new StaticJsonRpcBatchProvider(endpoint, blockchain, endpoints, ()=>{
@@ -182,7 +182,8 @@
     if(
       window.fetch == undefined ||
       (typeof process != 'undefined' && process['env'] && process['env']['NODE_ENV'] == 'test') ||
-      (typeof window.cy != 'undefined')
+      (typeof window.cy != 'undefined') ||
+      detectFastest === false
     ) {
       provider = getAllProviders()[blockchain][0];
     } else {
