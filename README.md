@@ -313,6 +313,12 @@ import { setConfiguration } from '@depay/web3-client'
 setConfiguration({ strategy: 'fastest', timeout: 1000 })
 ```
 
+`timeout`: Time in miliseconds for requests to timeout.
+
+`strategy`: Request strategy (`fastest` or `failover`).
+
+`batchInterval`: Interval in miliseconds to batch requests.
+
 ### simulate
 
 #### Solana: simulate

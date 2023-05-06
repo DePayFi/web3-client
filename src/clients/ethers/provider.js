@@ -1,5 +1,6 @@
 import Blockchains from '@depay/web3-blockchains'
 import { ethers } from 'ethers'
+import { getConfiguration } from '../../configuration'
 
 const BATCH_INTERVAL = 10
 const CHUNK_SIZE = 99
@@ -12,6 +13,7 @@ class StaticJsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
     this._endpoint = url
     this._endpoints = endpoints
     this._failover = failover
+    this._pendingBatch = []
   }
 
   detectNetwork() {
@@ -80,7 +82,7 @@ class StaticJsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
         // Get the current batch and clear it, so new requests
         // go into the next batch
         const batch = this._pendingBatch
-        this._pendingBatch = null
+        this._pendingBatch = []
         this._pendingBatchAggregator = null
         // Prepare Chunks of CHUNK_SIZE
         const chunks = []
@@ -92,7 +94,7 @@ class StaticJsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
           const request = chunk.map((inflight) => inflight.request)
           return this.requestChunk(chunk, this._endpoint)
         })
-      }, BATCH_INTERVAL)
+      }, getConfiguration().batchInterval || BATCH_INTERVAL)
     }
 
     return promise

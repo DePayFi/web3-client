@@ -8,8 +8,32 @@
 
   var Blockchains__default = /*#__PURE__*/_interopDefaultLegacy(Blockchains);
 
-  const BATCH_INTERVAL = 10;
-  const CHUNK_SIZE = 99;
+  let _window;
+
+  let getWindow = () => {
+    if(_window) { return _window }
+    if (typeof global == 'object') {
+      _window = global;
+    } else {
+      _window = window;
+    }
+    return _window
+  };
+
+  const getConfiguration = () =>{
+    if(getWindow()._Web3ClientConfiguration === undefined) {
+      getWindow()._Web3ClientConfiguration = {};
+    }
+    return getWindow()._Web3ClientConfiguration
+  };
+
+  const setConfiguration = (configuration) =>{
+    getWindow()._Web3ClientConfiguration = !!configuration ? configuration : {};
+    return getWindow()._Web3ClientConfiguration
+  };
+
+  const BATCH_INTERVAL$1 = 10;
+  const CHUNK_SIZE$1 = 99;
 
   class StaticJsonRpcBatchProvider extends ethers.ethers.providers.JsonRpcProvider {
 
@@ -19,6 +43,7 @@
       this._endpoint = url;
       this._endpoints = endpoints;
       this._failover = failover;
+      this._pendingBatch = [];
     }
 
     detectNetwork() {
@@ -87,37 +112,25 @@
           // Get the current batch and clear it, so new requests
           // go into the next batch
           const batch = this._pendingBatch;
-          this._pendingBatch = null;
+          this._pendingBatch = [];
           this._pendingBatchAggregator = null;
           // Prepare Chunks of CHUNK_SIZE
           const chunks = [];
-          for (let i = 0; i < Math.ceil(batch.length / CHUNK_SIZE); i++) {
-            chunks[i] = batch.slice(i*CHUNK_SIZE, (i+1)*CHUNK_SIZE);
+          for (let i = 0; i < Math.ceil(batch.length / CHUNK_SIZE$1); i++) {
+            chunks[i] = batch.slice(i*CHUNK_SIZE$1, (i+1)*CHUNK_SIZE$1);
           }
           chunks.forEach((chunk)=>{
             // Get the request as an array of requests
             chunk.map((inflight) => inflight.request);
             return this.requestChunk(chunk, this._endpoint)
           });
-        }, BATCH_INTERVAL);
+        }, getConfiguration().batchInterval || BATCH_INTERVAL$1);
       }
 
       return promise
     }
 
   }
-
-  let _window;
-
-  let getWindow = () => {
-    if(_window) { return _window }
-    if (typeof global == 'object') {
-      _window = global;
-    } else {
-      _window = window;
-    }
-    return _window
-  };
 
   const getAllProviders$1 = ()=> {
     if(getWindow()._Web3ClientProviders == undefined) {
@@ -227,14 +240,96 @@
     setProvider: setProvider$2,
   };
 
+  const BATCH_INTERVAL = 10;
+  const CHUNK_SIZE = 99;
+
   class StaticJsonRpcSequentialProvider extends solanaWeb3_js.Connection {
 
     constructor(url, network, endpoints, failover) {
       super(url);
+      this._provider = new solanaWeb3_js.Connection(url);
       this._network = network;
       this._endpoint = url;
       this._endpoints = endpoints;
       this._failover = failover;
+      this._pendingBatch = [];
+      this._rpcRequest = this._rpcRequestReplacement.bind(this);
+    }
+
+    requestChunk(chunk) {
+
+      const batch = chunk.map((inflight) => inflight.request);
+
+      return this._provider._rpcBatchRequest(batch)
+        .then((result) => {
+          // For each result, feed it to the correct Promise, depending
+          // on whether it was a success or error
+          chunk.forEach((inflightRequest, index) => {
+            const payload = result[index];
+            if (payload.error) {
+              const error = new Error(payload.error.message);
+              error.code = payload.error.code;
+              error.data = payload.error.data;
+              inflightRequest.reject(error);
+            } else {
+              inflightRequest.resolve(payload);
+            }
+          });
+        }).catch((error) => {
+          if(error && [
+            'Failed to fetch', '504', '503', '502', '500', '429', '426', '422', '413', '409', '408', '406', '405', '404', '403', '402', '401', '400'
+          ].some((errorType)=>error.toString().match(errorType))) {
+            const index = this._endpoints.indexOf(this._endpoint)+1;
+            this._endpoint = index >= this._endpoints.length ? this._endpoints[0] : this._endpoints[index];
+            this._provider = new solanaWeb3_js.Connection(this._endpoint);
+            this.requestChunk(chunk);
+          } else {
+            chunk.forEach((inflightRequest) => {
+              inflightRequest.reject(error);
+            });
+          }
+        })
+    }
+      
+    _rpcRequestReplacement(methodName, args) {
+
+      const request = { methodName, args };
+
+      if (this._pendingBatch == null) {
+        this._pendingBatch = [];
+      }
+
+      const inflightRequest = { request, resolve: null, reject: null };
+
+      const promise = new Promise((resolve, reject) => {
+        inflightRequest.resolve = resolve;
+        inflightRequest.reject = reject;
+      });
+
+      this._pendingBatch.push(inflightRequest);
+
+      if (!this._pendingBatchAggregator) {
+        // Schedule batch for next event loop + short duration
+        this._pendingBatchAggregator = setTimeout(() => {
+          // Get the current batch and clear it, so new requests
+          // go into the next batch
+          const batch = this._pendingBatch;
+          this._pendingBatch = [];
+          this._pendingBatchAggregator = null;
+          // Prepare Chunks of CHUNK_SIZE
+          const chunks = [];
+          for (let i = 0; i < Math.ceil(batch.length / CHUNK_SIZE); i++) {
+            chunks[i] = batch.slice(i*CHUNK_SIZE, (i+1)*CHUNK_SIZE);
+          }
+          chunks.forEach((chunk)=>{
+            // Get the request as an array of requests
+            chunk.map((inflight) => inflight.request);
+            return this.requestChunk(chunk)
+          });
+        }, getConfiguration().batchInterval || BATCH_INTERVAL);
+      }
+
+      return promise
     }
   }
 
@@ -257,7 +352,13 @@
   const setProviderEndpoints$1 = async (blockchain, endpoints, detectFastest = true)=> {
     
     getAllProviders()[blockchain] = endpoints.map((endpoint, index)=>
-      new StaticJsonRpcSequentialProvider(endpoint, blockchain, endpoints)
+      new StaticJsonRpcSequentialProvider(endpoint, blockchain, endpoints, ()=>{
+        if(getAllProviders()[blockchain].length === 1) {
+          setProviderEndpoints$1(blockchain, endpoints, detectFastest);
+        } else {
+          getAllProviders()[blockchain].splice(index, 1);
+        }
+      })
     );
 
     let provider;
@@ -607,18 +708,6 @@
       key: [blockchain, from, to, value, method, params],
       call: async()=>estimateEVM({ provider, from, to, value, method, api, params })
     })
-  };
-
-  const getConfiguration = () =>{
-    if(getWindow()._Web3ClientConfiguration === undefined) {
-      getWindow()._Web3ClientConfiguration = {};
-    }
-    return getWindow()._Web3ClientConfiguration
-  };
-
-  const setConfiguration = (configuration) =>{
-    getWindow()._Web3ClientConfiguration = !!configuration ? configuration : {};
-    return getWindow()._Web3ClientConfiguration
   };
 
   let paramsToContractArgs = ({ contract, method, params }) => {

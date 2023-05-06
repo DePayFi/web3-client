@@ -30,6 +30,30 @@ var estimateEVM = ({ provider, from, to, value, method, api, params }) => {
   }
 };
 
+let _window;
+
+let getWindow = () => {
+  if(_window) { return _window }
+  if (typeof global == 'object') {
+    _window = global;
+  } else {
+    _window = window;
+  }
+  return _window
+};
+
+const getConfiguration = () =>{
+  if(getWindow()._Web3ClientConfiguration === undefined) {
+    getWindow()._Web3ClientConfiguration = {};
+  }
+  return getWindow()._Web3ClientConfiguration
+};
+
+const setConfiguration = (configuration) =>{
+  getWindow()._Web3ClientConfiguration = !!configuration ? configuration : {};
+  return getWindow()._Web3ClientConfiguration
+};
+
 const BATCH_INTERVAL = 10;
 const CHUNK_SIZE = 99;
 
@@ -41,6 +65,7 @@ class StaticJsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
     this._endpoint = url;
     this._endpoints = endpoints;
     this._failover = failover;
+    this._pendingBatch = [];
   }
 
   detectNetwork() {
@@ -109,7 +134,7 @@ class StaticJsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
         // Get the current batch and clear it, so new requests
         // go into the next batch
         const batch = this._pendingBatch;
-        this._pendingBatch = null;
+        this._pendingBatch = [];
         this._pendingBatchAggregator = null;
         // Prepare Chunks of CHUNK_SIZE
         const chunks = [];
@@ -121,25 +146,13 @@ class StaticJsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
           chunk.map((inflight) => inflight.request);
           return this.requestChunk(chunk, this._endpoint)
         });
-      }, BATCH_INTERVAL);
+      }, getConfiguration().batchInterval || BATCH_INTERVAL);
     }
 
     return promise
   }
 
 }
-
-let _window;
-
-let getWindow = () => {
-  if(_window) { return _window }
-  if (typeof global == 'object') {
-    _window = global;
-  } else {
-    _window = window;
-  }
-  return _window
-};
 
 const getAllProviders = ()=> {
   if(getWindow()._Web3ClientProviders == undefined) {
@@ -421,18 +434,6 @@ let estimate = async function ({ blockchain, from, to, value, method, api, param
     key: [blockchain, from, to, value, method, params],
     call: async()=>estimateEVM({ provider, from, to, value, method, api, params })
   })
-};
-
-const getConfiguration = () =>{
-  if(getWindow()._Web3ClientConfiguration === undefined) {
-    getWindow()._Web3ClientConfiguration = {};
-  }
-  return getWindow()._Web3ClientConfiguration
-};
-
-const setConfiguration = (configuration) =>{
-  getWindow()._Web3ClientConfiguration = !!configuration ? configuration : {};
-  return getWindow()._Web3ClientConfiguration
 };
 
 let paramsToContractArgs = ({ contract, method, params }) => {
