@@ -480,6 +480,7 @@
 
   const accountInfo = async ({ address, api, method, params, provider, block }) => {
     const info = await provider.getAccountInfo(new solanaWeb3_js.PublicKey(address));
+    if(!info || !info.data) { return }
     return api.decode(info.data)
   };
 

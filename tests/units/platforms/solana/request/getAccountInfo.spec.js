@@ -122,6 +122,20 @@ describe('request getAccountInfo', () => {
           request('solana://2wmVCSfPxGPjrnMMn7rchp4uaeoTqN39mXFC2zhPdri9', { api })
         ).rejects.toEqual(Error('failed to get info about account 2wmVCSfPxGPjrnMMn7rchp4uaeoTqN39mXFC2zhPdri9: SOMETHING WENT WRONG'))
       })
+
+      it('returns nothing if account does not exist', async ()=>{
+        mock({
+          provider,
+          blockchain,
+          request: {
+            method: 'getAccountInfo',
+            to: 'EHugM4AienbEwyWKVMseUac2VGR876k48JqyQ2ZuzqeE',
+            return: null
+          }
+        })
+        let data = await request('solana://EHugM4AienbEwyWKVMseUac2VGR876k48JqyQ2ZuzqeE')
+        expect(data).toEqual(undefined)
+      })
     })
   })
 })

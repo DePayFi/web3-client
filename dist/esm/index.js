@@ -779,6 +779,7 @@ var requestEVM = async ({ blockchain, address, api, method, params, block, timeo
 
 const accountInfo = async ({ address, api, method, params, provider, block }) => {
   const info = await provider.getAccountInfo(new PublicKey(address));
+  if(!info || !info.data) { return }
   return api.decode(info.data)
 };
 

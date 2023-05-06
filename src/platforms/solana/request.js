@@ -4,6 +4,7 @@ import { PublicKey, ACCOUNT_LAYOUT } from '@depay/solana-web3.js'
 
 const accountInfo = async ({ address, api, method, params, provider, block }) => {
   const info = await provider.getAccountInfo(new PublicKey(address))
+  if(!info || !info.data) { return }
   return api.decode(info.data)
 }
 
