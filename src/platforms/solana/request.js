@@ -42,7 +42,7 @@ const singleRequest = async({ blockchain, address, api, method, params, block, p
 
   } catch (error){
     if(providers && error && [
-      'Failed to fetch', '504', '503', '502', '500', '429', '426', '422', '413', '409', '408', '406', '405', '404', '403', '402', '401', '400'
+      'Failed to fetch', 'limit reached', '504', '503', '502', '500', '429', '426', '422', '413', '409', '408', '406', '405', '404', '403', '402', '401', '400'
     ].some((errorType)=>error.toString().match(errorType))) {
       let nextProvider = providers[providers.indexOf(provider)+1] || providers[0]
       return singleRequest({ blockchain, address, api, method, params, block, provider: nextProvider, providers })

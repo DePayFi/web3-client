@@ -38,7 +38,7 @@ class StaticJsonRpcSequentialProvider extends Connection {
         })
       }).catch((error) => {
         if(error && [
-          'Failed to fetch', '504', '503', '502', '500', '429', '426', '422', '413', '409', '408', '406', '405', '404', '403', '402', '401', '400'
+          'Failed to fetch', 'limit reached', '504', '503', '502', '500', '429', '426', '422', '413', '409', '408', '406', '405', '404', '403', '402', '401', '400'
         ].some((errorType)=>error.toString().match(errorType))) {
           const index = this._endpoints.indexOf(this._endpoint)+1
           this._endpoint = index >= this._endpoints.length ? this._endpoints[0] : this._endpoints[index]
