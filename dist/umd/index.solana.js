@@ -52,35 +52,39 @@
 
       const batch = chunk.map((inflight) => inflight.request);
 
-      return this._provider._rpcBatchRequest(batch)
-        .then((result) => {
-          // For each result, feed it to the correct Promise, depending
-          // on whether it was a success or error
-          chunk.forEach((inflightRequest, index) => {
-            const payload = result[index];
-            if (payload.error) {
-              const error = new Error(payload.error.message);
-              error.code = payload.error.code;
-              error.data = payload.error.data;
-              inflightRequest.reject(error);
-            } else {
-              inflightRequest.resolve(payload);
-            }
+      const handleError = (error)=>{
+        if(error && [
+          'Failed to fetch', 'limit reached', '504', '503', '502', '500', '429', '426', '422', '413', '409', '408', '406', '405', '404', '403', '402', '401', '400'
+        ].some((errorType)=>error.toString().match(errorType))) {
+          const index = this._endpoints.indexOf(this._endpoint)+1;
+          this._endpoint = index >= this._endpoints.length ? this._endpoints[0] : this._endpoints[index];
+          this._provider = new solanaWeb3_js.Connection(this._endpoint);
+          this.requestChunk(chunk);
+        } else {
+          chunk.forEach((inflightRequest) => {
+            inflightRequest.reject(error);
           });
-        }).catch((error) => {
-          if(error && [
-            'Failed to fetch', 'limit reached', '504', '503', '502', '500', '429', '426', '422', '413', '409', '408', '406', '405', '404', '403', '402', '401', '400'
-          ].some((errorType)=>error.toString().match(errorType))) {
-            const index = this._endpoints.indexOf(this._endpoint)+1;
-            this._endpoint = index >= this._endpoints.length ? this._endpoints[0] : this._endpoints[index];
-            this._provider = new solanaWeb3_js.Connection(this._endpoint);
-            this.requestChunk(chunk);
-          } else {
-            chunk.forEach((inflightRequest) => {
-              inflightRequest.reject(error);
+        }
+      };
+
+      try {
+        return this._provider._rpcBatchRequest(batch)
+          .then((result) => {
+            // For each result, feed it to the correct Promise, depending
+            // on whether it was a success or error
+            chunk.forEach((inflightRequest, index) => {
+              const payload = result[index];
+              if (payload.error) {
+                const error = new Error(payload.error.message);
+                error.code = payload.error.code;
+                error.data = payload.error.data;
+                inflightRequest.reject(error);
+              } else {
+                inflightRequest.resolve(payload);
+              }
             });
-          }
-        })
+          }).catch(handleError)
+      } catch (error){ return handleError(error) }
     }
       
     _rpcRequestReplacement(methodName, args) {
@@ -511,7 +515,7 @@
       } else if(method === 'getTokenAccountBalance') {
         return await provider.getTokenAccountBalance(new solanaWeb3_js.PublicKey(address))
       } else if (method === 'latestBlockNumber') {
-        return await provider.getBlockHeight()  
+        return await provider.getSlot()  
       } else if (method === 'balance') {
         return await balance({ address, provider })
       }

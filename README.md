@@ -170,6 +170,8 @@ request('ethereum://latestBlockNumber').then((latestBlockNumber)=>console.log(la
 
 ##### Solana: request latestBlockNumber
 
+Returns latest `slot`.
+
 ```javascript
 import { request } from '@depay/web3-client'
 

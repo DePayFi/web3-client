@@ -901,23 +901,18 @@
   resolved "https://registry.yarnpkg.com/@depay/solana-web3.js/-/solana-web3.js-1.21.2.tgz#65b2b60b66ad8b42f717ee22bc753ca538f2f56e"
   integrity sha512-9UON+nXRrFnCYqg2vcGceP+4Ly+zzAJ88RthuvVhHtIfPeEqDyjj9S77iwZT/4/lmYDnUPoC9pl4otfmX7B+9w==
 
-"@depay/web3-blockchains@^7.1.0":
-  version "7.2.0"
-  resolved "https://registry.yarnpkg.com/@depay/web3-blockchains/-/web3-blockchains-7.2.0.tgz#81029fac770ff9230322293edbdfe4f62403060c"
-  integrity sha512-k1/maDxfJV6iUAHeFdSMhCBoAfGK36PM2cWIZ9iuibEJ5ASa1NmCEPL+ySvojW0dKjMjppFDPGwYI1AlFqeMgg==
-
 "@depay/web3-blockchains@^8.0.1":
   version "8.0.1"
   resolved "https://registry.yarnpkg.com/@depay/web3-blockchains/-/web3-blockchains-8.0.1.tgz#c61f2308c23ea577bbcea1091bd61e5a9a37b60a"
   integrity sha512-Y63aVTDfsFgoptAoh2XFbPi08kVITEaDwiM/d8BDoMU3yWgCBJhGpIlyvL4rQcatZPqa8LYNrLVKeE2ETBviow==
 
-"@depay/web3-mock@^14.1.0":
-  version "14.1.0"
-  resolved "https://registry.yarnpkg.com/@depay/web3-mock/-/web3-mock-14.1.0.tgz#085dbc09b1fbca54e62848e90f9f85722c2a606c"
-  integrity sha512-VVmP6ziYxeDNS6BdC6pnNhY+8S3NGEwV0Nwz758Djqy53yWe1aekvmiYf+8m0x4A6Cw7gZQSrWlKo0irBI/vUg==
+"@depay/web3-mock@^14.8.0":
+  version "14.8.0"
+  resolved "https://registry.yarnpkg.com/@depay/web3-mock/-/web3-mock-14.8.0.tgz#d79d2bf5df4e9a649d6a191feb36dd11ca3bf06b"
+  integrity sha512-o6zRecl54VyKtp6UxtTj2KIx8aDrdFjB2q6jg8T5SD4VZRC4VmECPKkwTQaEseCbCPrnq81x6f7wqjSsd7S/xA==
   dependencies:
     "@depay/solana-web3.js" "^1.21.2"
-    "@depay/web3-blockchains" "^7.1.0"
+    "@depay/web3-blockchains" "^8.0.1"
     ethers "^5.7.1"
 
 "@eslint/eslintrc@^0.4.3":
