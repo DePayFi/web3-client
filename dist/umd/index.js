@@ -901,11 +901,11 @@
   const request = async function (url, options) {
     
     const { blockchain, address, method } = parseUrl(url);
-    const { api, params, cache: cache$1, block, timeout, strategy } = (typeof(url) == 'object' ? url : options) || {};
+    const { api, params, cache: cache$1, block, timeout, strategy, cacheKey } = (typeof(url) == 'object' ? url : options) || {};
 
     return await cache({
       expires: cache$1 || 0,
-      key: [blockchain, address, method, params, block],
+      key: cacheKey || [blockchain, address, method, params, block],
       call: async()=>{
         if(supported.evm.includes(blockchain)) {
 

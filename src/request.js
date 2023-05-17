@@ -20,11 +20,11 @@ import { supported } from './blockchains'
 const request = async function (url, options) {
   
   const { blockchain, address, method } = parseUrl(url)
-  const { api, params, cache, block, timeout, strategy } = (typeof(url) == 'object' ? url : options) || {}
+  const { api, params, cache, block, timeout, strategy, cacheKey } = (typeof(url) == 'object' ? url : options) || {}
 
   return await cacheRequest({
     expires: cache || 0,
-    key: [blockchain, address, method, params, block],
+    key: cacheKey || [blockchain, address, method, params, block],
     call: async()=>{
       if(supported.evm.includes(blockchain)) {
 
