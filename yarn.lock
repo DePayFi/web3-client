@@ -896,22 +896,27 @@
     "@babel/helper-validator-identifier" "^7.14.9"
     to-fast-properties "^2.0.0"
 
-"@depay/solana-web3.js@^1.21.2":
-  version "1.21.2"
-  resolved "https://registry.yarnpkg.com/@depay/solana-web3.js/-/solana-web3.js-1.21.2.tgz#65b2b60b66ad8b42f717ee22bc753ca538f2f56e"
-  integrity sha512-9UON+nXRrFnCYqg2vcGceP+4Ly+zzAJ88RthuvVhHtIfPeEqDyjj9S77iwZT/4/lmYDnUPoC9pl4otfmX7B+9w==
+"@depay/solana-web3.js@^1.23.1", "@depay/solana-web3.js@^1.24.0":
+  version "1.24.0"
+  resolved "https://registry.yarnpkg.com/@depay/solana-web3.js/-/solana-web3.js-1.24.0.tgz#f51f32042c6ffd573c12b5b0800f8303ae176996"
+  integrity sha512-lPVXkRjeZqVvNtsiV9CVa189bE1/YACQv4U4NMTP6zB9Bvutx93k69gC8pks0P0wCqsO6chLbXCB+Hq/NdASZA==
 
 "@depay/web3-blockchains@^8.0.1":
   version "8.0.1"
   resolved "https://registry.yarnpkg.com/@depay/web3-blockchains/-/web3-blockchains-8.0.1.tgz#c61f2308c23ea577bbcea1091bd61e5a9a37b60a"
   integrity sha512-Y63aVTDfsFgoptAoh2XFbPi08kVITEaDwiM/d8BDoMU3yWgCBJhGpIlyvL4rQcatZPqa8LYNrLVKeE2ETBviow==
 
-"@depay/web3-mock@^14.8.0":
-  version "14.8.0"
-  resolved "https://registry.yarnpkg.com/@depay/web3-mock/-/web3-mock-14.8.0.tgz#d79d2bf5df4e9a649d6a191feb36dd11ca3bf06b"
-  integrity sha512-o6zRecl54VyKtp6UxtTj2KIx8aDrdFjB2q6jg8T5SD4VZRC4VmECPKkwTQaEseCbCPrnq81x6f7wqjSsd7S/xA==
+"@depay/web3-blockchains@^8.1.1":
+  version "8.1.1"
+  resolved "https://registry.yarnpkg.com/@depay/web3-blockchains/-/web3-blockchains-8.1.1.tgz#1de5dff71ead45bde57a1d8e0374d24aadde6533"
+  integrity sha512-wrtCFNH726Y+xX1+EtzhILMfhLcPEzuaBV3oCef97eJsht0PYjEWpzqB48LwHpY9adwzjarG1dSJIR2VAWpmUA==
+
+"@depay/web3-mock@^14.12.0":
+  version "14.12.0"
+  resolved "https://registry.yarnpkg.com/@depay/web3-mock/-/web3-mock-14.12.0.tgz#ffa397ffb3f24f223f572621620bd49ff29c3b6c"
+  integrity sha512-onTnCl+f8Ea4tAIhwEEX3jZ4N3ek6FwA9Cq9gvHCHn/jKWP47BENBHFwEFHh0F6hIEpIIIfKK5dKHPhTD2qcbg==
   dependencies:
-    "@depay/solana-web3.js" "^1.21.2"
+    "@depay/solana-web3.js" "^1.23.1"
     "@depay/web3-blockchains" "^8.0.1"
     ethers "^5.7.1"
 
