@@ -4,9 +4,15 @@ import { getConfiguration } from '../../configuration'
 import { paramsToContractArgs } from './contract'
 
 const contractCall = ({ address, api, method, params, provider, block }) => {
-  let contract = new ethers.Contract(address, api, provider)
-  let args = paramsToContractArgs({ contract, method, params })
-  return contract[method](...args, { blockTag: block })
+  const contract = new ethers.Contract(address, api, provider)
+  const args = paramsToContractArgs({ contract, method, params })
+  console.log(contract.interface.fragments)
+  const fragment = contract.interface.fragments.find((fragment)=>fragment.name === method)
+  if(fragment && fragment.stateMutability === 'nonpayable') {
+    return contract.callStatic[method](...args, { blockTag: block })
+  } else {
+    return contract[method](...args, { blockTag: block })
+  }
 }
 
 const balance = ({ address, provider }) => {
