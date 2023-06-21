@@ -731,7 +731,6 @@
   const contractCall = ({ address, api, method, params, provider, block }) => {
     const contract = new ethers.ethers.Contract(address, api, provider);
     const args = paramsToContractArgs({ contract, method, params });
-    console.log(contract.interface.fragments);
     const fragment = contract.interface.fragments.find((fragment)=>fragment.name === method);
     if(fragment && fragment.stateMutability === 'nonpayable') {
       return contract.callStatic[method](...args, { blockTag: block })
