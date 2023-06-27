@@ -535,17 +535,24 @@ var requestSolana = async ({ blockchain, address, api, method, params, block, ti
 
   if(strategy === 'fastest') {
 
-    return Promise.race(providers.map((provider)=>{
+    let allRequestsFailed = [];
 
-      const succeedingRequest = new Promise((resolve)=>{
-        singleRequest({ blockchain, address, api, method, params, block, provider }).then(resolve);
-      }); // failing requests are ignored during race/fastest
+    const allRequestsInParallel = providers.map((provider)=>{
+      return new Promise((resolve)=>{
+        allRequestsFailed.push(
+          singleRequest({ blockchain, address, api, method, params, block, provider }).then(resolve)
+        );
+      })
+    });
     
-      const timeoutPromise = new Promise((_, reject)=>setTimeout(()=>{ reject(new Error("Web3ClientTimeout")); }, timeout || 10000));
-        
-      return Promise.race([succeedingRequest, timeoutPromise])
-    }))
-    
+    const timeoutPromise = new Promise((_, reject)=>setTimeout(()=>{ reject(new Error("Web3ClientTimeout")); }, timeout || 10000));
+
+    allRequestsFailed = Promise.all(allRequestsFailed.map((request)=>{
+      return new Promise((resolve)=>{ request.catch(resolve); })
+    })).then(()=>{ return });
+
+    return Promise.race([...allRequestsInParallel, timeoutPromise, allRequestsFailed])
+
   } else { // failover
 
     const provider = await Solana.getProvider(blockchain);
