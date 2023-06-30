@@ -461,6 +461,9 @@
     const contract = new ethers.ethers.Contract(address, api, provider);
     const args = paramsToContractArgs({ contract, method, params });
     const fragment = contract.interface.fragments.find((fragment)=>fragment.name === method);
+    if(contract[method] === undefined) {
+      method = `${method}(${fragment.inputs.map((input)=>input.type).join(',')})`;
+    }
     if(fragment && fragment.stateMutability === 'nonpayable') {
       return contract.callStatic[method](...args, { blockTag: block })
     } else {
