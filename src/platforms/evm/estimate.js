@@ -19,6 +19,12 @@ export default ({ provider, from, to, value, method, api, params }) => {
     return provider.estimateGas({ from, to, value })
   } else {
     let contract = new ethers.Contract(to, api, provider)
+    let fragment = contract.interface.fragments.find((fragment) => {
+      return fragment.name == method
+    })
+    if(contract[method] === undefined) {
+      method = `${method}(${fragment.inputs.map((input)=>input.type).join(',')})`
+    }
     let contractMethod = contract.estimateGas[method]
     let contractArguments = getContractArguments({ contract, method, params })
     if(contractArguments) {
