@@ -896,23 +896,30 @@
     "@babel/helper-validator-identifier" "^7.14.9"
     to-fast-properties "^2.0.0"
 
-"@depay/solana-web3.js@^1.24.0":
-  version "1.24.0"
-  resolved "https://registry.yarnpkg.com/@depay/solana-web3.js/-/solana-web3.js-1.24.0.tgz#f51f32042c6ffd573c12b5b0800f8303ae176996"
-  integrity sha512-lPVXkRjeZqVvNtsiV9CVa189bE1/YACQv4U4NMTP6zB9Bvutx93k69gC8pks0P0wCqsO6chLbXCB+Hq/NdASZA==
-
-"@depay/web3-blockchains@^8.1.1":
-  version "8.1.1"
-  resolved "https://registry.yarnpkg.com/@depay/web3-blockchains/-/web3-blockchains-8.1.1.tgz#1de5dff71ead45bde57a1d8e0374d24aadde6533"
-  integrity sha512-wrtCFNH726Y+xX1+EtzhILMfhLcPEzuaBV3oCef97eJsht0PYjEWpzqB48LwHpY9adwzjarG1dSJIR2VAWpmUA==
-
-"@depay/web3-mock@^14.14.2":
-  version "14.14.2"
-  resolved "https://registry.yarnpkg.com/@depay/web3-mock/-/web3-mock-14.14.2.tgz#d4ca85549a77f201a448cbc3f0d9c6f649f71273"
-  integrity sha512-ImcFwo8Zh6VEoSLVK0Zyr96J8Wobv70n2cyjCSLxmhP392HMSC7Dy4Za5GV/DfsMQd9krc6VJe1oFjlrRKWDKA==
+"@depay/solana-web3.js@^1.25.1":
+  version "1.25.1"
+  resolved "https://registry.yarnpkg.com/@depay/solana-web3.js/-/solana-web3.js-1.25.1.tgz#2f4725007ff4cfc14af2606eb3d333e68097e13f"
+  integrity sha512-tKCHHQVoZV85wZ8r3ZuxuQlejBcVolIUf52Bq2Pne3KR1BpxYJF2/9XRTH9qCrLZMQsgsQHikQEH5eglDCKJkA==
   dependencies:
-    "@depay/solana-web3.js" "^1.24.0"
-    "@depay/web3-blockchains" "^8.1.1"
+    bs58 "^5.0.0"
+
+"@depay/web3-blockchains@^8.4.2":
+  version "8.4.2"
+  resolved "https://registry.yarnpkg.com/@depay/web3-blockchains/-/web3-blockchains-8.4.2.tgz#3f5f072f337acc334e5f0f097627dd85af85848c"
+  integrity sha512-kvzTy0R7zBqL6w2CSRGm3SO1K9QuYpuOCa0BTMt4O7ATqxFg+uXor3uWjS8oWvlQwOdqLl8WT7aaKT8OD63KXw==
+
+"@depay/web3-blockchains@^9.0.0":
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/@depay/web3-blockchains/-/web3-blockchains-9.0.0.tgz#eaac5491e8f2c0dea84474af7db1a6af4f8cfb35"
+  integrity sha512-E1LhENbPbJ5JtQ1Im2ojwVPsqCM9H/VT937ZEXC2gs12M9NnzRM6XqvFsyhLh2zH4VnCDDbkyNYFvfigdn0HaA==
+
+"@depay/web3-mock@^14.16.2":
+  version "14.16.2"
+  resolved "https://registry.yarnpkg.com/@depay/web3-mock/-/web3-mock-14.16.2.tgz#a97dcd022f0fa3c3b23e6e1f29f90c20580bb8ae"
+  integrity sha512-Zf1oqve/mLXaslZNSp0qLE9CBnfzGgJ3m86lVBrCMKJxFi0lV8NKGVhRDIzWCfxv3e5Zx3/dNOgyoaxAvj3RIw==
+  dependencies:
+    "@depay/solana-web3.js" "^1.25.1"
+    "@depay/web3-blockchains" "^8.4.2"
     ethers "^5.7.1"
 
 "@eslint/eslintrc@^0.4.3":
@@ -2423,6 +2430,11 @@ balanced-match@^1.0.0:
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.2.tgz#e83e3a7e3f300b34cb9d87f615fa0cbf357690ee"
   integrity sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==
 
+base-x@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/base-x/-/base-x-4.0.0.tgz#d0e3b7753450c73f8ad2389b5c018a4af7b2224a"
+  integrity sha512-FuwxlW4H5kh37X/oW59pwTzzTKRzfrrQwhmyspRM7swOEZcHtDZSCt45U6oKgtuFE+WYPblePMVIPR4RZrh/hw==
+
 bech32@1.1.4:
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/bech32/-/bech32-1.1.4.tgz#e38c9f37bf179b8eb16ae3a772b40c356d4832e9"
@@ -2501,6 +2513,13 @@ browserslist@^4.16.6, browserslist@^4.16.8:
     electron-to-chromium "^1.3.811"
     escalade "^3.1.1"
     node-releases "^1.1.75"
+
+bs58@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/bs58/-/bs58-5.0.0.tgz#865575b4d13c09ea2a84622df6c8cbeb54ffc279"
+  integrity sha512-r+ihvQJvahgYT50JD05dyJNKlmmSlMoOGwn1lCcEzanPglg7TxYjioQUYehQ9mAR/+hOSd2jRc/Z2y5UxBymvQ==
+  dependencies:
+    base-x "^4.0.0"
 
 buffer-from@^1.0.0:
   version "1.1.2"
