@@ -26,6 +26,7 @@ const setConfiguration = (configuration) =>{
   return getWindow()._Web3ClientConfiguration
 };
 
+function _optionalChain$2(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 const BATCH_INTERVAL = 10;
 const CHUNK_SIZE = 99;
 
@@ -68,13 +69,15 @@ class StaticJsonRpcSequentialProvider extends Connection {
           // on whether it was a success or error
           chunk.forEach((inflightRequest, index) => {
             const payload = result[index];
-            if (payload.error) {
+            if (_optionalChain$2([payload, 'optionalAccess', _ => _.error])) {
               const error = new Error(payload.error.message);
               error.code = payload.error.code;
               error.data = payload.error.data;
               inflightRequest.reject(error);
-            } else {
+            } else if(payload) {
               inflightRequest.resolve(payload);
+            } else {
+              inflightRequest.reject();
             }
           });
         }).catch(handleError)

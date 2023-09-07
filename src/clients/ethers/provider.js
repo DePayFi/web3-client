@@ -30,14 +30,15 @@ class StaticJsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
         // on whether it was a success or error
         chunk.forEach((inflightRequest, index) => {
           const payload = result[index]
-          if (payload.error) {
+          if (payload?.error) {
             const error = new Error(payload.error.message)
             error.code = payload.error.code
             error.data = payload.error.data
             inflightRequest.reject(error)
-          }
-          else {
+          } else if(payload?.result) {
             inflightRequest.resolve(payload.result)
+          } else {
+            inflightRequest.reject()
           }
         })
       }).catch((error) => {
