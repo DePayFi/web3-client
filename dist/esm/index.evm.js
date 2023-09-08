@@ -80,38 +80,46 @@ class StaticJsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
   }
 
   requestChunk(chunk, endpoint) {
-    
-    const request = chunk.map((inflight) => inflight.request);
 
-    return ethers.utils.fetchJson(endpoint, JSON.stringify(request))
-      .then((result) => {
-        // For each result, feed it to the correct Promise, depending
-        // on whether it was a success or error
-        chunk.forEach((inflightRequest, index) => {
-          const payload = result[index];
-          if (_optionalChain$1([payload, 'optionalAccess', _ => _.error])) {
-            const error = new Error(payload.error.message);
-            error.code = payload.error.code;
-            error.data = payload.error.data;
-            inflightRequest.reject(error);
-          } else if(_optionalChain$1([payload, 'optionalAccess', _2 => _2.result])) {
-            inflightRequest.resolve(payload.result);
-          } else {
-            inflightRequest.reject();
-          }
-        });
-      }).catch((error) => {
-        if(error && error.code == 'SERVER_ERROR') {
-          const index = this._endpoints.indexOf(this._endpoint)+1;
-          this._failover();
-          this._endpoint = index >= this._endpoints.length ? this._endpoints[0] : this._endpoints[index];
-          this.requestChunk(chunk, this._endpoint);
-        } else {
-          chunk.forEach((inflightRequest) => {
-            inflightRequest.reject(error);
+    try {
+
+      const request = chunk.map((inflight) => inflight.request);
+      return ethers.utils.fetchJson(endpoint, JSON.stringify(request))
+        .then((result) => {
+          // For each result, feed it to the correct Promise, depending
+          // on whether it was a success or error
+          chunk.forEach((inflightRequest, index) => {
+            const payload = result[index];
+            if (_optionalChain$1([payload, 'optionalAccess', _ => _.error])) {
+              const error = new Error(payload.error.message);
+              error.code = payload.error.code;
+              error.data = payload.error.data;
+              inflightRequest.reject(error);
+            } else if(_optionalChain$1([payload, 'optionalAccess', _2 => _2.result])) {
+              inflightRequest.resolve(payload.result);
+            } else {
+              inflightRequest.reject();
+            }
           });
-        }
-      })
+        }).catch((error) => {
+          if(error && error.code == 'SERVER_ERROR') {
+            const index = this._endpoints.indexOf(this._endpoint)+1;
+            this._failover();
+            this._endpoint = index >= this._endpoints.length ? this._endpoints[0] : this._endpoints[index];
+            this.requestChunk(chunk, this._endpoint);
+          } else {
+            chunk.forEach((inflightRequest) => {
+              inflightRequest.reject(error);
+            });
+          }
+        })
+
+    } catch (e) {
+
+      chunk.forEach((inflightRequest) => {
+        inflightRequest.reject();
+      });
+    }
   }
     
   send(method, params) {
