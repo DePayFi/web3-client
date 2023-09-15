@@ -25,8 +25,8 @@ export default ({ provider, from, to, value, method, api, params }) => {
     if(contract[method] === undefined) {
       method = `${method}(${fragment.inputs.map((input)=>input.type).join(',')})`
     }
-    let contractMethod = contract.estimateGas[method]
     let contractArguments = getContractArguments({ contract, method, params })
+    let contractMethod = contract.estimateGas[method]
     if(contractArguments) {
       return contractMethod(...contractArguments, { from, value })
     } else {
