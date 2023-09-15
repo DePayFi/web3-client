@@ -457,6 +457,18 @@
     }
   };
 
+  const tupleParamsToMethodSignature = (components) =>{
+    return `(${
+    components.map((component)=>{
+      if(component.type === 'tuple') {
+        return tupleParamsToMethodSignature(component.components)
+      } else {
+        return component.type 
+      }
+    }).join(',')
+  })`
+  };
+
   var estimateEVM = ({ provider, from, to, value, method, api, params }) => {
     if(typeof api == "undefined"){
       return provider.estimateGas({ from, to, value })
@@ -465,10 +477,16 @@
       let fragment = contract.interface.fragments.find((fragment) => {
         return fragment.name == method
       });
-      if(contract[method] === undefined) {
-        method = `${method}(${fragment.inputs.map((input)=>input.type).join(',')})`;
-      }
       let contractArguments = getContractArguments({ contract, method, params });
+      if(contract[method] === undefined) {
+        method = `${method}(${fragment.inputs.map((input)=>{
+        if(input.type === 'tuple') {
+          return tupleParamsToMethodSignature(input.components)
+        } else {
+          return input.type
+        }
+      }).join(',')})`;
+      }
       let contractMethod = contract.estimateGas[method];
       if(contractArguments) {
         return contractMethod(...contractArguments, { from, value })
