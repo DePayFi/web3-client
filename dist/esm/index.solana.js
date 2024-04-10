@@ -177,6 +177,8 @@ const setProviderEndpoints$1 = async (blockchain, endpoints, detectFastest = tru
             'Accept': 'application/json',
             'Content-Type': 'application/json'
           },
+          referrer: "",
+          referrerPolicy: "no-referrer",
           body: JSON.stringify({ method: 'getIdentity', id: 1, jsonrpc: '2.0' })
         });
         if(!response.ok) { return resolve(999) }
