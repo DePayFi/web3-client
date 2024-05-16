@@ -81,6 +81,7 @@ const setConfiguration = (configuration) =>{
 function _optionalChain$1(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 const BATCH_INTERVAL = 10;
 const CHUNK_SIZE = 99;
+const MAX_RETRY = 3;
 
 class StaticJsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
 
@@ -97,7 +98,7 @@ class StaticJsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
     return Promise.resolve(Blockchains.findByName(this._network).id)
   }
 
-  requestChunk(chunk, endpoint) {
+  requestChunk(chunk, endpoint, attempt) {
 
     try {
 
@@ -120,11 +121,11 @@ class StaticJsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
             }
           });
         }).catch((error) => {
-          if(error && error.code == 'SERVER_ERROR') {
+          if(attempt < MAX_RETRY && error && error.code == 'SERVER_ERROR') {
             const index = this._endpoints.indexOf(this._endpoint)+1;
             this._failover();
             this._endpoint = index >= this._endpoints.length ? this._endpoints[0] : this._endpoints[index];
-            this.requestChunk(chunk, this._endpoint);
+            this.requestChunk(chunk, this._endpoint, attempt+1);
           } else {
             chunk.forEach((inflightRequest) => {
               inflightRequest.reject(error);
@@ -178,7 +179,7 @@ class StaticJsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
         chunks.forEach((chunk)=>{
           // Get the request as an array of requests
           chunk.map((inflight) => inflight.request);
-          return this.requestChunk(chunk, this._endpoint)
+          return this.requestChunk(chunk, this._endpoint, 1)
         });
       }, getConfiguration().batchInterval || BATCH_INTERVAL);
     }

@@ -908,6 +908,11 @@
   resolved "https://registry.yarnpkg.com/@depay/web3-blockchains/-/web3-blockchains-9.1.4.tgz#f006c29c887c433e1824e2bfabf8f39ad13da907"
   integrity sha512-CQnXCNAt3sA1MphZDMPbrhAPtemzeQ/NKeHcd2aBF61nTjJCRUmSh1Ox8Z6rlSjgDP66842iy6JAoRiFDtlmFw==
 
+"@depay/web3-blockchains@^9.3.6":
+  version "9.3.6"
+  resolved "https://registry.yarnpkg.com/@depay/web3-blockchains/-/web3-blockchains-9.3.6.tgz#ca17eb47ebf5b7c614076a8434992df8691c6d87"
+  integrity sha512-PdNxxR9w8rY+vMjZyx/oBFiJpSBrCNKJT9beBB7LSvBdtNxrcFO6h0xBpDQc+jHTsjDHWxmn3k6RxuTYNp3N0Q==
+
 "@depay/web3-mock@^14.17.0":
   version "14.17.0"
   resolved "https://registry.yarnpkg.com/@depay/web3-mock/-/web3-mock-14.17.0.tgz#cf188a9d810c49f7af4aeb60bc06b5ec61bc75b8"

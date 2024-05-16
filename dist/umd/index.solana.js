@@ -35,6 +35,7 @@
   function _optionalChain$2(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
   const BATCH_INTERVAL = 10;
   const CHUNK_SIZE = 99;
+  const MAX_RETRY = 3;
 
   class StaticJsonRpcSequentialProvider extends solanaWeb3_js.Connection {
 
@@ -49,18 +50,18 @@
       this._rpcRequest = this._rpcRequestReplacement.bind(this);
     }
 
-    requestChunk(chunk) {
+    requestChunk(chunk, attempt) {
 
       const batch = chunk.map((inflight) => inflight.request);
 
       const handleError = (error)=>{
-        if(error && [
+        if(attempt < MAX_RETRY && error && [
           'Failed to fetch', 'limit reached', '504', '503', '502', '500', '429', '426', '422', '413', '409', '408', '406', '405', '404', '403', '402', '401', '400'
         ].some((errorType)=>error.toString().match(errorType))) {
           const index = this._endpoints.indexOf(this._endpoint)+1;
           this._endpoint = index >= this._endpoints.length ? this._endpoints[0] : this._endpoints[index];
           this._provider = new solanaWeb3_js.Connection(this._endpoint);
-          this.requestChunk(chunk);
+          this.requestChunk(chunk, attempt+1);
         } else {
           chunk.forEach((inflightRequest) => {
             inflightRequest.reject(error);
@@ -123,7 +124,7 @@
           chunks.forEach((chunk)=>{
             // Get the request as an array of requests
             chunk.map((inflight) => inflight.request);
-            return this.requestChunk(chunk)
+            return this.requestChunk(chunk, 1)
           });
         }, getConfiguration().batchInterval || BATCH_INTERVAL);
       }
