@@ -19,9 +19,7 @@ class StaticJsonRpcSequentialProvider extends Connection {
   }
 
   handleError(error, attempt, chunk) {
-    if(attempt < MAX_RETRY && error && [
-      'Failed to fetch', 'limit reached', '504', '503', '502', '500', '429', '426', '422', '413', '409', '408', '406', '405', '404', '403', '402', '401', '400'
-    ].some((errorType)=>error.toString().match(errorType))) {
+    if(attempt < MAX_RETRY) {
       const index = this._endpoints.indexOf(this._endpoint)+1
       this._endpoint = index >= this._endpoints.length ? this._endpoints[0] : this._endpoints[index]
       this._provider = new Connection(this._endpoint)
@@ -51,7 +49,15 @@ class StaticJsonRpcSequentialProvider extends Connection {
       ).then((response)=>{
         if(response.ok) {
           response.json().then((parsedJson)=>{
-            resolve(parsedJson)
+            if(parsedJson.find((entry)=>entry?.error)) {
+              if(attempt < MAX_RETRY) {
+                reject('Error in batch found!')
+              } else {
+                resolve(parsedJson);
+              }
+            } else {
+              resolve(parsedJson);
+            }
           }).catch(reject)
         } else {
           reject(`${response.status} ${response.text}`)
