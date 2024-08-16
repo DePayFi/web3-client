@@ -32,10 +32,10 @@
     return getWindow()._Web3ClientConfiguration
   };
 
-  function _optionalChain$3(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
+  function _optionalChain$5(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
   const BATCH_INTERVAL$1 = 10;
   const CHUNK_SIZE$1 = 99;
-  const MAX_RETRY$1 = 3;
+  const MAX_RETRY$1 = 5;
 
   class StaticJsonRpcBatchProvider extends ethers.ethers.providers.JsonRpcProvider {
 
@@ -63,12 +63,12 @@
             // on whether it was a success or error
             chunk.forEach((inflightRequest, index) => {
               const payload = result[index];
-              if (_optionalChain$3([payload, 'optionalAccess', _ => _.error])) {
+              if (_optionalChain$5([payload, 'optionalAccess', _ => _.error])) {
                 const error = new Error(payload.error.message);
                 error.code = payload.error.code;
                 error.data = payload.error.data;
                 inflightRequest.reject(error);
-              } else if(_optionalChain$3([payload, 'optionalAccess', _2 => _2.result])) {
+              } else if(_optionalChain$5([payload, 'optionalAccess', _2 => _2.result])) {
                 inflightRequest.resolve(payload.result);
               } else {
                 inflightRequest.reject();
@@ -143,6 +143,7 @@
 
   }
 
+  function _optionalChain$4(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
   const getAllProviders$1 = ()=> {
     if(getWindow()._Web3ClientProviders == undefined) {
       getWindow()._Web3ClientProviders = {};
@@ -188,17 +189,20 @@
           let timeout = 900;
           let before = new Date().getTime();
           setTimeout(()=>resolve(timeout), timeout);
-          const response = await fetch(endpoint, {
-            method: 'POST',
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-            },
-            referrer: "",
-            referrerPolicy: "no-referrer",
-            body: JSON.stringify({ method: 'net_version', id: 1, jsonrpc: '2.0' })
-          });
-          if(!response.ok) { return resolve(999) }
+          let response;
+          try {
+            response = await fetch(endpoint, {
+              method: 'POST',
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+              referrer: "",
+              referrerPolicy: "no-referrer",
+              body: JSON.stringify({ method: 'net_version', id: 1, jsonrpc: '2.0' })
+            });
+          } catch (e) {}
+          if(!_optionalChain$4([response, 'optionalAccess', _ => _.ok])) { return resolve(999) }
           let after = new Date().getTime();
           resolve(after-before);
         })
@@ -253,10 +257,10 @@
     setProvider: setProvider$2,
   };
 
-  function _optionalChain$2(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
+  function _optionalChain$3(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
   const BATCH_INTERVAL = 10;
   const CHUNK_SIZE = 99;
-  const MAX_RETRY = 3;
+  const MAX_RETRY = 10;
 
   class StaticJsonRpcSequentialProvider extends solanaWeb3_js.Connection {
 
@@ -322,7 +326,7 @@
           .then((result) => {
             chunk.forEach((inflightRequest, index) => {
               const payload = result[index];
-              if (_optionalChain$2([payload, 'optionalAccess', _ => _.error])) {
+              if (_optionalChain$3([payload, 'optionalAccess', _ => _.error])) {
                 const error = new Error(payload.error.message);
                 error.code = payload.error.code;
                 error.data = payload.error.data;
@@ -379,6 +383,7 @@
     }
   }
 
+  function _optionalChain$2(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
   const getAllProviders = ()=> {
     if(getWindow()._Web3ClientProviders == undefined) {
       getWindow()._Web3ClientProviders = {};
@@ -424,17 +429,20 @@
           let timeout = 900;
           let before = new Date().getTime();
           setTimeout(()=>resolve(timeout), timeout);
-          const response = await fetch(endpoint, {
-            method: 'POST',
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-            },
-            referrer: "",
-            referrerPolicy: "no-referrer",
-            body: JSON.stringify({ method: 'getIdentity', id: 1, jsonrpc: '2.0' })
-          });
-          if(!response.ok) { return resolve(999) }
+          let response;
+          try {
+            response = await fetch(endpoint, {
+              method: 'POST',
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+              referrer: "",
+              referrerPolicy: "no-referrer",
+              body: JSON.stringify({ method: 'getIdentity', id: 1, jsonrpc: '2.0' })
+            });
+          } catch (e) {}
+          if(!_optionalChain$2([response, 'optionalAccess', _ => _.ok])) { return resolve(999) }
           let after = new Date().getTime();
           resolve(after-before);
         })
