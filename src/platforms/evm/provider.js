@@ -47,17 +47,20 @@ const setProviderEndpoints = async (blockchain, endpoints, detectFastest = true)
         let timeout = 900
         let before = new Date().getTime()
         setTimeout(()=>resolve(timeout), timeout)
-        const response = await fetch(endpoint, {
-          method: 'POST',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          },
-          referrer: "",
-          referrerPolicy: "no-referrer",
-          body: JSON.stringify({ method: 'net_version', id: 1, jsonrpc: '2.0' })
-        })
-        if(!response.ok) { return resolve(999) }
+        let response
+        try {
+          response = await fetch(endpoint, {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            referrer: "",
+            referrerPolicy: "no-referrer",
+            body: JSON.stringify({ method: 'net_version', id: 1, jsonrpc: '2.0' })
+          })
+        } catch {}
+        if(!response?.ok) { return resolve(999) }
         let after = new Date().getTime()
         resolve(after-before)
       })
