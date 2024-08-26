@@ -1,7 +1,7 @@
 import { ethers } from 'ethers'
 
 const findFragment = ({ fragments, method, params })=>{
-  return contract.interface.fragments.find((fragment) => {
+  return fragments.find((fragment) => {
     return(
       fragment.name == method &&
       (fragment.inputs && params && typeof(params) === 'object' ? fragment.inputs.length == Object.keys(params).length : true)
