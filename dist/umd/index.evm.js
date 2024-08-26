@@ -8,10 +8,17 @@
 
   var Blockchains__default = /*#__PURE__*/_interopDefaultLegacy(Blockchains);
 
+  const findFragment = ({ fragments, method, params })=>{
+    return contract.interface.fragments.find((fragment) => {
+      return(
+        fragment.name == method &&
+        (fragment.inputs && params && typeof(params) === 'object' ? fragment.inputs.length == Object.keys(params).length : true)
+      )
+    })
+  };
+
   const getContractArguments = ({ contract, method, params })=>{
-    let fragment = contract.interface.fragments.find((fragment) => {
-      return fragment.name == method
-    });
+    let fragment = findFragment({ fragments: contract.interface.fragments, method, params });
 
     if(params instanceof Array) {
       return params
@@ -39,12 +46,7 @@
       return provider.estimateGas({ from, to, value })
     } else {
       let contract = new ethers.ethers.Contract(to, api, provider);
-      let fragment = contract.interface.fragments.find((fragment) => {
-        return(
-          fragment.name == method &&
-          (fragment.inputs && params && typeof(params) === 'object' ? fragment.inputs.length == Object.keys(params).length : true)
-        )
-      });
+      let fragment = findFragment({ fragments: contract.interface.fragments, method, params });
       let contractArguments = getContractArguments({ contract, method, params });
       if(contract[method] === undefined) {
         method = `${method}(${fragment.inputs.map((input)=>{
