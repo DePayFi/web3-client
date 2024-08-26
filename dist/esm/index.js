@@ -756,7 +756,10 @@ var estimateEVM = ({ provider, from, to, value, method, api, params }) => {
   } else {
     let contract = new ethers.Contract(to, api, provider);
     let fragment = contract.interface.fragments.find((fragment) => {
-      return fragment.name == method
+      return(
+        fragment.name == method &&
+        (fragment.inputs && params && typeof(params) === 'object' ? fragment.inputs.length == Object.keys(params).length : true)
+      )
     });
     let contractArguments = getContractArguments({ contract, method, params });
     if(contract[method] === undefined) {
