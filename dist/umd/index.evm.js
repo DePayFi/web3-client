@@ -138,7 +138,9 @@
         ).then((response)=>{
           if(response.ok) {
             response.json().then((parsedJson)=>{
-              if(parsedJson.find((entry)=>_optionalChain$2([entry, 'optionalAccess', _ => _.error]))) {
+              if(parsedJson.find((entry)=>{
+                return _optionalChain$2([entry, 'optionalAccess', _ => _.error]) && [-32062].includes(_optionalChain$2([entry, 'optionalAccess', _2 => _2.error, 'optionalAccess', _3 => _3.code]))
+              })) {
                 if(attempt < MAX_RETRY) {
                   reject('Error in batch found!');
                 } else {
@@ -166,12 +168,12 @@
             // on whether it was a success or error
             chunk.forEach((inflightRequest, index) => {
               const payload = result[index];
-              if (_optionalChain$2([payload, 'optionalAccess', _2 => _2.error])) {
+              if (_optionalChain$2([payload, 'optionalAccess', _4 => _4.error])) {
                 const error = new Error(payload.error.message);
                 error.code = payload.error.code;
                 error.data = payload.error.data;
                 inflightRequest.reject(error);
-              } else if(_optionalChain$2([payload, 'optionalAccess', _3 => _3.result])) {
+              } else if(_optionalChain$2([payload, 'optionalAccess', _5 => _5.result])) {
                 inflightRequest.resolve(payload.result);
               } else {
                 inflightRequest.reject();
