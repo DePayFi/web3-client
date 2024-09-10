@@ -50,7 +50,7 @@ class StaticJsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
         if(response.ok) {
           response.json().then((parsedJson)=>{
             if(parsedJson.find((entry)=>{
-              return entry?.error && [-32062].includes(entry?.error?.code)
+              return entry?.error && [-32062,-32016].includes(entry?.error?.code)
             })) {
               if(attempt < MAX_RETRY) {
                 reject('Error in batch found!')
