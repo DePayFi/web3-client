@@ -3,7 +3,7 @@ import { ethers } from 'ethers'
 import { getConfiguration } from '../../configuration'
 
 const BATCH_INTERVAL = 10
-const CHUNK_SIZE = 99
+const CHUNK_SIZE = 50
 const MAX_RETRY = 5
 
 class StaticJsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
