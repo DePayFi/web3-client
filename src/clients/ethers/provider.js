@@ -17,16 +17,61 @@ class StaticJsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
     this._pendingBatch = []
   }
 
+  handleError(error, attempt, chunk) {
+    if(attempt < MAX_RETRY && error) {
+      const index = this._endpoints.indexOf(this._endpoint)+1
+      this._failover()
+      this._endpoint = index >= this._endpoints.length ? this._endpoints[0] : this._endpoints[index]
+      this.requestChunk(chunk, this._endpoint, attempt+1)
+    } else {
+      chunk.forEach((inflightRequest) => {
+        inflightRequest.reject(error)
+      })
+    }
+  }
+
   detectNetwork() {
     return Promise.resolve(Blockchains.findByName(this._network).id)
   }
 
+  batchRequest(batch, attempt) {
+    return new Promise((resolve, reject) => {
+      
+      if (batch.length === 0) resolve([]) // Do nothing if requests is empty
+
+      fetch(
+        this._endpoint,
+        {
+          method: 'POST',
+          body: JSON.stringify(batch),
+          headers: { 'Content-Type': 'application/json' },
+        }
+      ).then((response)=>{
+        if(response.ok) {
+          response.json().then((parsedJson)=>{
+            if(parsedJson.find((entry)=>entry?.error)) {
+              if(attempt < MAX_RETRY) {
+                reject('Error in batch found!')
+              } else {
+                resolve(parsedJson);
+              }
+            } else {
+              resolve(parsedJson);
+            }
+          }).catch(reject)
+        } else {
+          reject(`${response.status} ${response.text}`)
+        }
+      }).catch(reject)
+    })
+  }
+
   requestChunk(chunk, endpoint, attempt) {
 
-    try {
+    const batch = chunk.map((inflight) => inflight.request)
 
-      const request = chunk.map((inflight) => inflight.request)
-      return ethers.utils.fetchJson(endpoint, JSON.stringify(request))
+    try {
+      return this.batchRequest(batch, attempt)
         .then((result) => {
           // For each result, feed it to the correct Promise, depending
           // on whether it was a success or error
@@ -43,25 +88,8 @@ class StaticJsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
               inflightRequest.reject()
             }
           })
-        }).catch((error) => {
-          if(attempt < MAX_RETRY && error && error.code == 'SERVER_ERROR') {
-            const index = this._endpoints.indexOf(this._endpoint)+1
-            this._failover()
-            this._endpoint = index >= this._endpoints.length ? this._endpoints[0] : this._endpoints[index]
-            this.requestChunk(chunk, this._endpoint, attempt+1)
-          } else {
-            chunk.forEach((inflightRequest) => {
-              inflightRequest.reject(error)
-            })
-          }
-        })
-
-    } catch {
-
-      chunk.forEach((inflightRequest) => {
-        inflightRequest.reject()
-      })
-    }
+        }).catch((error) => this.handleError(error, attempt, chunk))
+    } catch (error){ this.handleError(error, attempt, chunk) }
   }
     
   send(method, params) {
