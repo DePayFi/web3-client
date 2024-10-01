@@ -45,6 +45,7 @@ This library supports the following blockchains:
 - [Gnosis](https://gnosis.io)
 - [Optimism](https://www.optimism.io)
 - [Base](https://base.org)
+- [Worldchain](https://worldcoin.org/world-chain)
 
 ## Platform specific packaging
 
