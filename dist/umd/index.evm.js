@@ -240,6 +240,7 @@
   };
 
   const setProvider$1 = (blockchain, provider)=> {
+    if(provider == undefined) { return }
     if(getAllProviders()[blockchain] === undefined) { getAllProviders()[blockchain] = []; }
     const index = getAllProviders()[blockchain].indexOf(provider);
     if(index > -1) {
