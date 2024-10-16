@@ -77,6 +77,7 @@
             method: 'POST',
             body: JSON.stringify(batch),
             headers: { 'Content-Type': 'application/json' },
+            signal: AbortSignal.timeout(10000)  // 10-second timeout
           }
         ).then((response)=>{
           if(response.ok) {
@@ -221,7 +222,8 @@
               },
               referrer: "",
               referrerPolicy: "no-referrer",
-              body: JSON.stringify({ method: 'getIdentity', id: 1, jsonrpc: '2.0' })
+              body: JSON.stringify({ method: 'getIdentity', id: 1, jsonrpc: '2.0' }),
+              signal: AbortSignal.timeout(10000)  // 10-second timeout
             });
           } catch (e) {}
           if(!_optionalChain$2([response, 'optionalAccess', _ => _.ok])) { return resolve(999) }
