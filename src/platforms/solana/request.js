@@ -71,7 +71,7 @@ export default async ({ blockchain, address, api, method, params, block, timeout
       })
     })
     
-    const timeoutPromise = new Promise((_, reject)=>setTimeout(()=>{ reject(new Error("Web3ClientTimeout")) }, timeout || 10000))
+    const timeoutPromise = new Promise((_, reject)=>setTimeout(()=>{ reject(new Error("Web3ClientTimeout")) }, timeout || 60000)) // 60s default timeout
 
     allRequestsFailed = Promise.all(allRequestsFailed.map((request)=>{
       return new Promise((resolve)=>{ request.catch(resolve) })

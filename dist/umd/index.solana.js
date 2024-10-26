@@ -77,7 +77,7 @@
             method: 'POST',
             body: JSON.stringify(batch),
             headers: { 'Content-Type': 'application/json' },
-            signal: AbortSignal.timeout(10000)  // 10-second timeout
+            signal: AbortSignal.timeout(60000)  // 60-second timeout
           }
         ).then((response)=>{
           if(response.ok) {
@@ -624,7 +624,7 @@
         })
       });
       
-      const timeoutPromise = new Promise((_, reject)=>setTimeout(()=>{ reject(new Error("Web3ClientTimeout")); }, timeout || 10000));
+      const timeoutPromise = new Promise((_, reject)=>setTimeout(()=>{ reject(new Error("Web3ClientTimeout")); }, timeout || 60000)); // 60s default timeout
 
       allRequestsFailed = Promise.all(allRequestsFailed.map((request)=>{
         return new Promise((resolve)=>{ request.catch(resolve); })
