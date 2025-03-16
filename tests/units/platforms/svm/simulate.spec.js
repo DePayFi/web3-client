@@ -5,7 +5,7 @@ import { supported } from 'src/blockchains'
 
 describe('simulate', () => {
 
-  supported.solana.forEach((blockchain)=>{
+  supported.svm.forEach((blockchain)=>{
 
     describe(blockchain, ()=> {
 

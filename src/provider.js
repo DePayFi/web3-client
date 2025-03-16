@@ -32,7 +32,7 @@ const getProvider = async (blockchain)=>{
 
     //#endif
 
-  } else if(supported.solana.includes(blockchain)) {
+  } else if(supported.svm.includes(blockchain)) {
 
     /*#if _EVM
 
@@ -67,7 +67,7 @@ const getProviders = async (blockchain)=>{
 
     //#endif
 
-  } else if(supported.solana.includes(blockchain)) {
+  } else if(supported.svm.includes(blockchain)) {
 
     /*#if _EVM
 
@@ -102,7 +102,7 @@ const setProvider = (blockchain, provider)=>{
 
     //#endif
 
-  } else if(supported.solana.includes(blockchain)) {
+  } else if(supported.svm.includes(blockchain)) {
 
     /*#if _EVM
 
@@ -137,7 +137,7 @@ const setProviderEndpoints = (blockchain, endpoints, detectFastest)=>{
 
     //#endif
 
-  } else if(supported.solana.includes(blockchain)) {
+  } else if(supported.svm.includes(blockchain)) {
 
     /*#if _EVM
 

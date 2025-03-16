@@ -5,7 +5,7 @@ import { supported } from 'src/blockchains'
 
 describe('request getAccountInfo', () => {
 
-  supported.solana.forEach((blockchain)=>{
+  supported.svm.forEach((blockchain)=>{
 
     describe(blockchain, ()=> {
 

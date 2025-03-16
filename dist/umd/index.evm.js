@@ -350,7 +350,7 @@
 
   let supported = ['ethereum', 'bsc', 'polygon', 'fantom', 'arbitrum', 'avalanche', 'gnosis', 'optimism', 'base', 'worldchain'];
   supported.evm = ['ethereum', 'bsc', 'polygon', 'fantom', 'arbitrum', 'avalanche', 'gnosis', 'optimism', 'base', 'worldchain'];
-  supported.solana = [];
+  supported.svm = [];
 
   function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
   let getCacheStore = () => {
@@ -465,7 +465,7 @@
       return await EVM.getProvider(blockchain)
 
 
-    } else if(supported.solana.includes(blockchain)) ; else {
+    } else if(supported.svm.includes(blockchain)) ; else {
       throw 'Unknown blockchain: ' + blockchain
     }
   };
@@ -478,7 +478,7 @@
       return await EVM.getProviders(blockchain)
 
 
-    } else if(supported.solana.includes(blockchain)) ; else {
+    } else if(supported.svm.includes(blockchain)) ; else {
       throw 'Unknown blockchain: ' + blockchain
     }
   };
@@ -491,7 +491,7 @@
       return EVM.setProvider(blockchain, provider)
 
 
-    } else if(supported.solana.includes(blockchain)) ; else {
+    } else if(supported.svm.includes(blockchain)) ; else {
       throw 'Unknown blockchain: ' + blockchain
     }
   };
@@ -504,7 +504,7 @@
       return EVM.setProviderEndpoints(blockchain, endpoints, detectFastest)
 
 
-    } else if(supported.solana.includes(blockchain)) ; else {
+    } else if(supported.svm.includes(blockchain)) ; else {
       throw 'Unknown blockchain: ' + blockchain
     }
   };
@@ -653,7 +653,7 @@
           return await requestEVM({ blockchain, address, api, method, params, block, strategy, timeout })
 
 
-        } else if(supported.solana.includes(blockchain)) ; else {
+        } else if(supported.svm.includes(blockchain)) ; else {
           throw 'Unknown blockchain: ' + blockchain
         }  
       }

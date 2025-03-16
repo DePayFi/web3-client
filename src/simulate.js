@@ -3,7 +3,7 @@ import { getProvider } from './provider'
 import { supported } from './blockchains'
 
 let simulate = async function ({ blockchain, from, to, keys, api, params }) {
-  if(!supported.solana.includes(blockchain)) { throw `${blockchain} not supported for simulation!` }
+  if(!supported.svm.includes(blockchain)) { throw `${blockchain} not supported for simulation!` }
 
   const data = Buffer.alloc(api.span)
   api.encode(params, data)

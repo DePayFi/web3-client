@@ -40,7 +40,7 @@ const request = async function (url, options) {
 
         //#endif
 
-      } else if(supported.solana.includes(blockchain)) {
+      } else if(supported.svm.includes(blockchain)) {
 
         /*#if _EVM
 

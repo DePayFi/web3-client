@@ -535,7 +535,7 @@ var Solana = {
 
 let supported = ['ethereum', 'bsc', 'polygon', 'solana', 'fantom', 'arbitrum', 'avalanche', 'gnosis', 'optimism', 'base', 'worldchain'];
 supported.evm = ['ethereum', 'bsc', 'polygon', 'fantom', 'arbitrum', 'avalanche', 'gnosis', 'optimism', 'base', 'worldchain'];
-supported.solana = ['solana'];
+supported.svm = ['solana'];
 
 function _optionalChain$1(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 let getCacheStore = () => {
@@ -650,7 +650,7 @@ const getProvider = async (blockchain)=>{
     return await EVM.getProvider(blockchain)
 
 
-  } else if(supported.solana.includes(blockchain)) {
+  } else if(supported.svm.includes(blockchain)) {
 
 
     return await Solana.getProvider(blockchain)
@@ -669,7 +669,7 @@ const getProviders = async (blockchain)=>{
     return await EVM.getProviders(blockchain)
 
 
-  } else if(supported.solana.includes(blockchain)) {
+  } else if(supported.svm.includes(blockchain)) {
 
 
     return await Solana.getProviders(blockchain)
@@ -688,7 +688,7 @@ const setProvider = (blockchain, provider)=>{
     return EVM.setProvider(blockchain, provider)
 
 
-  } else if(supported.solana.includes(blockchain)) {
+  } else if(supported.svm.includes(blockchain)) {
 
 
     return Solana.setProvider(blockchain, provider)
@@ -707,7 +707,7 @@ const setProviderEndpoints = (blockchain, endpoints, detectFastest)=>{
     return EVM.setProviderEndpoints(blockchain, endpoints, detectFastest)
 
 
-  } else if(supported.solana.includes(blockchain)) {
+  } else if(supported.svm.includes(blockchain)) {
 
 
     return Solana.setProviderEndpoints(blockchain, endpoints, detectFastest)
@@ -720,7 +720,7 @@ const setProviderEndpoints = (blockchain, endpoints, detectFastest)=>{
 
 function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 let simulate = async function ({ blockchain, from, to, keys, api, params }) {
-  if(!supported.solana.includes(blockchain)) { throw `${blockchain} not supported for simulation!` }
+  if(!supported.svm.includes(blockchain)) { throw `${blockchain} not supported for simulation!` }
 
   const data = Buffer.alloc(api.span);
   api.encode(params, data);
@@ -1053,7 +1053,7 @@ const request = async function (url, options) {
         return await requestEVM({ blockchain, address, api, method, params, block, strategy, timeout })
 
 
-      } else if(supported.solana.includes(blockchain)) {
+      } else if(supported.svm.includes(blockchain)) {
 
 
         return await requestSolana({ blockchain, address, api, method, params, block, strategy, timeout })
