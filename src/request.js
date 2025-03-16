@@ -2,7 +2,7 @@
 
 import requestEVM from './platforms/evm/request'
 
-/*#elif _SOLANA
+/*#elif _SVM
 
 import requestSolana from './platforms/solana/request'
 
@@ -32,7 +32,7 @@ const request = async function (url, options) {
 
         return await requestEVM({ blockchain, address, api, method, params, block, strategy, timeout })
 
-        /*#elif _SOLANA
+        /*#elif _SVM
 
         //#else */
 
@@ -44,7 +44,7 @@ const request = async function (url, options) {
 
         /*#if _EVM
 
-        /*#elif _SOLANA
+        /*#elif _SVM
 
         return requestSolana({ blockchain, address, api, method, params, block, strategy, timeout })
 

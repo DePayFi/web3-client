@@ -26,8 +26,8 @@ describe('request getProgramAccounts', () => {
         
         let filters = [
           { dataSize: 165 },
-          { memcmp: { offset: 32, bytes: wallet }},
-          { memcmp: { offset: 0, bytes: mint }}
+          { memcmp: { offset: 32, bytes: wallet, encoding: "base58" }},
+          { memcmp: { offset: 0, bytes: mint, encoding: "base58" }}
         ]
 
         let requestMock = mock({
@@ -125,8 +125,8 @@ describe('request getProgramAccounts', () => {
 
         let filters = [
           { dataSize: api.span },
-          { memcmp: { offset: 400, bytes: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB' }},
-          { memcmp: { offset: 432, bytes: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v' }}
+          { memcmp: { offset: 400, bytes: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB', encoding: "base58" }},
+          { memcmp: { offset: 432, bytes: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', encoding: "base58" }}
         ]
 
         let requestMock = mock({

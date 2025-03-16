@@ -134,13 +134,13 @@
             method: 'POST',
             body: JSON.stringify(batch),
             headers: { 'Content-Type': 'application/json' },
-            signal: AbortSignal.timeout(10000)  // 10-second timeout
+            signal: _optionalChain$2([AbortSignal, 'optionalAccess', _ => _.timeout]) ? AbortSignal.timeout(10000) : undefined  // 10-second timeout
           }
         ).then((response)=>{
           if(response.ok) {
             response.json().then((parsedJson)=>{
               if(parsedJson.find((entry)=>{
-                return _optionalChain$2([entry, 'optionalAccess', _ => _.error]) && [-32062,-32016].includes(_optionalChain$2([entry, 'optionalAccess', _2 => _2.error, 'optionalAccess', _3 => _3.code]))
+                return _optionalChain$2([entry, 'optionalAccess', _2 => _2.error]) && [-32062,-32016].includes(_optionalChain$2([entry, 'optionalAccess', _3 => _3.error, 'optionalAccess', _4 => _4.code]))
               })) {
                 if(attempt < MAX_RETRY) {
                   reject('Error in batch found!');
@@ -169,12 +169,12 @@
             // on whether it was a success or error
             chunk.forEach((inflightRequest, index) => {
               const payload = result[index];
-              if (_optionalChain$2([payload, 'optionalAccess', _4 => _4.error])) {
+              if (_optionalChain$2([payload, 'optionalAccess', _5 => _5.error])) {
                 const error = new Error(payload.error.message);
                 error.code = payload.error.code;
                 error.data = payload.error.data;
                 inflightRequest.reject(error);
-              } else if(_optionalChain$2([payload, 'optionalAccess', _5 => _5.result])) {
+              } else if(_optionalChain$2([payload, 'optionalAccess', _6 => _6.result])) {
                 inflightRequest.resolve(payload.result);
               } else {
                 inflightRequest.reject();
@@ -290,10 +290,10 @@
               referrer: "",
               referrerPolicy: "no-referrer",
               body: JSON.stringify({ method: 'net_version', id: 1, jsonrpc: '2.0' }),
-              signal: AbortSignal.timeout(10000)  // 10-second timeout
+              signal: _optionalChain$1([AbortSignal, 'optionalAccess', _ => _.timeout]) ? AbortSignal.timeout(10000) : undefined  // 10-second timeout
             });
           } catch (e) {}
-          if(!_optionalChain$1([response, 'optionalAccess', _ => _.ok])) { return resolve(999) }
+          if(!_optionalChain$1([response, 'optionalAccess', _2 => _2.ok])) { return resolve(999) }
           let after = new Date().getTime();
           resolve(after-before);
         })

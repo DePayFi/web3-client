@@ -1,5 +1,5 @@
 import { mock, resetMocks, increaseBlock } from '@depay/web3-mock'
-import { request, getProvider, resetCache } from 'dist/esm/index.solana'
+import { request, getProvider, resetCache } from 'dist/esm/index.svm'
 import { supported } from 'src/blockchains'
 
 describe('request', () => {

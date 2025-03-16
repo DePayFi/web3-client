@@ -77,12 +77,12 @@
             method: 'POST',
             body: JSON.stringify(batch),
             headers: { 'Content-Type': 'application/json' },
-            signal: AbortSignal.timeout(60000)  // 60-second timeout
+            signal: _optionalChain$3([AbortSignal, 'optionalAccess', _ => _.timeout]) ? AbortSignal.timeout(60000) : undefined  // 60-second timeout
           }
         ).then((response)=>{
           if(response.ok) {
             response.json().then((parsedJson)=>{
-              if(parsedJson.find((entry)=>_optionalChain$3([entry, 'optionalAccess', _ => _.error]))) {
+              if(parsedJson.find((entry)=>_optionalChain$3([entry, 'optionalAccess', _2 => _2.error]))) {
                 if(attempt < MAX_RETRY) {
                   reject('Error in batch found!');
                 } else {
@@ -108,7 +108,7 @@
           .then((result) => {
             chunk.forEach((inflightRequest, index) => {
               const payload = result[index];
-              if (_optionalChain$3([payload, 'optionalAccess', _2 => _2.error])) {
+              if (_optionalChain$3([payload, 'optionalAccess', _3 => _3.error])) {
                 const error = new Error(payload.error.message);
                 error.code = payload.error.code;
                 error.data = payload.error.data;
@@ -223,10 +223,10 @@
               referrer: "",
               referrerPolicy: "no-referrer",
               body: JSON.stringify({ method: 'getIdentity', id: 1, jsonrpc: '2.0' }),
-              signal: AbortSignal.timeout(10000)  // 10-second timeout
+              signal: _optionalChain$2([AbortSignal, 'optionalAccess', _ => _.timeout]) ? AbortSignal.timeout(60000) : undefined  // 60-second timeout
             });
           } catch (e) {}
-          if(!_optionalChain$2([response, 'optionalAccess', _ => _.ok])) { return resolve(999) }
+          if(!_optionalChain$2([response, 'optionalAccess', _2 => _2.ok])) { return resolve(999) }
           let after = new Date().getTime();
           resolve(after-before);
         })

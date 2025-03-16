@@ -45,7 +45,7 @@ class StaticJsonRpcSequentialProvider extends Connection {
           method: 'POST',
           body: JSON.stringify(batch),
           headers: { 'Content-Type': 'application/json' },
-          signal: AbortSignal.timeout(60000)  // 60-second timeout
+          signal: AbortSignal?.timeout ? AbortSignal.timeout(60000) : undefined  // 60-second timeout
         }
       ).then((response)=>{
         if(response.ok) {

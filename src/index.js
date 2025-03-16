@@ -2,7 +2,7 @@
 
 const simulate = undefined
 
-/*#elif _SOLANA
+/*#elif _SVM
 
 import simulate from './simulate'
 

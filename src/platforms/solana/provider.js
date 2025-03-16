@@ -59,7 +59,7 @@ const setProviderEndpoints = async (blockchain, endpoints, detectFastest = true)
             referrer: "",
             referrerPolicy: "no-referrer",
             body: JSON.stringify({ method: 'getIdentity', id: 1, jsonrpc: '2.0' }),
-            signal: AbortSignal.timeout(10000)  // 10-second timeout
+            signal: AbortSignal?.timeout ? AbortSignal.timeout(60000) : undefined  // 60-second timeout
           })
         } catch {}
         if(!response?.ok) { return resolve(999) }

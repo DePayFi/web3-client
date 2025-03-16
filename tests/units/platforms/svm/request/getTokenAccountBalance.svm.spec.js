@@ -1,5 +1,5 @@
 import { mock, resetMocks } from '@depay/web3-mock'
-import { request, getProvider, resetCache } from 'dist/esm/index.solana'
+import { request, getProvider, resetCache } from 'dist/esm/index.svm'
 import { struct, publicKey, u64, u32, u8, PublicKey, Buffer } from '@depay/solana-web3.js'
 import { supported } from 'src/blockchains'
 

@@ -2,7 +2,7 @@
 
 import EVM from './platforms/evm/provider'
 
-/*#elif _SOLANA
+/*#elif _SVM
 
 import Solana from './platforms/solana/provider'
 
@@ -24,7 +24,7 @@ const getProvider = async (blockchain)=>{
 
     return await EVM.getProvider(blockchain)
 
-    /*#elif _SOLANA
+    /*#elif _SVM
 
     //#else */
 
@@ -36,7 +36,7 @@ const getProvider = async (blockchain)=>{
 
     /*#if _EVM
 
-    /*#elif _SOLANA
+    /*#elif _SVM
 
     return await Solana.getProvider(blockchain)
 
@@ -59,7 +59,7 @@ const getProviders = async (blockchain)=>{
 
     return await EVM.getProviders(blockchain)
 
-    /*#elif _SOLANA
+    /*#elif _SVM
 
     //#else */
 
@@ -71,7 +71,7 @@ const getProviders = async (blockchain)=>{
 
     /*#if _EVM
 
-    /*#elif _SOLANA
+    /*#elif _SVM
 
     return await Solana.getProviders(blockchain)
 
@@ -94,7 +94,7 @@ const setProvider = (blockchain, provider)=>{
 
     return EVM.setProvider(blockchain, provider)
 
-    /*#elif _SOLANA
+    /*#elif _SVM
 
     //#else */
 
@@ -106,7 +106,7 @@ const setProvider = (blockchain, provider)=>{
 
     /*#if _EVM
 
-    /*#elif _SOLANA
+    /*#elif _SVM
 
     return Solana.setProvider(blockchain, provider)
 
@@ -129,7 +129,7 @@ const setProviderEndpoints = (blockchain, endpoints, detectFastest)=>{
 
     return EVM.setProviderEndpoints(blockchain, endpoints, detectFastest)
 
-    /*#elif _SOLANA
+    /*#elif _SVM
 
     //#else */
 
@@ -142,7 +142,7 @@ const setProviderEndpoints = (blockchain, endpoints, detectFastest)=>{
     /*#if _EVM
 
 
-    /*#elif _SOLANA
+    /*#elif _SVM
 
     return Solana.setProviderEndpoints(blockchain, endpoints, detectFastest)
 
