@@ -461,13 +461,10 @@
   setInterval(() => {
     const store = getCacheStore();
     const now = Date.now();
-    console.log('STORE BEFORE?!', Object.keys(store).length);
     for (const key in store) {
       if (store[key].expiresAt < now) {
-        console.log('CLEAN KEY', key);
         delete store[key];
       }
-      console.log('STORE AFTER?!', Object.keys(store).length);
     }
   }, 10 * 60 * 1000); // 10 minutes in milliseconds
 
