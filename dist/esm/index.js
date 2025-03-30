@@ -643,7 +643,7 @@ let cache = function ({ call, key, expires = 0 }) {
 };
 
 // Periodically clean up expired cache entries (every 5 minutes), to prevent memory leaks
-if (typeof process !== 'undefined' && process.env && "production" !== 'test') {
+if (typeof process == 'undefined' || process.env && "production" === 'test') {
   setInterval(() => {
     const store = getCacheStore();
     const now = Date.now();
