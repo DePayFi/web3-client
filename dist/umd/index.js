@@ -649,15 +649,17 @@
   };
 
   // Periodically clean up expired cache entries (every 5 minutes), to prevent memory leaks
-  setInterval(() => {
-    const store = getCacheStore();
-    const now = Date.now();
-    for (const key in store) {
-      if (store[key].expiresAt < now) {
-        delete store[key];
+  if (typeof process !== 'undefined' && process.env && "production" !== 'test') {
+    setInterval(() => {
+      const store = getCacheStore();
+      const now = Date.now();
+      for (const key in store) {
+        if (store[key].expiresAt < now) {
+          delete store[key];
+        }
       }
-    }
-  }, 10 * 60 * 1000); // 10 minutes in milliseconds
+    }, 10 * 60 * 1000); // 10 minutes in milliseconds
+  }
 
   const getProvider = async (blockchain)=>{
 
