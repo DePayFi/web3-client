@@ -2,7 +2,7 @@ import { Connection } from '@depay/solana-web3.js'
 import { getConfiguration } from '../../configuration'
 
 const BATCH_INTERVAL = 10
-const CHUNK_SIZE = 50
+const CHUNK_SIZE = 25
 const MAX_RETRY = 10
 
 class StaticJsonRpcSequentialProvider extends Connection {
