@@ -85,6 +85,35 @@ request('ethereum://0x7a250d5630b4cf539739df2c5dacb4c659f2488d/getAmountsOut', {
 }).then((value)=>console.log(value))
 ```
 
+### rpcRequest
+
+Sends a raw rpcRequest to and returns raw response:
+
+```javascript
+import { rpcRequest } from '@depay/web3-client'
+
+// adds { "jsonrpc": "2.0", "id": <uuid> } automatically
+rpcRequest({
+  blockchain: 'worldchain',
+  method: "eth_getLogs",
+  params: [
+    {
+      "fromBlock": "0xC8C935",
+      "toBlock": "latest",
+      "address": "0x0000000071727De22E5E9d8BAf0edAc6f37da032",
+      "topics": [
+        "0x49628fd1471006c1482da88028e9ce4dbb080b815c9b0344d39e5a8e6ec1419f",
+        "0x855f8c02816d37b490a4f41f1052769a5cb892755a9b584b9deff5d3f7c7701a"
+      ]
+    }
+  ]
+}).then((responseData)=>{
+  if(responseData) { // the response result
+    responseData.blockHash // 0x43cc4d8eb7301a9fc207d31388c765dbdc1ecd75886ce0874e8862f16088219b
+  }
+})
+```
+
 ##### EVM: callStatic
 
 If a function fragment is of type stateMutability `nonpayable`, you can request data the same way:

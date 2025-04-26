@@ -46,7 +46,7 @@ const request = async function (url, options) {
 
         /*#elif _SVM
 
-        return requestSolana({ blockchain, address, api, method, params, block, strategy, timeout })
+        return await requestSolana({ blockchain, address, api, method, params, block, strategy, timeout })
 
         //#else */
 

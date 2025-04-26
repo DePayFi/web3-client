@@ -83,7 +83,7 @@ const setConfiguration = (configuration) =>{
   return getWindow()._Web3ClientConfiguration
 };
 
-function _optionalChain$2(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
+function _optionalChain$3(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 const BATCH_INTERVAL = 10;
 const CHUNK_SIZE = 50;
 const MAX_RETRY = 5;
@@ -127,13 +127,13 @@ class StaticJsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
           method: 'POST',
           body: JSON.stringify(batch),
           headers: { 'Content-Type': 'application/json' },
-          signal: _optionalChain$2([AbortSignal, 'optionalAccess', _ => _.timeout]) ? AbortSignal.timeout(10000) : undefined  // 10-second timeout
+          signal: _optionalChain$3([AbortSignal, 'optionalAccess', _ => _.timeout]) ? AbortSignal.timeout(10000) : undefined  // 10-second timeout
         }
       ).then((response)=>{
         if(response.ok) {
           response.json().then((parsedJson)=>{
             if(parsedJson.find((entry)=>{
-              return _optionalChain$2([entry, 'optionalAccess', _2 => _2.error]) && [-32062,-32016].includes(_optionalChain$2([entry, 'optionalAccess', _3 => _3.error, 'optionalAccess', _4 => _4.code]))
+              return _optionalChain$3([entry, 'optionalAccess', _2 => _2.error]) && [-32062,-32016].includes(_optionalChain$3([entry, 'optionalAccess', _3 => _3.error, 'optionalAccess', _4 => _4.code]))
             })) {
               if(attempt < MAX_RETRY) {
                 reject('Error in batch found!');
@@ -162,12 +162,12 @@ class StaticJsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
           // on whether it was a success or error
           chunk.forEach((inflightRequest, index) => {
             const payload = result[index];
-            if (_optionalChain$2([payload, 'optionalAccess', _5 => _5.error])) {
+            if (_optionalChain$3([payload, 'optionalAccess', _5 => _5.error])) {
               const error = new Error(payload.error.message);
               error.code = payload.error.code;
               error.data = payload.error.data;
               inflightRequest.reject(error);
-            } else if(_optionalChain$2([payload, 'optionalAccess', _6 => _6.result])) {
+            } else if(_optionalChain$3([payload, 'optionalAccess', _6 => _6.result])) {
               inflightRequest.resolve(payload.result);
             } else {
               inflightRequest.reject();
@@ -225,7 +225,7 @@ class StaticJsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
 
 }
 
-function _optionalChain$1(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
+function _optionalChain$2(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 const getAllProviders = ()=> {
   if(getWindow()._Web3ClientProviders == undefined) {
     getWindow()._Web3ClientProviders = {};
@@ -283,10 +283,10 @@ const setProviderEndpoints$1 = async (blockchain, endpoints, detectFastest = tru
             referrer: "",
             referrerPolicy: "no-referrer",
             body: JSON.stringify({ method: 'net_version', id: 1, jsonrpc: '2.0' }),
-            signal: _optionalChain$1([AbortSignal, 'optionalAccess', _ => _.timeout]) ? AbortSignal.timeout(10000) : undefined  // 10-second timeout
+            signal: _optionalChain$2([AbortSignal, 'optionalAccess', _ => _.timeout]) ? AbortSignal.timeout(10000) : undefined  // 10-second timeout
           });
         } catch (e) {}
-        if(!_optionalChain$1([response, 'optionalAccess', _2 => _2.ok])) { return resolve(999) }
+        if(!_optionalChain$2([response, 'optionalAccess', _2 => _2.ok])) { return resolve(999) }
         let after = new Date().getTime();
         resolve(after-before);
       })
@@ -345,7 +345,7 @@ let supported = ['ethereum', 'bsc', 'polygon', 'fantom', 'arbitrum', 'avalanche'
 supported.evm = ['ethereum', 'bsc', 'polygon', 'fantom', 'arbitrum', 'avalanche', 'gnosis', 'optimism', 'base', 'worldchain'];
 supported.svm = [];
 
-function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
+function _optionalChain$1(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 let getCacheStore = () => {
   if (getWindow()._Web3ClientCacheStore == undefined) {
     getWindow()._Web3ClientCacheStore = {};
@@ -376,7 +376,7 @@ let set = function ({ key, value, expires }) {
 
 let get = function ({ key, expires }) {
   let cachedEntry = getCacheStore()[key];
-  if (_optionalChain([cachedEntry, 'optionalAccess', _ => _.expiresAt]) > Date.now()) {
+  if (_optionalChain$1([cachedEntry, 'optionalAccess', _ => _.expiresAt]) > Date.now()) {
     return cachedEntry.value
   }
 };
@@ -564,7 +564,7 @@ const transactionCount = ({ address, provider }) => {
   return provider.getTransactionCount(address)
 };
 
-const singleRequest = ({ blockchain, address, api, method, params, block, provider }) =>{
+const singleRequest$1 = ({ blockchain, address, api, method, params, block, provider }) =>{
   if (api) {
     return contractCall({ address, api, method, params, provider, block })
   } else if (method === 'latestBlockNumber') {
@@ -590,7 +590,7 @@ var requestEVM = async ({ blockchain, address, api, method, params, block, timeo
     const allRequestsInParallel = providers.map((provider)=>{
       return new Promise((resolve)=>{
         allRequestsFailed.push(
-          singleRequest({ blockchain, address, api, method, params, block, provider }).then(resolve)
+          singleRequest$1({ blockchain, address, api, method, params, block, provider }).then(resolve)
         );
       })
     });
@@ -606,7 +606,7 @@ var requestEVM = async ({ blockchain, address, api, method, params, block, timeo
   } else { // failover
 
     const provider = await EVM.getProvider(blockchain);
-    const request = singleRequest({ blockchain, address, api, method, params, block, provider });
+    const request = singleRequest$1({ blockchain, address, api, method, params, block, provider });
     
     if(timeout) {
       timeout = new Promise((_, reject)=>setTimeout(()=>{ reject(new Error("Web3ClientTimeout")); }, timeout));
@@ -666,6 +666,66 @@ const request = async function (url, options) {
   })
 };
 
+const singleRequest = ({ blockchain, request, provider }) =>{
+  return provider.send(request.method, request.params)
+};
+
+var rpcRequestEVM = async ({ blockchain, request, timeout, strategy }) => {
+
+  strategy = strategy ? strategy : (getConfiguration().strategy || 'failover');
+  timeout = timeout ? timeout : (getConfiguration().timeout || undefined);
+
+  if(strategy === 'fastest') {
+
+    const providers = await EVM.getProviders(blockchain);
+    
+    let allRequestsFailed = [];
+
+    const allRequestsInParallel = providers.map((provider)=>{
+      return new Promise((resolve)=>{
+        allRequestsFailed.push(
+          singleRequest({ blockchain, request, provider }).then(resolve)
+        );
+      })
+    });
+    
+    const timeoutPromise = new Promise((_, reject)=>setTimeout(()=>{ reject(new Error("Web3ClientTimeout")); }, timeout || 10000));
+
+    allRequestsFailed = Promise.all(allRequestsFailed.map((request)=>{
+      return new Promise((resolve)=>{ request.catch(resolve); })
+    })).then(()=>{ return });
+
+    return Promise.race([...allRequestsInParallel, timeoutPromise, allRequestsFailed])
+
+  } else { // failover
+
+    const provider = await EVM.getProvider(blockchain);
+    const _request = singleRequest({ blockchain, request, provider });
+    
+    if(timeout) {
+      timeout = new Promise((_, reject)=>setTimeout(()=>{ reject(new Error("Web3ClientTimeout")); }, timeout));
+      return Promise.race([_request, timeout])
+    } else {
+      return _request
+    }
+  }
+};
+
+function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
+
+const rpcRequest = async function (request, options) {
+  
+  if(supported.evm.includes(request.blockchain)) {
+
+
+    return await rpcRequestEVM({ blockchain: request.blockchain, request, timeout: _optionalChain([options, 'optionalAccess', _ => _.timeout]), strategy: _optionalChain([options, 'optionalAccess', _2 => _2.strategy]) })
+
+
+  } else if(supported.svm.includes(request.blockchain)) ; else {
+    throw 'Unknown blockchain: ' + request.blockchain
+  }  
+};
+
 const simulate = undefined;
 
-export { estimate, getProvider, getProviders, request, resetCache, setConfiguration, setProvider, setProviderEndpoints, simulate };
+export { estimate, getProvider, getProviders, request, resetCache, rpcRequest, setConfiguration, setProvider, setProviderEndpoints, simulate };
