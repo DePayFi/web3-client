@@ -81,7 +81,7 @@
         ).then((response)=>{
           if(response.ok) {
             response.json().then((parsedJson)=>{
-              if(parsedJson.find((entry)=>{
+              if(parsedJson instanceof Array && parsedJson.find((entry)=>{
                 return _optionalChain$6([entry, 'optionalAccess', _2 => _2.error]) && [-32062,-32016].includes(_optionalChain$6([entry, 'optionalAccess', _3 => _3.error, 'optionalAccess', _4 => _4.code]))
               })) {
                 if(attempt < MAX_RETRY$1) {
@@ -89,8 +89,14 @@
                 } else {
                   resolve(parsedJson);
                 }
-              } else {
+              } else if (parsedJson instanceof Array) {
                 resolve(parsedJson);
+              } else {
+                if(attempt < MAX_RETRY$1) {
+                  reject('Error in batch found!');
+                } else {
+                  resolve(parsedJson);
+                }
               }
             }).catch(reject);
           } else {
