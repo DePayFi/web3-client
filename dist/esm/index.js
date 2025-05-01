@@ -75,7 +75,10 @@ class StaticJsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
       ).then((response)=>{
         if(response.ok) {
           response.json().then((parsedJson)=>{
-            if(parsedJson instanceof Array && parsedJson.find((entry)=>{
+            if(!(parsedJson instanceof Array)) {
+              parsedJson = [parsedJson];
+            }
+            if(parsedJson.find((entry)=>{
               return _optionalChain$6([entry, 'optionalAccess', _2 => _2.error]) && [-32062,-32016].includes(_optionalChain$6([entry, 'optionalAccess', _3 => _3.error, 'optionalAccess', _4 => _4.code]))
             })) {
               if(attempt < MAX_RETRY$1) {
@@ -83,8 +86,6 @@ class StaticJsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
               } else {
                 resolve(parsedJson);
               }
-            } else if (parsedJson) {
-              resolve(parsedJson);
             } else {
               if(attempt < MAX_RETRY$1) {
                 reject('Error in batch found!');
@@ -340,14 +341,21 @@ class StaticJsonRpcSequentialProvider extends Connection {
       ).then((response)=>{
         if(response.ok) {
           response.json().then((parsedJson)=>{
-            if(parsedJson instanceof Array && parsedJson.find((entry)=>_optionalChain$4([entry, 'optionalAccess', _2 => _2.error]))) {
+            if(!(parsedJson instanceof Array)) {
+              parsedJson = [parsedJson];
+            }
+            if(parsedJson.find((entry)=>_optionalChain$4([entry, 'optionalAccess', _2 => _2.error]))) {
               if(attempt < MAX_RETRY) {
                 reject('Error in batch found!');
               } else {
                 resolve(parsedJson);
               }
             } else {
-              resolve(parsedJson);
+              if(attempt < MAX_RETRY) {
+                reject('Error in batch found!');
+              } else {
+                resolve(parsedJson);
+              }
             }
           }).catch(reject);
         } else {
