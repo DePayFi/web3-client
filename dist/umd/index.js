@@ -93,11 +93,7 @@
                   resolve(parsedJson);
                 }
               } else {
-                if(attempt < MAX_RETRY$1) {
-                  reject('Error in batch found!');
-                } else {
-                  resolve(parsedJson);
-                }
+                resolve(parsedJson);
               }
             }).catch(reject);
           } else {
@@ -357,11 +353,7 @@
                   resolve(parsedJson);
                 }
               } else {
-                if(attempt < MAX_RETRY) {
-                  reject('Error in batch found!');
-                } else {
-                  resolve(parsedJson);
-                }
+                resolve(parsedJson);
               }
             }).catch(reject);
           } else {
