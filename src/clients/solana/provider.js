@@ -50,7 +50,7 @@ class StaticJsonRpcSequentialProvider extends Connection {
       ).then((response)=>{
         if(response.ok) {
           response.json().then((parsedJson)=>{
-            if(parsedJson.find((entry)=>entry?.error)) {
+            if(parsedJson instanceof Array && parsedJson.find((entry)=>entry?.error)) {
               if(attempt < MAX_RETRY) {
                 reject('Error in batch found!')
               } else {

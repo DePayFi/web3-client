@@ -140,7 +140,7 @@ class StaticJsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
               } else {
                 resolve(parsedJson);
               }
-            } else if (parsedJson instanceof Array) {
+            } else if (parsedJson) {
               resolve(parsedJson);
             } else {
               if(attempt < MAX_RETRY) {

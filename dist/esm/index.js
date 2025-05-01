@@ -83,7 +83,7 @@ class StaticJsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
               } else {
                 resolve(parsedJson);
               }
-            } else if (parsedJson instanceof Array) {
+            } else if (parsedJson) {
               resolve(parsedJson);
             } else {
               if(attempt < MAX_RETRY$1) {
@@ -340,7 +340,7 @@ class StaticJsonRpcSequentialProvider extends Connection {
       ).then((response)=>{
         if(response.ok) {
           response.json().then((parsedJson)=>{
-            if(parsedJson.find((entry)=>_optionalChain$4([entry, 'optionalAccess', _2 => _2.error]))) {
+            if(parsedJson instanceof Array && parsedJson.find((entry)=>_optionalChain$4([entry, 'optionalAccess', _2 => _2.error]))) {
               if(attempt < MAX_RETRY) {
                 reject('Error in batch found!');
               } else {
