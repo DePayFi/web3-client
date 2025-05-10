@@ -878,8 +878,8 @@ const contractCall = ({ address, api, method, params, provider, block }) => {
   }
 };
 
-const balance$1 = ({ address, provider }) => {
-  return provider.getBalance(address)
+const balance$1 = ({ address, provider, block }) => {
+  return provider.getBalance(address, block)
 };
 
 const transactionCount = ({ address, provider }) => {
@@ -892,7 +892,7 @@ const singleRequest$3 = ({ blockchain, address, api, method, params, block, prov
   } else if (method === 'latestBlockNumber') {
     return provider.getBlockNumber()
   } else if (method === 'balance') {
-    return balance$1({ address, provider })
+    return balance$1({ address, provider, block })
   } else if (method === 'transactionCount') {
     return transactionCount({ address, provider })
   }

@@ -884,8 +884,8 @@
     }
   };
 
-  const balance$1 = ({ address, provider }) => {
-    return provider.getBalance(address)
+  const balance$1 = ({ address, provider, block }) => {
+    return provider.getBalance(address, block)
   };
 
   const transactionCount = ({ address, provider }) => {
@@ -898,7 +898,7 @@
     } else if (method === 'latestBlockNumber') {
       return provider.getBlockNumber()
     } else if (method === 'balance') {
-      return balance$1({ address, provider })
+      return balance$1({ address, provider, block })
     } else if (method === 'transactionCount') {
       return transactionCount({ address, provider })
     }
