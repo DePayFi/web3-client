@@ -23,10 +23,10 @@
   "homepage": "https://depay.com",
   "private": false,
   "peerDependencies": {
-    "@depay/web3-blockchains": "^9.7.9",
+    "@depay/web3-blockchains": "^9.8.6",
     "ethers": "^5.7.1"
   },
   "engines": {
-    "node": ">=16"
+    "node": ">=18"
   }
 }
