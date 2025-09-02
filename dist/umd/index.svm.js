@@ -189,13 +189,7 @@
   const setProviderEndpoints$1 = async (blockchain, endpoints, detectFastest = true)=> {
     
     getAllProviders()[blockchain] = endpoints.map((endpoint, index)=>
-      new StaticJsonRpcSequentialProvider(endpoint, blockchain, endpoints, ()=>{
-        if(getAllProviders()[blockchain].length === 1) {
-          setProviderEndpoints$1(blockchain, endpoints, detectFastest);
-        } else {
-          getAllProviders()[blockchain].splice(index, 1);
-        }
-      })
+      new StaticJsonRpcSequentialProvider(endpoint, blockchain, endpoints, ()=>{})
     );
 
     let provider;
