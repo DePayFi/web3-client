@@ -22,7 +22,7 @@ const setProvider = (blockchain, provider)=> {
 const setProviderEndpoints = async (blockchain, endpoints, detectFastest = true)=> {
   
   getAllProviders()[blockchain] = endpoints.map((endpoint, index)=>
-    new StaticJsonRpcBatchProvider(endpoint, blockchain, endpoints, ()=>{})
+    new StaticJsonRpcBatchProvider(endpoint, blockchain, endpoints)
   )
 
   let provider
@@ -52,8 +52,8 @@ const setProviderEndpoints = async (blockchain, endpoints, detectFastest = true)
             },
             referrer: "",
             referrerPolicy: "no-referrer",
-            body: JSON.stringify({ method: 'getIdentity', id: 1, jsonrpc: '2.0' }),
-            signal: AbortSignal?.timeout ? AbortSignal.timeout(60000) : undefined  // 60-second timeout
+            body: JSON.stringify({ method: 'getGenesisHash', id: 1, jsonrpc: '2.0' }),
+            signal: AbortSignal?.timeout ? AbortSignal.timeout(10000) : undefined  // 10-second timeout
           })
         } catch {}
         if(!response?.ok) { return resolve(999) }

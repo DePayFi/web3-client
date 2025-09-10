@@ -7,23 +7,23 @@ const MAX_RETRY = 10
 
 class StaticJsonRpcSequentialProvider extends Connection {
 
-  constructor(url, network, endpoints, failover) {
+  constructor(url, network, endpoints) {
     super(url)
-    this._provider = new Connection(url)
     this._network = network
     this._endpoint = url
     this._endpoints = endpoints
-    this._failover = failover
     this._pendingBatch = []
+    this._nextId = 1
+
+    // Solana-specific: replace Connection's internal RPC method so our code batches
     this._rpcRequest = this._rpcRequestReplacement.bind(this)
   }
 
-  handleError(error, attempt, chunk) {
-    if(attempt < MAX_RETRY) {
-      const index = this._endpoints.indexOf(this._endpoint)+1
-      this._endpoint = index >= this._endpoints.length ? this._endpoints[0] : this._endpoints[index]
-      this._provider = new Connection(this._endpoint)
-      this.requestChunk(chunk, attempt+1)
+  handleError(error, endpoint, attempt, chunk) {
+    if(attempt < MAX_RETRY && error) {
+      const index = this._endpoints.indexOf(endpoint) + 1
+      const retryWithNextUrl = index >= this._endpoints.length ? this._endpoints[0] : this._endpoints[index]
+      this.requestChunk(chunk, retryWithNextUrl, attempt+1)
     } else {
       chunk.forEach((inflightRequest) => {
         inflightRequest.reject(error)
@@ -31,21 +31,19 @@ class StaticJsonRpcSequentialProvider extends Connection {
     }
   }
 
-  batchRequest(requests, attempt) {
+  // Same shape as ETH batchRequest, but we don’t special-case error codes here.
+  batchRequest(batch, endpoint, attempt) {
     return new Promise((resolve, reject) => {
-      if (requests.length === 0) resolve([]) // Do nothing if requests is empty
-
-      const batch = requests.map(params => {
-        return this._rpcClient.request(params.methodName, params.args)
-      })
+      
+      if (batch.length === 0) resolve([]) // Do nothing if requests is empty
 
       fetch(
-        this._endpoint,
+        endpoint,
         {
           method: 'POST',
           body: JSON.stringify(batch),
           headers: { 'Content-Type': 'application/json' },
-          signal: AbortSignal?.timeout ? AbortSignal.timeout(60000) : undefined  // 60-second timeout
+          signal: AbortSignal?.timeout ? AbortSignal.timeout(10000) : undefined  // 10-second timeout
         }
       ).then((response)=>{
         if(response.ok) {
@@ -53,7 +51,7 @@ class StaticJsonRpcSequentialProvider extends Connection {
             if(!(parsedJson instanceof Array)) {
               parsedJson = [parsedJson]
             }
-            if(parsedJson.find((entry)=>entry?.error)) {
+            if(parsedJson.find((entry)=> entry?.error )) {
               if(attempt < MAX_RETRY) {
                 reject('Error in batch found!')
               } else {
@@ -70,13 +68,14 @@ class StaticJsonRpcSequentialProvider extends Connection {
     })
   }
 
-  requestChunk(chunk, attempt) {
+  requestChunk(chunk, endpoint, attempt) {
 
     const batch = chunk.map((inflight) => inflight.request)
 
     try {
-      return this.batchRequest(batch, attempt)
+      return this.batchRequest(batch, endpoint, attempt)
         .then((result) => {
+          // For each result, feed it to the correct Promise
           chunk.forEach((inflightRequest, index) => {
             const payload = result[index]
             if (payload?.error) {
@@ -85,18 +84,25 @@ class StaticJsonRpcSequentialProvider extends Connection {
               error.data = payload.error.data
               inflightRequest.reject(error)
             } else if(payload) {
+              // Solana-specific: resolve with full JSON-RPC payload (not .result)
               inflightRequest.resolve(payload)
             } else {
               inflightRequest.reject()
             }
           })
-        }).catch((error)=>this.handleError(error, attempt, chunk))
-    } catch (error){ return this.handleError(error, attempt, chunk) }
+        }).catch((error) => this.handleError(error, endpoint, attempt, chunk))
+    } catch (error){ this.handleError(error, endpoint, attempt, chunk) }
   }
-    
-  _rpcRequestReplacement(methodName, args) {
 
-    const request = { methodName, args }
+  // Solana-specific replacement: just enqueue like ETH's send(), but using Connection’s hook.
+  _rpcRequestReplacement(method, params) {
+
+    const request = {
+      method: method,
+      params: Array.isArray(params) ? params : [],
+      id: (this._nextId++).toString(),
+      jsonrpc: "2.0"
+    }
 
     if (this._pendingBatch == null) {
       this._pendingBatch = []
@@ -127,7 +133,7 @@ class StaticJsonRpcSequentialProvider extends Connection {
         chunks.forEach((chunk)=>{
           // Get the request as an array of requests
           const request = chunk.map((inflight) => inflight.request)
-          return this.requestChunk(chunk, 1)
+          return this.requestChunk(chunk, this._endpoint, 1)
         })
       }, getConfiguration().batchInterval || BATCH_INTERVAL)
     }
