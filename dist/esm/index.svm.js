@@ -31,6 +31,10 @@ const BATCH_INTERVAL = 10;
 const CHUNK_SIZE = 25;
 const MAX_RETRY = 10;
 
+function isHeliusEndpoint(url) {
+  return typeof url === 'string' && url.includes('helius-rpc.com')
+}
+
 class StaticJsonRpcSequentialProvider extends Connection {
 
   constructor(url, network, endpoints) {
@@ -151,16 +155,39 @@ class StaticJsonRpcSequentialProvider extends Connection {
         const batch = this._pendingBatch;
         this._pendingBatch = [];
         this._pendingBatchAggregator = null;
-        // Prepare Chunks of CHUNK_SIZE
-        const chunks = [];
-        for (let i = 0; i < Math.ceil(batch.length / CHUNK_SIZE); i++) {
-          chunks[i] = batch.slice(i*CHUNK_SIZE, (i+1)*CHUNK_SIZE);
+
+        const endpoint = this._endpoint;
+        const helius = isHeliusEndpoint(endpoint);
+
+        if (helius) {
+          // Requirement 1: For helius-rpc.com, batch only requests that share the same method
+          const groupsByMethod = batch.reduce((acc, inflight) => {
+            const m = inflight.request.method;
+            if (!acc[m]) acc[m] = [];
+            acc[m].push(inflight);
+            return acc
+          }, {});
+
+          Object.values(groupsByMethod).forEach((group) => {
+            // CHUNK_SIZE still applies within each method group
+            const chunks = [];
+            for (let i = 0; i < Math.ceil(group.length / CHUNK_SIZE); i++) {
+              chunks[i] = group.slice(i*CHUNK_SIZE, (i+1)*CHUNK_SIZE);
+            }
+            chunks.forEach((chunk)=>{
+              return this.requestChunk(chunk, endpoint, 1)
+            });
+          });
+        } else {
+          // Default behavior (unchanged): chunk regardless of method
+          const chunks = [];
+          for (let i = 0; i < Math.ceil(batch.length / CHUNK_SIZE); i++) {
+            chunks[i] = batch.slice(i*CHUNK_SIZE, (i+1)*CHUNK_SIZE);
+          }
+          chunks.forEach((chunk)=>{
+            return this.requestChunk(chunk, endpoint, 1)
+          });
         }
-        chunks.forEach((chunk)=>{
-          // Get the request as an array of requests
-          chunk.map((inflight) => inflight.request);
-          return this.requestChunk(chunk, this._endpoint, 1)
-        });
       }, getConfiguration().batchInterval || BATCH_INTERVAL);
     }
 
